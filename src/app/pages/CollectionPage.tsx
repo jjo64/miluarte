@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { ease, staggerContainer, staggerItem } from "../tokens";
+import { gsap } from "gsap";
+import { Flip } from "gsap/Flip";
+import { useLanguage } from "../context/LanguageContext";
+
+
+gsap.registerPlugin(Flip);
+
+const artFireGirl  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg";
+const artDiggin    = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg";
+const artMusae     = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
+const artPortraits = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
 
 const vp = { once: true, margin: "-60px" } as const;
 
@@ -57,10 +68,10 @@ interface Work {
 
 const WORKS_BY_SLUG: Record<string, Work[]> = {
   ilustracion: [
-    { id: 1, title: "Sin título (Serie verde)", year: "2024", technique: "Acrílico sobre lienzo",  size: "80 × 60 cm", price: "€480",           available: true,  img: "",     imgPos: "50% 12%", gridCol: "md:col-span-2", aspect: "16/10" },
-    { id: 2, title: "Deriva",                  year: "2024", technique: "Óleo sobre tabla",        size: "50 × 70 cm", price: "No disponible",   available: false, img: "", imgPos: "50% 12%", gridCol: "md:col-span-1", aspect: "3/4"   },
-    { id: 3, title: "Umbral II",               year: "2023", technique: "Técnica mixta",           size: "100 × 80 cm",price: "€650",            available: true,  img: "",  imgPos: "50% 22%", gridCol: "md:col-span-1", aspect: "3/4"   },
-    { id: 4, title: "Estructura invisible",    year: "2023", technique: "Acrílico y pigmento",    size: "60 × 60 cm", price: "€320",            available: true,  img: "",    imgPos: "50% 14%", gridCol: "md:col-span-2", aspect: "16/10" },
+    { id: 1, title: "Sin título (Serie verde)", year: "2024", technique: "Acrílico sobre lienzo",  size: "80 × 60 cm", price: "€480",           available: true,  img: artMusae,     imgPos: "50% 12%", gridCol: "md:col-span-2", aspect: "16/10" },
+    { id: 2, title: "Deriva",                  year: "2024", technique: "Óleo sobre tabla",        size: "50 × 70 cm", price: "No disponible",   available: false, img: artPortraits, imgPos: "50% 12%", gridCol: "md:col-span-1", aspect: "3/4"   },
+    { id: 3, title: "Umbral II",               year: "2023", technique: "Técnica mixta",           size: "100 × 80 cm",price: "€650",            available: true,  img: artFireGirl,  imgPos: "50% 22%", gridCol: "md:col-span-1", aspect: "3/4"   },
+    { id: 4, title: "Estructura invisible",    year: "2023", technique: "Acrílico y pigmento",    size: "60 × 60 cm", price: "€320",            available: true,  img: artDiggin,    imgPos: "50% 14%", gridCol: "md:col-span-2", aspect: "16/10" },
   ],
   diggin: [
     { id: "dg1", title: "Smokin' On EP",       year: "2024", technique: "Tom Hodges",              size: "12″ Vinyl / Digital", price: "Proyecto musical", available: false, img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811474/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg", imgPos: "50% 50%", gridCol: "md:col-span-1", aspect: "1/1" },
@@ -92,15 +103,40 @@ const WORKS_BY_SLUG: Record<string, Work[]> = {
 
 // Das Motel pieces
 const DAS_MOTEL = [
-  { id: "dm1", title: "Room 12",    year: "2022", img: "../../public/fire-girl.jpg",  imgPos: "50% 22%" },
-  { id: "dm2", title: "Check-out",  year: "2022", img: "../../assets/diggin-cover.png",    imgPos: "50% 14%" },
-  { id: "dm3", title: "Last Night", year: "2021", img: "../../assets/musae-series.png",     imgPos: "50% 45%" },
+  { id: "dm1", title: "Room 12",    year: "2022", img: artFireGirl,  imgPos: "50% 22%" },
+  { id: "dm2", title: "Check-out",  year: "2022", img: artDiggin,    imgPos: "50% 14%" },
+  { id: "dm3", title: "Last Night", year: "2021", img: artMusae,     imgPos: "50% 45%" },
 ];
 
 // ─── Work Card ────────────────────────────────────────────────────────────────
 
-function WorkCard({ work, accent }: { work: Work; accent: string }) {
+function WorkCard({ 
+  work, 
+  accent, 
+  onClick, 
+  imgRef 
+}: { 
+  work: Work; 
+  accent: string; 
+  onClick: () => void; 
+  imgRef: (el: HTMLImageElement | null) => void;
+}) {
   const [hovered, setHovered] = useState(false);
+  const { t, language } = useLanguage();
+
+  const getLocalizedPrice = (price: string) => {
+    if (price === "No disponible") return t("collection.availability.unavailable");
+    if (price === "Proyecto musical") return t("collection.availability.musicalProject");
+    return price;
+  };
+
+  const getLocalizedTechnique = (tech: string) => {
+    if (tech === "Acrílico sobre lienzo") return language === "es" ? "Acrílico sobre lienzo" : "Acrylic on canvas";
+    if (tech === "Óleo sobre tabla") return language === "es" ? "Óleo sobre tabla" : "Oil on wood panel";
+    if (tech === "Técnica mixta") return language === "es" ? "Técnica mixta" : "Mixed media";
+    if (tech === "Acrílico y pigmento") return language === "es" ? "Acrílico y pigmento" : "Acrylic and pigment";
+    return tech;
+  };
 
   return (
     <motion.div
@@ -108,9 +144,11 @@ function WorkCard({ work, accent }: { work: Work; accent: string }) {
       className={`relative overflow-hidden cursor-pointer col-span-3 ${work.gridCol}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
     >
       <div className="relative overflow-hidden w-full h-full" style={{ aspectRatio: work.aspect }}>
         <img
+          ref={imgRef}
           src={work.img}
           alt={work.title}
           className={`w-full h-full object-cover transition-all duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -129,7 +167,7 @@ function WorkCard({ work, accent }: { work: Work; accent: string }) {
             className="font-sans text-[9px] tracking-widest uppercase mb-2.5" 
             style={{ color: accent }}
           >
-            {work.technique} · {work.year}
+            {getLocalizedTechnique(work.technique)} · {work.year}
           </p>
           <p className="font-serif text-brand-cream text-lg font-light mb-2 leading-tight">
             {work.title}
@@ -141,7 +179,7 @@ function WorkCard({ work, accent }: { work: Work; accent: string }) {
             className="font-sans text-[11px] tracking-widest uppercase font-medium"
             style={{ color: work.available ? accent : "rgba(245,237,224,0.35)" }}
           >
-            {work.price}
+            {getLocalizedPrice(work.price)}
           </p>
         </div>
 
@@ -201,10 +239,101 @@ function DasMotelCard({ work }: { work: typeof DAS_MOTEL[0] }) {
 export function CollectionPage() {
   const { slug = "ilustracion" } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
   const meta = META[slug] ?? META["ilustracion"];
-  const [ctaH, setCtaH] = useState(false);
+  
+  // Localize metadata dynamically
+  const localizedMeta = {
+    ...meta,
+    title: t(`collection.meta.${slug}.title`) || meta.title,
+    label: t(`collection.meta.${slug}.label`) || meta.label,
+    statement: t(`collection.meta.${slug}.statement`) || meta.statement,
+  };
 
+  const [ctaH, setCtaH] = useState(false);
   const works = WORKS_BY_SLUG[slug] ?? WORKS_BY_SLUG["ilustracion"];
+
+  // Localize work titles on the fly if needed
+  const getLocalizedWorkTitle = (title: string) => {
+    if (title === "Sin título (Serie verde)") return language === "es" ? "Sin título (Serie verde)" : "Untitled (Green Series)";
+    if (title === "Estructura invisible") return language === "es" ? "Estructura invisible" : "Invisible Structure";
+    return title;
+  };
+
+  const localizedWorks = works.map((w) => ({
+    ...w,
+    title: getLocalizedWorkTitle(w.title),
+  }));
+
+  // GSAP Flip states and refs
+  const [activeWork, setActiveWork] = useState<Work | null>(null);
+  const gridRefs = useRef<Record<string | number, HTMLImageElement | null>>({});
+  const modalImgRef = useRef<HTMLImageElement | null>(null);
+  const modalOverlayRef = useRef<HTMLDivElement | null>(null);
+
+  const handleWorkClick = (work: Work) => {
+    const gridImg = gridRefs.current[work.id];
+    if (gridImg) {
+      const state = Flip.getState(gridImg);
+      (gridImg as any)._flipState = state;
+      gsap.set(gridImg, { opacity: 0 });
+    }
+    setActiveWork(work);
+  };
+
+  useLayoutEffect(() => {
+    if (activeWork) {
+      const gridImg = gridRefs.current[activeWork.id];
+      const modalImg = modalImgRef.current;
+      const state = (gridImg as any)?._flipState;
+      if (modalImg && state) {
+        Flip.from(state, {
+          targets: modalImg,
+          duration: 0.65,
+          ease: "power2.out",
+        });
+        gsap.to(modalOverlayRef.current, {
+          opacity: 0.8,
+          duration: 0.35,
+          ease: "power2.out"
+        });
+      }
+    }
+  }, [activeWork]);
+
+  const closeModal = () => {
+    if (!activeWork) return;
+    const gridImg = gridRefs.current[activeWork.id];
+    const modalImg = modalImgRef.current;
+    if (gridImg && modalImg) {
+      const state = Flip.getState(modalImg);
+      gsap.set(gridImg, { opacity: 1 });
+      setActiveWork(null);
+      Flip.from(state, {
+        targets: gridImg,
+        duration: 0.65,
+        ease: "power2.inOut",
+        absolute: true
+      });
+      gsap.to(modalOverlayRef.current, {
+        opacity: 0,
+        duration: 0.35,
+        ease: "power2.inOut"
+      });
+    } else {
+      setActiveWork(null);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeWork]);
 
   return (
     <div className="bg-brand-bg text-brand-cream min-h-screen">
@@ -216,17 +345,17 @@ export function CollectionPage() {
           transition={{ duration: 0.5, delay: 0.1, ease }}
           className="flex gap-2.5 items-center mb-6"
         >
-          <div className="w-8 h-0.5" style={{ backgroundColor: meta.accent }} />
-          <div className="w-2 h-0.5 opacity-35" style={{ backgroundColor: meta.accent }} />
+          <div className="w-8 h-0.5" style={{ backgroundColor: localizedMeta.accent }} />
+          <div className="w-2 h-0.5 opacity-35" style={{ backgroundColor: localizedMeta.accent }} />
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.2, ease }}
           className="font-sans text-[10px] tracking-[0.32em] uppercase mb-4.5"
-          style={{ color: meta.accent }}
+          style={{ color: localizedMeta.accent }}
         >
-          {meta.label}
+          {localizedMeta.label}
         </motion.p>
 
         <motion.h1
@@ -234,7 +363,7 @@ export function CollectionPage() {
           transition={{ duration: 0.8, delay: 0.3, ease }}
           className="font-serif text-brand-cream text-[4rem] md:text-[7rem] font-light leading-[0.92] tracking-tight mb-9"
         >
-          {meta.title}
+          {localizedMeta.title}
         </motion.h1>
 
         <motion.p
@@ -242,7 +371,7 @@ export function CollectionPage() {
           transition={{ duration: 0.65, delay: 0.55, ease }}
           className="font-sans text-brand-cream/50 text-[12.5px] leading-relaxed max-w-[500px]"
         >
-          {meta.statement}
+          {localizedMeta.statement}
         </motion.p>
       </div>
 
@@ -254,7 +383,15 @@ export function CollectionPage() {
         viewport={{ once: true, margin: "-40px" }}
         className="grid grid-cols-3 gap-0.5 mb-1"
       >
-        {works.map((w) => <WorkCard key={w.id} work={w} accent={meta.accent} />)}
+        {localizedWorks.map((w) => (
+          <WorkCard 
+            key={w.id} 
+            work={w} 
+            accent={localizedMeta.accent} 
+            onClick={() => handleWorkClick(w)}
+            imgRef={(el) => { gridRefs.current[w.id] = el; }}
+          />
+        ))}
       </motion.div>
 
       {/* ─── Das Motel ──────────────────────────────────────────────────────── */}
@@ -274,7 +411,7 @@ export function CollectionPage() {
               variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
               className="font-sans text-brand-orange text-[10px] tracking-[0.32em] uppercase mb-4.5"
             >
-              Mini-exposición · Serie
+              {t("collection.exhibition")}
             </motion.p>
 
             <motion.h2
@@ -288,7 +425,7 @@ export function CollectionPage() {
               variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
               className="font-sans text-brand-cream/35 text-xs leading-relaxed"
             >
-              Doce piezas sobre el tránsito, la habitación prestada<br />y la identidad sin fachada.
+              {t("collection.dasMotelStatement")}
             </motion.p>
           </div>
 
@@ -319,14 +456,14 @@ export function CollectionPage() {
           variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
           className="font-serif text-brand-cream text-[1.05rem] font-light opacity-45"
         >
-          ¿Te interesa alguna pieza?
+          {t("collection.interest")}
         </motion.p>
-        <button
-          onMouseEnter={() => setCtaH(true)} onMouseLeave={() => setCtaH(false)}
-          className="font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-4 px-10 cursor-pointer transition-colors duration-300 font-medium"
+        <a
+          href="mailto:Miluartedenara@gmail.com"
+          className="font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-4 px-10 cursor-pointer transition-colors duration-300 font-medium no-underline inline-block"
         >
-          Pide presupuesto
-        </button>
+          {t("collection.requestQuote")}
+        </a>
         <div className="flex gap-6">
           {["Instagram", "Behance", "LinkedIn"].map((n) => (
             <a key={n} href="#" className="font-sans text-brand-cream/20 hover:text-brand-orange text-[11px] tracking-wider no-underline transition-colors duration-200">{n}</a>
@@ -336,9 +473,41 @@ export function CollectionPage() {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 font-sans text-brand-cream/30 hover:text-brand-cream text-[10px] tracking-widest uppercase bg-transparent border-none cursor-pointer mt-2 transition-colors duration-200"
         >
-          <ArrowLeft size={12} /> Volver
+          <ArrowLeft size={12} /> {t("collection.back")}
         </button>
       </footer>
+
+      {/* GSAP Flip Modal */}
+      <div 
+        className="fixed inset-0 z-55 flex items-center justify-center transition-all duration-300"
+        style={{ 
+          visibility: activeWork ? "visible" : "hidden",
+          pointerEvents: activeWork ? "auto" : "none"
+        }}
+      >
+        {/* Overlay */}
+        <div 
+          ref={modalOverlayRef}
+          className="absolute inset-0 bg-black opacity-0 cursor-pointer"
+          onClick={closeModal}
+        />
+        
+        {/* Modal Content container */}
+        <div 
+          className="relative max-h-[85vh] max-w-[85vw] z-10 flex items-center justify-center"
+          style={{ aspectRatio: activeWork?.aspect }}
+        >
+          {activeWork && (
+            <img
+              ref={modalImgRef}
+              src={activeWork.img}
+              alt={activeWork.title}
+              className="w-full h-full object-contain cursor-pointer rounded shadow-2xl"
+              onClick={closeModal}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

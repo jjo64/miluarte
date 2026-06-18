@@ -3,26 +3,19 @@ import { motion } from "motion/react";
 import { ease } from "../tokens";
 import { HorizontalGallery } from "../components/HorizontalGallery";
 import { ServiceSections } from "../components/ServiceSections";
+import { useLanguage } from "../context/LanguageContext";
 
-import artMusae     from "../../assets/musae-series.png";
-import artPortraits from "../../assets/portrait-deriva.png";
+const artMusae    = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
+const artPortraits = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
 
 const vp = { once: true, margin: "-70px" } as const;
 
 // ─── Hero / Sobre mí ─────────────────────────────────────────────────────────
 
-const SKILLS = [
-  "Ilustración", 
-  "Concept art", 
-  "Diseño gráfico", 
-  "Desarrollo de personajes", 
-  "Joyería & arcilla", 
-  "Merchandising musical", 
-  "Lienzos & galería"
-];
-
 function Hero() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const skills = (t("hero.skills") || []) as string[];
 
   return (
     <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-14">
@@ -51,17 +44,17 @@ function Hero() {
             transition={{ duration: 0.55, delay: 0.15, ease }}
             className="font-sans text-brand-blush text-[10px] tracking-[0.34em] uppercase mb-6"
           >
-            Ilustradora & artista digital · Madrid
+            {t("hero.tagline")}
           </motion.p>
 
           <motion.h1
             initial={{ opacity: 0, y: 52 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.28, ease }}
-            className="font-serif text-brand-cream text-[3.2rem] md:text-[5.8rem] leading-[0.95] font-light tracking-tight mb-9"
+            className="font-serif text-brand-cream text-[3.2rem] md:text-[5.8rem] leading-[0.95] font-light tracking-tight mb-9 whitespace-pre-line"
           >
-            Hola,<br />soy{" "}
-            <em className="italic text-brand-blush">Nerea</em>
+            {t("hero.greetingBefore")}
+            <em className="italic text-brand-blush">{t("hero.greetingItalic")}</em>
           </motion.h1>
 
           <motion.div
@@ -77,7 +70,7 @@ function Hero() {
             transition={{ duration: 0.6, delay: 0.78, ease }}
             className="font-sans text-brand-cream/60 text-[13px] leading-relaxed mb-4"
           >
-            Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas, joyería y concept art para proyectos musicales. Cada pieza hecha con dedicación y amor por los detalles.
+            {t("hero.bio1")}
           </motion.p>
 
           <motion.p
@@ -86,7 +79,7 @@ function Hero() {
             transition={{ duration: 0.6, delay: 0.9, ease }}
             className="font-sans text-brand-cream/45 text-[13px] leading-relaxed mb-12"
           >
-            Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.
+            {t("hero.bio2")}
           </motion.p>
 
           <motion.div
@@ -97,15 +90,15 @@ function Hero() {
           >
             <button
               onClick={() => navigate("/coleccion/ilustracion")}
-              className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3.5 px-7 cursor-pointer font-medium hover:bg-brand-cream transition-colors duration-300"
+              className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3.5 px-7 cursor-pointer font-medium hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300"
             >
-              Ver trabajos
+              {t("hero.viewWorks")}
             </button>
             <a
               href="mailto:Miluartedenara@gmail.com"
               className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 no-underline hover:bg-brand-blush hover:text-brand-ink transition-all duration-300"
             >
-              Escribir encargo
+              {t("hero.sendInquiry")}
             </a>
           </motion.div>
         </div>
@@ -119,7 +112,7 @@ function Hero() {
         >
           {/* Skill tags */}
           <div className="flex flex-wrap gap-2">
-            {SKILLS.map((skill) => (
+            {skills.map((skill) => (
               <span
                 key={skill}
                 className="font-sans text-brand-blush text-[10px] tracking-wider border border-brand-blush/30 py-1.5 px-3.5 hover:border-brand-blush hover:bg-brand-blush/5 transition-all duration-300"
@@ -135,8 +128,7 @@ function Hero() {
               <img
                 src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg"
                 alt="Miluarte — Nerea"
-                className="w-full h-80 object-cover block transition-transform duration-700 group-hover:scale-105"
-                style={{ objectPosition: "50% 50%" }}
+                className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
               />
             </div>
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-brand-ink py-1.5 px-4.5">
@@ -166,7 +158,15 @@ function Hero() {
 
 function Footer() {
   const navigate = useNavigate();
-  const workLinks = ["Musae", "Retratos", "Diggin'", "Concept art", "Diseño gráfico"];
+  const { t, language } = useLanguage();
+  
+  const workLinks = [
+    { label: "Musae", slug: "ilustracion" },
+    { label: language === "es" ? "Retratos" : "Portraits", slug: "ilustracion" },
+    { label: "Diggin'", slug: "diggin" },
+    { label: t("services.items.concept-art.label"), slug: "concept-art" },
+    { label: t("services.items.diseno-grafico.label"), slug: "diseno-grafico" }
+  ];
 
   return (
     <footer className="bg-brand-dark border-t-2 border-brand-orange py-16 px-6 md:px-10">
@@ -174,37 +174,38 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1fr] gap-12 mb-14">
           <div>
             <p className="font-serif text-brand-cream text-2xl font-light tracking-wide mb-4">Miluarte</p>
-            <p className="font-sans text-brand-cream/30 text-xs leading-relaxed">
-              Estudio creativo multidisciplinar.<br />Ilustración, diseño y dirección de arte.<br />Barcelona, España.
+            <p className="font-sans text-brand-cream/30 text-xs leading-relaxed whitespace-pre-line">
+              {t("footer.studio")}
             </p>
           </div>
 
           <div>
-            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">Trabajo</p>
+            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">{t("footer.work")}</p>
             <div className="flex flex-col gap-3 items-start">
-              {workLinks.map((item) => (
-                <FooterLink key={item} label={item} onClick={() => navigate(`/coleccion/${item.toLowerCase().replace(/\s+/g, "-").replace(/'/g, "")}`)} />
+              {workLinks.map((item, idx) => (
+                <FooterLink key={idx} label={item.label} onClick={() => navigate(`/coleccion/${item.slug}`)} />
               ))}
             </div>
           </div>
 
           <div>
-            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">Contacto</p>
+            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">{t("footer.contact")}</p>
             <p className="font-sans text-brand-cream/45 text-xs mb-5">hola@miluarte.com</p>
             <div className="flex gap-5 mb-8">
               {["Instagram", "Behance", "LinkedIn"].map((n) => <FooterLink key={n} label={n} onClick={() => {}} />)}
             </div>
-            <button
-              className="font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3.5 px-7 cursor-pointer transition-colors duration-300 font-medium"
+            <a
+              href="mailto:Miluartedenara@gmail.com"
+              className="font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3.5 px-7 cursor-pointer transition-colors duration-300 font-medium no-underline inline-block"
             >
-              Pide presupuesto
-            </button>
+              {t("footer.budget")}
+            </a>
           </div>
         </div>
 
         <div className="border-t border-brand-cream/5 pt-6 flex flex-col md:flex-row justify-between gap-4">
-          <p className="font-sans text-brand-cream/15 text-[11px]">© 2024 Miluarte. Todos los derechos reservados.</p>
-          <p className="font-sans text-brand-cream/15 text-[11px]">Hecho con criterio.</p>
+          <p className="font-sans text-brand-cream/15 text-[11px]">{t("footer.rights")}</p>
+          <p className="font-sans text-brand-cream/15 text-[11px]">{t("footer.madeWithCriteria")}</p>
         </div>
       </div>
     </footer>
