@@ -3,9 +3,12 @@ import { motion } from "motion/react";
 import { ease } from "../tokens";
 import { HorizontalGallery } from "../components/HorizontalGallery";
 import { ServiceSections } from "../components/ServiceSections";
+import { SketchSlider } from "../components/SketchSlider";
+import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
 
-const artMusae    = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
+const animasSketch = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
+const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
 const artPortraits = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
 
 const vp = { once: true, margin: "-70px" } as const;
@@ -94,12 +97,12 @@ function Hero() {
             >
               {t("hero.viewWorks")}
             </button>
-            <a
-              href="mailto:Miluartedenara@gmail.com"
-              className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 no-underline hover:bg-brand-blush hover:text-brand-ink transition-all duration-300"
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
+              className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 cursor-pointer bg-transparent hover:bg-brand-blush hover:text-brand-ink transition-all duration-300"
             >
               {t("hero.sendInquiry")}
-            </a>
+            </button>
           </motion.div>
         </div>
 
@@ -154,83 +157,25 @@ function Hero() {
   );
 }
 
-// ─── Footer ───────────────────────────────────────────────────────────────────
-
-function Footer() {
-  const navigate = useNavigate();
-  const { t, language } = useLanguage();
-  
-  const workLinks = [
-    { label: "Musae", slug: "ilustracion" },
-    { label: language === "es" ? "Retratos" : "Portraits", slug: "ilustracion" },
-    { label: "Diggin'", slug: "diggin" },
-    { label: t("services.items.concept-art.label"), slug: "concept-art" },
-    { label: t("services.items.diseno-grafico.label"), slug: "diseno-grafico" }
-  ];
-
-  return (
-    <footer className="bg-brand-dark border-t-2 border-brand-orange py-16 px-6 md:px-10">
-      <div className="max-w-[1100px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1fr] gap-12 mb-14">
-          <div>
-            <p className="font-serif text-brand-cream text-2xl font-light tracking-wide mb-4">Miluarte</p>
-            <p className="font-sans text-brand-cream/30 text-xs leading-relaxed whitespace-pre-line">
-              {t("footer.studio")}
-            </p>
-          </div>
-
-          <div>
-            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">{t("footer.work")}</p>
-            <div className="flex flex-col gap-3 items-start">
-              {workLinks.map((item, idx) => (
-                <FooterLink key={idx} label={item.label} onClick={() => navigate(`/coleccion/${item.slug}`)} />
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">{t("footer.contact")}</p>
-            <p className="font-sans text-brand-cream/45 text-xs mb-5">hola@miluarte.com</p>
-            <div className="flex gap-5 mb-8">
-              {["Instagram", "Behance", "LinkedIn"].map((n) => <FooterLink key={n} label={n} onClick={() => {}} />)}
-            </div>
-            <a
-              href="mailto:Miluartedenara@gmail.com"
-              className="font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3.5 px-7 cursor-pointer transition-colors duration-300 font-medium no-underline inline-block"
-            >
-              {t("footer.budget")}
-            </a>
-          </div>
-        </div>
-
-        <div className="border-t border-brand-cream/5 pt-6 flex flex-col md:flex-row justify-between gap-4">
-          <p className="font-sans text-brand-cream/15 text-[11px]">{t("footer.rights")}</p>
-          <p className="font-sans text-brand-cream/15 text-[11px]">{t("footer.madeWithCriteria")}</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterLink({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button onClick={onClick}
-      className="font-sans text-brand-cream/40 hover:text-brand-orange hover:opacity-100 text-xs bg-transparent border-none p-0 cursor-pointer text-left transition-colors duration-200"
-    >
-      {label}
-    </button>
-  );
-}
-
 // ─── Page export ──────────────────────────────────────────────────────────────
 
 export function HomePage() {
+  const { t } = useLanguage();
   return (
     <div className="bg-brand-bg text-brand-cream">
       <Hero />
       <HorizontalGallery />
+      <SketchSlider
+        sketchImg={animasSketch}
+        finalImg={animasFinal}
+        sketchImgPos="50% 17%"
+        finalImgPos="50% 12%"
+        title={t("process.title")}
+        subtitle={t("process.subtitle")}
+        hint={t("process.hint")}
+      />
       <ServiceSections />
-      <Footer />
+      <SharedFooter />
     </div>
   );
 }
