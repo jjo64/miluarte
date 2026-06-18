@@ -56,7 +56,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="relative w-8 h-8 flex items-center justify-center rounded-lg bg-brand-cream/5 border border-brand-cream/10 text-brand-cream hover:bg-brand-cream/10 transition-colors duration-300 cursor-pointer overflow-hidden shrink-0"
+      className="hidden sm:flex relative w-8 h-8 items-center justify-center rounded-lg bg-brand-cream/5 border border-brand-cream/10 text-brand-cream hover:bg-brand-cream/10 transition-colors duration-300 cursor-pointer overflow-hidden shrink-0"
       aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
     >
       <motion.div
@@ -131,9 +131,13 @@ export function SharedHeader() {
     },
   ];
 
+  const isMobile = () => window.innerWidth < 768;
+
   const calculateHeight = () => {
     const navEl = navRef.current;
     if (!navEl) return 360;
+    // On mobile, limit the menu to 85vh so it never overflows the screen
+    const maxH = isMobile() ? window.innerHeight * 0.85 : Infinity;
     const contentEl = navEl.querySelector<HTMLElement>(".card-nav-content");
     if (contentEl) {
       const prev = { 
@@ -152,9 +156,9 @@ export function SharedHeader() {
       contentEl.style.pointerEvents = prev.pe;
       contentEl.style.position = prev.pos;
       contentEl.style.height = prev.h;
-      return total;
+      return Math.min(total, maxH);
     }
-    return 360;
+    return Math.min(360, maxH);
   };
 
   const createTimeline = () => {
@@ -162,7 +166,16 @@ export function SharedHeader() {
     if (!navEl) return null;
     gsap.set(navEl, { height: 60, overflow: "hidden" });
     gsap.set(cardsRef.current, { y: 30, opacity: 0 });
-    const tl = gsap.timeline({ paused: true });
+    const tl = gsap.timeline({ 
+      paused: true,
+      onComplete: () => {
+        // Allow scrolling inside the nav on mobile after open animation
+        if (navEl) gsap.set(navEl, { overflowY: "auto" });
+      },
+      onReverseComplete: () => {
+        if (navEl) gsap.set(navEl, { overflow: "hidden" });
+      }
+    });
     tl.to(navEl, { height: calculateHeight, duration: 0.4, ease: "power3.out" });
     tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out", stagger: 0.08 }, "-=0.1");
     return tl;
@@ -198,10 +211,15 @@ export function SharedHeader() {
     if (!expanded) {
       setIsOpen(true);
       setExpanded(true);
+      // Lock body scroll on mobile when menu opens
+      document.body.style.overflow = "hidden";
       tl.play(0);
     } else {
       setIsOpen(false);
-      tl.eventCallback("onReverseComplete", () => setExpanded(false));
+      tl.eventCallback("onReverseComplete", () => {
+        setExpanded(false);
+        document.body.style.overflow = "";
+      });
       tl.reverse();
     }
   };
@@ -219,7 +237,7 @@ export function SharedHeader() {
     <div className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1200px] z-50">
       <nav
         ref={navRef}
-        className="w-full relative overflow-hidden rounded-2xl border border-brand-cream/10 shadow-2xl bg-brand-bg transition-all duration-300"
+        className="w-full relative overflow-hidden rounded-2xl border border-brand-cream/10 shadow-2xl bg-brand-bg/90 backdrop-blur-md transition-all duration-300"
       >
         {/* ── Top bar ── */}
         <div className="h-[60px] flex items-center justify-between px-4 md:px-10 relative z-20 gap-2">
@@ -244,12 +262,12 @@ export function SharedHeader() {
           </button>
 
           {/* Controls + CTA */}
-          <div className="flex items-center gap-2 md:gap-3.5 z-20">
+          <div className="flex items-center gap-1.5 md:gap-3.5 z-20">
             <LanguageToggle />
             <ThemeToggle />
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
-              className="font-sans text-[10px] md:text-[11px] font-bold tracking-[0.12em] md:tracking-[0.15em] uppercase bg-brand-blush text-brand-ink py-2 px-3.5 md:py-2.5 md:px-6 rounded-lg hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300 border-none cursor-pointer inline-flex items-center shrink-0"
+              className="font-sans text-[9px] md:text-[11px] font-bold tracking-[0.08em] md:tracking-[0.15em] uppercase bg-brand-blush text-brand-ink py-2 px-2.5 md:py-2.5 md:px-6 rounded-lg hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300 border-none cursor-pointer inline-flex items-center shrink-0"
             >
               {t("nav.commission")}
             </button>
@@ -257,11 +275,11 @@ export function SharedHeader() {
         </div>
 
         {/* ── Cards ── */}
-        <div className="card-nav-content grid grid-cols-1 md:grid-cols-3 gap-4 px-6 md:px-8 pb-6 w-full" aria-hidden={!expanded}>
+        <div className="card-nav-content grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 px-4 md:px-8 pb-4 md:pb-6 w-full overflow-y-auto" style={{ maxHeight: 'calc(85vh - 60px)' }} aria-hidden={!expanded}>
           {navCards.map((card, idx) => (
             <div
               key={card.label}
-              className="p-6 md:p-8 flex flex-col justify-between border border-brand-cream/5 rounded-xl shadow-inner min-h-[220px]"
+              className="p-4 md:p-8 flex flex-col justify-between border border-brand-cream/5 rounded-xl shadow-inner min-h-[160px] md:min-h-[220px]"
               ref={setCardRef(idx)}
               style={{ backgroundColor: card.bgColor, color: "var(--color-brand-cream)" }}
             >

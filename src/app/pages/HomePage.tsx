@@ -21,7 +21,7 @@ function Hero() {
   const skills = (t("hero.skills") || []) as string[];
 
   return (
-    <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-14">
+    <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-24 md:pt-14">
       {/* Ghost background — artPortraits at very low opacity for texture */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
         <img
@@ -40,7 +40,7 @@ function Hero() {
       <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[1.15fr_1fr] gap-10 md:gap-16 px-6 md:px-10 py-6 md:py-14 max-w-[1200px] mx-auto">
         
         {/* ── Left: Bio ── */}
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center order-1">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -54,7 +54,7 @@ function Hero() {
             initial={{ opacity: 0, y: 52 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.28, ease }}
-            className="font-serif text-brand-cream text-[3.2rem] md:text-[5.8rem] leading-[0.95] font-light tracking-tight mb-9 whitespace-pre-line"
+            className="font-serif text-brand-cream text-[2.8rem] md:text-[5.8rem] leading-[0.95] font-light tracking-tight mb-9 whitespace-pre-line"
           >
             {t("hero.greetingBefore")}
             <em className="italic text-brand-blush">{t("hero.greetingItalic")}</em>
@@ -111,7 +111,7 @@ function Hero() {
           initial={{ opacity: 0, x: 32 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease }}
-          className="flex flex-col justify-center gap-8 mt-8 md:mt-0"
+          className="flex flex-col justify-center gap-8 mt-8 md:mt-0 order-2"
         >
           {/* Skill tags */}
           <div className="flex flex-wrap gap-2">
