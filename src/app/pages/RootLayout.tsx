@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { SharedHeader } from "../components/SharedHeader";
+import { CursorFollower } from "../components/CursorFollower";
+import { BookingModal } from "../components/BookingModal";
 import { C } from "../tokens";
 
 export function RootLayout() {
@@ -14,6 +16,8 @@ export function RootLayout() {
   return (
     <div style={{ backgroundColor: C.bg, minHeight: "100vh" }}>
       <SharedHeader />
+      <CursorFollower />
+      <BookingModal />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={location.pathname}
