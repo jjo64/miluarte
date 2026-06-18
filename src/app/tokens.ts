@@ -1,15 +1,16 @@
 import { type Variants } from "motion/react";
 
 export const C = {
-  bg:        "#17120F",
-  cream:     "#F5EDE0",
-  orange:    "#E55427",
-  blush:     "#EAA898",
-  ink:       "#180E09",
-  dark:      "#0D0908",
-  neon:      "#B4FF2E",
-  musaeWall: "#ECC4B0",
+  bg:        "var(--brand-bg, #17120F)",
+  cream:     "var(--brand-cream, #F5EDE0)",
+  orange:    "var(--brand-orange, #E55427)",
+  blush:     "var(--brand-blush, #EAA898)",
+  ink:       "var(--brand-ink, #180E09)",
+  dark:      "var(--brand-dark, #0D0908)",
+  neon:      "var(--brand-neon, #B4FF2E)",
+  musaeWall: "var(--brand-wall, #ECC4B0)",
 };
+
 
 export const SERIF = "'Fraunces', Georgia, serif";
 export const SANS  = "'Space Grotesk', system-ui, sans-serif";

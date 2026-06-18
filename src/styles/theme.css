@@ -2,14 +2,25 @@
 
 :root {
   --font-size: 16px;
-  --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
-  --card: #ffffff;
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
+  
+  /* Miluarte Custom Brand System (Light Theme default values) */
+  --brand-bg: #FAF6F0; /* Soft warm sand/cream background */
+  --brand-cream: #1C1714; /* Dark charcoal/brown for text */
+  --brand-orange: #D43E11; /* Deeper orange for contrast */
+  --brand-blush: #B55C49; /* Deeper terracotta/blush for readability */
+  --brand-ink: #FAF6F0; /* Light ink (inverted for contrast components) */
+  --brand-dark: #EADFD0; /* Soft dark cream for cards/alternating sections */
+  --brand-neon: #79A300; /* Contrast neon green */
+  --brand-wall: #D6997D;
+
+  --background: var(--brand-bg);
+  --foreground: var(--brand-cream);
+  --card: var(--brand-bg);
+  --card-foreground: var(--brand-cream);
+  --popover: var(--brand-bg);
+  --popover-foreground: var(--brand-cream);
+  --primary: var(--brand-cream);
+  --primary-foreground: var(--brand-bg);
   --secondary: oklch(0.95 0.0058 264.53);
   --secondary-foreground: #030213;
   --muted: #ececf0;
@@ -42,14 +53,24 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  /* Miluarte Custom Brand System (Original Dark Theme values) */
+  --brand-bg: #17120F;
+  --brand-cream: #F5EDE0;
+  --brand-orange: #E55427;
+  --brand-blush: #EAA898;
+  --brand-ink: #180E09;
+  --brand-dark: #0D0908;
+  --brand-neon: #B4FF2E;
+  --brand-wall: #ECC4B0;
+
+  --background: var(--brand-bg);
+  --foreground: var(--brand-cream);
+  --card: var(--brand-bg);
+  --card-foreground: var(--brand-cream);
+  --popover: var(--brand-bg);
+  --popover-foreground: var(--brand-cream);
+  --primary: var(--brand-cream);
+  --primary-foreground: var(--brand-bg);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -61,8 +82,6 @@
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -119,18 +138,19 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* Miluarte Custom Brand System */
-  --color-brand-bg: #17120F;
-  --color-brand-cream: #F5EDE0;
-  --color-brand-orange: #E55427;
-  --color-brand-blush: #EAA898;
-  --color-brand-ink: #180E09;
-  --color-brand-dark: #0D0908;
-  --color-brand-neon: #B4FF2E;
-  --color-brand-wall: #ECC4B0;
+  --color-brand-bg: var(--brand-bg);
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-blush: var(--brand-blush);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-neon: var(--brand-neon);
+  --color-brand-wall: var(--brand-wall);
 
   --font-serif: 'Fraunces', Georgia, serif;
   --font-sans: 'Space Grotesk', system-ui, sans-serif;
 }
+
 
 @layer base {
   * {
@@ -140,6 +160,11 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  body, nav, footer, section, button, span, p, h1, h2, h3, h4, a {
+    transition: background-color 0.45s ease-in-out, border-color 0.45s ease-in-out, color 0.45s ease-in-out;
+  }
+
 
   /**
   * Default typography styles for HTML elements (h1-h4, p, label, button, input).
