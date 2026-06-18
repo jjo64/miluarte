@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ease } from "../tokens";
+import { useLanguage } from "../context/LanguageContext";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -81,6 +83,7 @@ function GalleryCard({ src, alt, index }: { src: string; alt: string; index: num
 export function HorizontalGallery() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const stripRef   = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -142,7 +145,7 @@ export function HorizontalGallery() {
             viewport={{ once: true, margin: "-60px" }}
             className="font-serif text-brand-cream text-[2rem] md:text-[3rem] font-light tracking-tight"
           >
-            Galería
+            {t("gallery.title")}
           </motion.h2>
         </div>
 
@@ -151,10 +154,9 @@ export function HorizontalGallery() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="font-sans text-brand-cream/35 text-xs leading-relaxed max-w-[240px] text-left md:text-right"
+          className="font-sans text-brand-cream/35 text-xs leading-relaxed max-w-[240px] text-left md:text-right whitespace-pre-line"
         >
-          Obras recientes.<br />
-          Desplázate para explorar.
+          {t("gallery.subtitle")}
         </motion.p>
       </div>
 
@@ -176,7 +178,7 @@ export function HorizontalGallery() {
       {/* ── Drag hint ── */}
       <div className="py-5 px-10 pb-16 flex justify-end">
         <p className="font-sans text-brand-cream/20 text-[10px] tracking-widest uppercase">
-          ↔ scroll to navigate
+          {t("gallery.hint")}
         </p>
       </div>
     </section>

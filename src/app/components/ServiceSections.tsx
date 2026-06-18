@@ -4,17 +4,18 @@ import { motion } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ease, staggerContainer, staggerItem } from "../tokens";
+import { useLanguage } from "../context/LanguageContext";
 
-import artDiggin    from "../../assets/diggin-cover.png";
-import artMusae     from "../../assets/musae-series.png";
-import artPortraits from "../../assets/portrait-deriva.png";
-import artFireGirl  from "../../assets/fire-girl.png";
+const artDiggin   = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg";
+const artMusae    = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
+const artPortraits = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
+const artFireGirl = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Placeholder images for 3D before/after — using high quality unsplash art renders
-const IMG_3D_BEFORE = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
-const IMG_3D_AFTER  = "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
+// Placeholder images for 3D before/after — using high quality cloud images
+const IMG_3D_BEFORE = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png";
+const IMG_3D_AFTER  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg";
 
 const vp = { once: true, margin: "-60px" } as const;
 
@@ -22,6 +23,7 @@ const vp = { once: true, margin: "-60px" } as const;
 
 function BeforeAfterComparison() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -64,7 +66,7 @@ function BeforeAfterComparison() {
       <div className="absolute inset-0">
         <img
           src={IMG_3D_BEFORE}
-          alt="Render 3D"
+          alt={t("services.render3D")}
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
@@ -73,17 +75,17 @@ function BeforeAfterComparison() {
       <div className="ba-after absolute inset-0 overflow-hidden">
         <img
           src={IMG_3D_AFTER}
-          alt="Resultado real"
+          alt={t("services.realResult")}
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
 
       {/* Labels */}
       <span className="absolute top-4.5 left-4.5 z-10 font-sans text-brand-cream text-[9px] tracking-widest uppercase bg-[#17120f]/78 py-1.5 px-3.5">
-        Render 3D
+        {t("services.render3D")}
       </span>
       <span className="absolute top-4.5 right-4.5 z-10 font-sans text-brand-cream text-[9px] tracking-widest uppercase bg-[#17120f]/78 py-1.5 px-3.5">
-        Resultado real
+        {t("services.realResult")}
       </span>
 
       {/* Divider line */}
@@ -177,6 +179,7 @@ const SERVICES: ServiceData[] = [
 
 function ServiceSection({ service, index }: { service: ServiceData; index: number }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [imgHovered, setImgHovered] = useState(false);
   const [btnHovered, setBtnHovered] = useState(false);
   const bgClass = index % 2 === 0 ? "bg-brand-bg" : "bg-brand-dark";
@@ -267,7 +270,7 @@ function ServiceSection({ service, index }: { service: ServiceData; index: numbe
           borderColor: service.accent,
         }}
       >
-        Ver trabajos
+        {t("services.viewWorks")}
       </motion.button>
     </div>
   );
@@ -288,7 +291,7 @@ function ServiceSection({ service, index }: { service: ServiceData; index: numbe
               transition={{ duration: 0.7, ease }}
             >
               <p className="font-sans text-brand-cream/30 text-[10px] tracking-widest uppercase mb-3.5 text-center">
-                ↔ Desplázate para ver antes & después
+                {t("services.ctaBeforeAfter")}
               </p>
               <BeforeAfterComparison />
             </motion.div>
@@ -306,9 +309,23 @@ function ServiceSection({ service, index }: { service: ServiceData; index: numbe
 // ─── Export ───────────────────────────────────────────────────────────────────
 
 export function ServiceSections() {
+  const { t } = useLanguage();
+
+  // Localize services metadata on the fly
+  const localizedServices = SERVICES.map((s) => {
+    const key = s.slug;
+    return {
+      ...s,
+      label: t(`services.items.${key}.label`) || s.label,
+      title: t(`services.items.${key}.title`) || s.title,
+      description: t(`services.items.${key}.description`) || s.description,
+      bullets: (t(`services.items.${key}.bullets`) as string[]) || s.bullets,
+    };
+  });
+
   return (
     <>
-      {SERVICES.map((s, i) => <ServiceSection key={s.id} service={s} index={i} />)}
+      {localizedServices.map((s, i) => <ServiceSection key={s.id} service={s} index={i} />)}
     </>
   );
 }
@@ -318,3 +335,4 @@ const fadeUp = {
   hidden:  { opacity: 0, y: 36 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease } },
 };
+

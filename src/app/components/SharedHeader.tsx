@@ -1,9 +1,12 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { gsap } from "gsap";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Sun, Moon } from "lucide-react";
+import { motion } from "motion/react";
+import { useTheme } from "../context/ThemeContext";
+import { useLanguage } from "../context/LanguageContext";
 
-// ─── Navigation content ───────────────────────────────────────────────────────
+// ─── Navigation types ───────────────────────────────────────────────────────
 
 type NavLink =
   | { label: string; path: string; external?: false }
@@ -15,47 +18,114 @@ interface NavCard {
   links: NavLink[];
 }
 
-const NAV_CARDS: NavCard[] = [
-  {
-    label: "Servicios",
-    bgColor: "#211B14",
-    links: [
-      { label: "Diseño gráfico",  path: "/coleccion/diseno-grafico" },
-      { label: "3D & Stands",     path: "/coleccion/3d-stands" },
-      { label: "Diggin'",         path: "/coleccion/diggin" },
-      { label: "Ilustración",     path: "/coleccion/ilustracion" },
-      { label: "Concept art",     path: "/coleccion/concept-art" },
-    ],
-  },
-  {
-    label: "Proyectos",
-    bgColor: "#17120F",
-    links: [
-      { label: "Serie Musae",     path: "/coleccion/ilustracion" },
-      { label: "Diggin' label",   path: "/coleccion/diggin" },
-      { label: "Tienda",          path: "/coleccion/tienda" },
-    ],
-  },
-  {
-    label: "Contacto",
-    bgColor: "#0D0908",
-    links: [
-      { label: "Miluartedenara@gmail.com", href: "mailto:Miluartedenara@gmail.com", external: true },
-      { label: "Instagram",       href: "#", external: true },
-      { label: "Behance",         href: "#", external: true },
-    ],
-  },
-];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+function LanguageToggle() {
+  const { language, setLanguage } = useLanguage();
+  return (
+    <div className="flex items-center bg-brand-cream/5 border border-brand-cream/10 rounded-lg p-0.5 relative shrink-0">
+      <button
+        onClick={() => setLanguage("es")}
+        className={`px-2 py-0.5 text-[9px] font-bold tracking-wider rounded transition-all duration-300 cursor-pointer ${
+          language === "es"
+            ? "bg-brand-orange text-brand-bg shadow-sm"
+            : "text-brand-cream/60 hover:text-brand-cream"
+        }`}
+      >
+        ES
+      </button>
+      <button
+        onClick={() => setLanguage("en")}
+        className={`px-2 py-0.5 text-[9px] font-bold tracking-wider rounded transition-all duration-300 cursor-pointer ${
+          language === "en"
+            ? "bg-brand-orange text-brand-bg shadow-sm"
+            : "text-brand-cream/60 hover:text-brand-cream"
+        }`}
+      >
+        EN
+      </button>
+    </div>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="relative w-8 h-8 flex items-center justify-center rounded-lg bg-brand-cream/5 border border-brand-cream/10 text-brand-cream hover:bg-brand-cream/10 transition-colors duration-300 cursor-pointer overflow-hidden shrink-0"
+      aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
+    >
+      <motion.div
+        animate={{
+          rotate: isDark ? 0 : 90,
+          scale: isDark ? 1 : 0,
+          opacity: isDark ? 1 : 0,
+        }}
+        transition={{ duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
+        className="absolute"
+      >
+        <Moon size={14} />
+      </motion.div>
+      <motion.div
+        animate={{
+          rotate: isDark ? -90 : 0,
+          scale: isDark ? 0 : 1,
+          opacity: isDark ? 0 : 1,
+        }}
+        transition={{ duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
+        className="absolute"
+      >
+        <Sun size={14} className="text-brand-orange" />
+      </motion.div>
+    </button>
+  );
+}
+
 export function SharedHeader() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const { t } = useLanguage();
+  
   const [isOpen, setIsOpen]     = useState(false);
   const [expanded, setExpanded] = useState(false);
   const navRef   = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef    = useRef<gsap.core.Timeline | null>(null);
+
+  const navCards: NavCard[] = [
+    {
+      label: t("nav.services"),
+      bgColor: theme === "dark" ? "#211B14" : "#EADFD0",
+      links: [
+        { label: t("services.items.diseno-grafico.label"),  path: "/coleccion/diseno-grafico" },
+        { label: t("services.items.3d-stands.label"),     path: "/coleccion/3d-stands" },
+        { label: "Diggin'",         path: "/coleccion/diggin" },
+        { label: t("services.items.ilustracion.label"),     path: "/coleccion/ilustracion" },
+        { label: t("services.items.concept-art.label"),   path: "/coleccion/concept-art" },
+      ],
+    },
+    {
+      label: t("nav.projects"),
+      bgColor: theme === "dark" ? "#17120F" : "#FAF6F0",
+      links: [
+        { label: "Serie Musae",     path: "/coleccion/ilustracion" },
+        { label: "Diggin' label",   path: "/coleccion/diggin" },
+      ],
+    },
+    {
+      label: t("nav.contact"),
+      bgColor: theme === "dark" ? "#0D0908" : "#E5D9C8",
+      links: [
+        { label: "Miluartedenara@gmail.com", href: "mailto:Miluartedenara@gmail.com", external: true },
+        { label: "Instagram",       href: "#", external: true },
+        { label: "Behance",         href: "#", external: true },
+      ],
+    },
+  ];
 
   const calculateHeight = () => {
     const navEl = navRef.current;
@@ -98,7 +168,7 @@ export function SharedHeader() {
     const tl = createTimeline();
     tlRef.current = tl;
     return () => { tl?.kill(); tlRef.current = null; };
-  }, []);
+  }, [theme]); // Re-create timeline when theme variables update card layouts
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -116,7 +186,7 @@ export function SharedHeader() {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [expanded]);
+  }, [expanded, theme]);
 
   const toggleMenu = () => {
     const tl = tlRef.current;
@@ -145,16 +215,15 @@ export function SharedHeader() {
     <div className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1200px] z-50">
       <nav
         ref={navRef}
-        className="w-full relative overflow-hidden rounded-2xl border border-brand-cream/10 shadow-2xl transition-all duration-300"
-        style={{ backgroundColor: "#17120F" }}
+        className="w-full relative overflow-hidden rounded-2xl border border-brand-cream/10 shadow-2xl bg-brand-bg transition-all duration-300"
       >
         {/* ── Top bar ── */}
-        <div className="h-[60px] flex items-center justify-between px-6 md:px-10 relative z-20">
+        <div className="h-[60px] flex items-center justify-between px-4 md:px-10 relative z-20 gap-2">
           {/* Hamburger */}
           <button
-            className="flex flex-col justify-center items-center gap-1.5 w-6 h-6 bg-transparent border-none cursor-pointer p-0"
+            className="flex flex-col justify-center items-center gap-1.5 w-6 h-6 bg-transparent border-none cursor-pointer p-0 shrink-0"
             onClick={toggleMenu}
-            aria-label={expanded ? "Cerrar menú" : "Abrir menú"}
+            aria-label={expanded ? t("nav.closeMenu") : t("nav.openMenu")}
           >
             <div className={`w-6 h-[2px] bg-brand-cream transition-transform duration-300 ${isOpen ? "rotate-45 translate-y-[4px]" : ""}`} />
             <div className={`w-6 h-[2px] bg-brand-cream transition-transform duration-300 ${isOpen ? "-rotate-45 -translate-y-[4px]" : ""}`} />
@@ -170,18 +239,22 @@ export function SharedHeader() {
             </span>
           </button>
 
-          {/* CTA */}
-          <a
-            href="mailto:Miluartedenara@gmail.com"
-            className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase bg-[#EAA898] text-[#180E09] py-2.5 px-6 rounded-lg hover:bg-brand-cream transition-colors duration-300 no-underline inline-flex items-center"
-          >
-            ENCARGO
-          </a>
+          {/* Controls + CTA */}
+          <div className="flex items-center gap-2 md:gap-3.5 z-20">
+            <LanguageToggle />
+            <ThemeToggle />
+            <a
+              href="mailto:Miluartedenara@gmail.com"
+              className="font-sans text-[10px] md:text-[11px] font-bold tracking-[0.12em] md:tracking-[0.15em] uppercase bg-brand-blush text-brand-ink py-2 px-3.5 md:py-2.5 md:px-6 rounded-lg hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300 no-underline inline-flex items-center shrink-0"
+            >
+              {t("nav.commission")}
+            </a>
+          </div>
         </div>
 
         {/* ── Cards ── */}
         <div className="card-nav-content grid grid-cols-1 md:grid-cols-3 gap-4 px-6 md:px-8 pb-6 w-full" aria-hidden={!expanded}>
-          {NAV_CARDS.map((card, idx) => (
+          {navCards.map((card, idx) => (
             <div
               key={card.label}
               className="p-6 md:p-8 flex flex-col justify-between border border-brand-cream/5 rounded-xl shadow-inner min-h-[220px]"
