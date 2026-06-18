@@ -1,0 +1,235 @@
+import { useNavigate } from "react-router";
+import { motion } from "motion/react";
+import { ease } from "../tokens";
+import { HorizontalGallery } from "../components/HorizontalGallery";
+import { ServiceSections } from "../components/ServiceSections";
+
+import artMusae     from "../../assets/musae-series.png";
+import artPortraits from "../../assets/portrait-deriva.png";
+
+const vp = { once: true, margin: "-70px" } as const;
+
+// ─── Hero / Sobre mí ─────────────────────────────────────────────────────────
+
+const SKILLS = [
+  "Ilustración", 
+  "Concept art", 
+  "Diseño gráfico", 
+  "Desarrollo de personajes", 
+  "Joyería & arcilla", 
+  "Merchandising musical", 
+  "Lienzos & galería"
+];
+
+function Hero() {
+  const navigate = useNavigate();
+
+  return (
+    <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-14">
+      {/* Ghost background — artPortraits at very low opacity for texture */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
+        <img
+          src={artPortraits}
+          alt=""
+          className="absolute right-0 top-0 w-1/2 h-full object-cover opacity-6 blur-[3px]"
+          style={{ objectPosition: "50% 12%" }}
+        />
+        <div 
+          className="absolute inset-0" 
+          style={{ background: "linear-gradient(to right, var(--color-brand-bg) 45%, rgba(23,18,15,0.6) 100%)" }} 
+        />
+      </div>
+
+      {/* Content grid */}
+      <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[1.15fr_1fr] gap-10 md:gap-16 px-6 md:px-10 py-6 md:py-14 max-w-[1200px] mx-auto">
+        
+        {/* ── Left: Bio ── */}
+        <div className="flex flex-col justify-center">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.15, ease }}
+            className="font-sans text-brand-blush text-[10px] tracking-[0.34em] uppercase mb-6"
+          >
+            Ilustradora & artista digital · Madrid
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 52 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, delay: 0.28, ease }}
+            className="font-serif text-brand-cream text-[3.2rem] md:text-[5.8rem] leading-[0.95] font-light tracking-tight mb-9"
+          >
+            Hola,<br />soy{" "}
+            <em className="italic text-brand-blush">Nerea</em>
+          </motion.h1>
+
+          <motion.div
+            initial={{ scaleX: 0, originX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.5, delay: 0.65, ease }}
+            className="w-11 h-0.5 bg-brand-blush mb-7"
+          />
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.78, ease }}
+            className="font-sans text-brand-cream/60 text-[13px] leading-relaxed mb-4"
+          >
+            Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas, joyería y concept art para proyectos musicales. Cada pieza hecha con dedicación y amor por los detalles.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9, ease }}
+            className="font-sans text-brand-cream/45 text-[13px] leading-relaxed mb-12"
+          >
+            Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.05, ease }}
+            className="flex gap-3.5 items-center flex-wrap"
+          >
+            <button
+              onClick={() => navigate("/coleccion/ilustracion")}
+              className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3.5 px-7 cursor-pointer font-medium hover:bg-brand-cream transition-colors duration-300"
+            >
+              Ver trabajos
+            </button>
+            <a
+              href="mailto:Miluartedenara@gmail.com"
+              className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 no-underline hover:bg-brand-blush hover:text-brand-ink transition-all duration-300"
+            >
+              Escribir encargo
+            </a>
+          </motion.div>
+        </div>
+
+        {/* ── Right: Skills + framed artwork ── */}
+        <motion.div
+          initial={{ opacity: 0, x: 32 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4, ease }}
+          className="flex flex-col justify-center gap-8 mt-8 md:mt-0"
+        >
+          {/* Skill tags */}
+          <div className="flex flex-wrap gap-2">
+            {SKILLS.map((skill) => (
+              <span
+                key={skill}
+                className="font-sans text-brand-blush text-[10px] tracking-wider border border-brand-blush/30 py-1.5 px-3.5 hover:border-brand-blush hover:bg-brand-blush/5 transition-all duration-300"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+
+          {/* Framed Miluarte artwork */}
+          <div className="border-[3px] border-brand-ink p-1 bg-brand-cream relative shadow-2xl group overflow-hidden">
+            <div className="overflow-hidden">
+              <img
+                src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg"
+                alt="Miluarte — Nerea"
+                className="w-full h-80 object-cover block transition-transform duration-700 group-hover:scale-105"
+                style={{ objectPosition: "50% 50%" }}
+              />
+            </div>
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-brand-ink py-1.5 px-4.5">
+              <p className="font-sans text-brand-cream text-[9px] tracking-widest uppercase whitespace-nowrap">
+                Miluarte
+              </p>
+            </div>
+          </div>
+
+          {/* Email */}
+          <p className="font-sans text-brand-cream/30 text-[11px] tracking-wider">
+            Miluartedenara@gmail.com
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-7 right-10 flex flex-col items-center gap-2.5 opacity-30 z-10 hidden md:flex select-none">
+        <span className="font-sans text-[9px] tracking-widest uppercase text-brand-cream [writing-mode:vertical-rl]">Scroll</span>
+        <div className="w-[1px] h-12 bg-brand-cream" />
+      </div>
+    </section>
+  );
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+function Footer() {
+  const navigate = useNavigate();
+  const workLinks = ["Musae", "Retratos", "Diggin'", "Concept art", "Diseño gráfico"];
+
+  return (
+    <footer className="bg-brand-dark border-t-2 border-brand-orange py-16 px-6 md:px-10">
+      <div className="max-w-[1100px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1fr] gap-12 mb-14">
+          <div>
+            <p className="font-serif text-brand-cream text-2xl font-light tracking-wide mb-4">Miluarte</p>
+            <p className="font-sans text-brand-cream/30 text-xs leading-relaxed">
+              Estudio creativo multidisciplinar.<br />Ilustración, diseño y dirección de arte.<br />Barcelona, España.
+            </p>
+          </div>
+
+          <div>
+            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">Trabajo</p>
+            <div className="flex flex-col gap-3 items-start">
+              {workLinks.map((item) => (
+                <FooterLink key={item} label={item} onClick={() => navigate(`/coleccion/${item.toLowerCase().replace(/\s+/g, "-").replace(/'/g, "")}`)} />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-5">Contacto</p>
+            <p className="font-sans text-brand-cream/45 text-xs mb-5">hola@miluarte.com</p>
+            <div className="flex gap-5 mb-8">
+              {["Instagram", "Behance", "LinkedIn"].map((n) => <FooterLink key={n} label={n} onClick={() => {}} />)}
+            </div>
+            <button
+              className="font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3.5 px-7 cursor-pointer transition-colors duration-300 font-medium"
+            >
+              Pide presupuesto
+            </button>
+          </div>
+        </div>
+
+        <div className="border-t border-brand-cream/5 pt-6 flex flex-col md:flex-row justify-between gap-4">
+          <p className="font-sans text-brand-cream/15 text-[11px]">© 2024 Miluarte. Todos los derechos reservados.</p>
+          <p className="font-sans text-brand-cream/15 text-[11px]">Hecho con criterio.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function FooterLink({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick}
+      className="font-sans text-brand-cream/40 hover:text-brand-orange hover:opacity-100 text-xs bg-transparent border-none p-0 cursor-pointer text-left transition-colors duration-200"
+    >
+      {label}
+    </button>
+  );
+}
+
+// ─── Page export ──────────────────────────────────────────────────────────────
+
+export function HomePage() {
+  return (
+    <div className="bg-brand-bg text-brand-cream">
+      <Hero />
+      <HorizontalGallery />
+      <ServiceSections />
+      <Footer />
+    </div>
+  );
+}
