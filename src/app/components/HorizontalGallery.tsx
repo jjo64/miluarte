@@ -45,15 +45,44 @@ const IMAGES = [
 
 function GalleryCard({ src, alt, index }: { src: string; alt: string; index: number }) {
   const [hovered, setHovered] = useState(false);
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
   const num = String(index + 1).padStart(2, "0");
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left - width / 2;
+    const mouseY = e.clientY - rect.top - height / 2;
+    const rX = -(mouseY / height) * 10; // max 10 degrees tilt
+    const rY = (mouseX / width) * 10;
+    setRotate({ x: rX, y: rY });
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    setRotate({ x: 0, y: 0 });
+  };
 
   return (
     <div
+      ref={cardRef}
       className="flex-shrink-0 w-[80vw] md:w-[32vw] px-2.5 box-content"
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
+        transition: hovered ? "none" : "transform 0.5s ease-out",
+        transformStyle: "preserve-3d",
+      }}
+      data-cursor={t("process.cursorHint")}
     >
-      <div className="relative overflow-hidden aspect-square">
+      <div className="relative overflow-hidden aspect-square rounded-lg shadow-xl" style={{ transform: "translateZ(20px)" }}>
         <img
           src={src}
           alt={alt}

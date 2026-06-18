@@ -112,8 +112,11 @@ export function SharedHeader() {
       label: t("nav.projects"),
       bgColor: theme === "dark" ? "#17120F" : "#FAF6F0",
       links: [
-        { label: "Serie Musae",     path: "/coleccion/ilustracion" },
-        { label: "Diggin' label",   path: "/coleccion/diggin" },
+        { label: "Serie Musae",      path: "/coleccion/ilustracion" },
+        { label: "Diggin' label",    path: "/coleccion/diggin" },
+        { label: "Animas",           path: "/coleccion/animas" },
+        { label: "Retratos y más",   path: "/coleccion/retratos" },
+        { label: "Pasta Ya",         path: "/coleccion/pasta-ya" },
       ],
     },
     {
@@ -121,8 +124,9 @@ export function SharedHeader() {
       bgColor: theme === "dark" ? "#0D0908" : "#E5D9C8",
       links: [
         { label: "Miluartedenara@gmail.com", href: "mailto:Miluartedenara@gmail.com", external: true },
-        { label: "Instagram",       href: "#", external: true },
-        { label: "Behance",         href: "#", external: true },
+        { label: "Instagram",       href: "https://www.instagram.com/naraneko13/", external: true },
+        { label: "LinkedIn",        href: "https://www.linkedin.com/in/nerealucaspajares4815162342/", external: true },
+        { label: t("nav.resume"),   path: "/resume" },
       ],
     },
   ];
@@ -243,12 +247,12 @@ export function SharedHeader() {
           <div className="flex items-center gap-2 md:gap-3.5 z-20">
             <LanguageToggle />
             <ThemeToggle />
-            <a
-              href="mailto:Miluartedenara@gmail.com"
-              className="font-sans text-[10px] md:text-[11px] font-bold tracking-[0.12em] md:tracking-[0.15em] uppercase bg-brand-blush text-brand-ink py-2 px-3.5 md:py-2.5 md:px-6 rounded-lg hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300 no-underline inline-flex items-center shrink-0"
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
+              className="font-sans text-[10px] md:text-[11px] font-bold tracking-[0.12em] md:tracking-[0.15em] uppercase bg-brand-blush text-brand-ink py-2 px-3.5 md:py-2.5 md:px-6 rounded-lg hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300 border-none cursor-pointer inline-flex items-center shrink-0"
             >
               {t("nav.commission")}
-            </a>
+            </button>
           </div>
         </div>
 
