@@ -15,6 +15,7 @@ export const translations = {
       tagline: "Ilustradora & artista digital · Madrid",
       greetingBefore: "Hola,\nsoy ",
       greetingItalic: "Nerea",
+      artline: "Transformo ideas en mundos visuales con alma.",
       bio1: "Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas, joyería y concept art para proyectos musicales. Cada pieza hecha con dedicación y amor por los detalles.",
       bio2: "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
       viewWorks: "Ver trabajos",
@@ -32,7 +33,24 @@ export const translations = {
     gallery: {
       title: "Galería",
       subtitle: "Obras recientes.\nDesplázate para explorar.",
-      hint: "scroll para explorar"
+      hint: "scroll para explorar",
+      filters: {
+        all: "Todos",
+        ilustracion: "🎨 Ilustración",
+        concept: "🧠 Concept Art",
+        musica: "🎵 Diseño musical",
+        joyeria: "💍 Joyería"
+      },
+      alts: {
+        obra1: "Ilustración digital de una flor antropomorfa con tipografía pop, serie Musae",
+        obra2: "Retrato ilustrado de personaje femenino con cabello azul y elementos marinos",
+        obra3: "Personaje femenino envuelto en llamas con bocadillo de cómic, ilustración narrativa",
+        obra4: "Bodegón ilustrado de herramientas creativas y setas psicodélicas para el sello musical Diggin'",
+        obra5: "Escena de estudio ilustrado con estantería de libros y caballete de pintura",
+        obra6: "Pieza de joyería artesanal con detalle ilustrado a mano",
+        obra7: "Concept art de paisaje isométrico con cabaña y vegetación",
+        obra8: "Detalle de personaje manga a color, estilo característico de Miluarte"
+      }
     },
     process: {
       title: "El Proceso Creativo",
@@ -241,6 +259,56 @@ export const translations = {
         message: "Gracias por contactar. Analizaré tu propuesta de inmediato para darle vida a tu idea.",
         close: "Volver a la web"
       }
+    },
+    featured: {
+      eyebrow: "Proyecto destacado",
+      tag: "Diggin' Records",
+      title: "Diggin' — identidad visual de un sello musical",
+      description: "Dirección de arte completa para el sello independiente Diggin': portadas de álbum, identidad visual, ilustraciones para campañas y videoclips animados. Un proyecto largo donde el estilo de Nerea se convirtió en la cara visual del sello.",
+      tags: ["Dirección de arte", "Portadas de álbum", "Branding musical", "Animación"],
+      bullets: [
+        "Concepto visual y moodboard inicial",
+        "Portadas de álbum y EP",
+        "Identidad visual del sello",
+        "Adaptaciones para redes sociales"
+      ],
+      viewCase: "Ver caso completo →"
+    },
+    clients: {
+      eyebrow: "Clientes & colaboraciones",
+      title: "Marcas, sellos y proyectos con los que he trabajado",
+      description: "He colaborado con músicos, marcas y proyectos creativos desarrollando identidades visuales e ilustraciones personalizadas."
+    },
+    seoServices: {
+      eyebrow: "Servicios",
+      title: "En qué puedo ayudarte",
+      description: "Encargos artísticos a medida, desde una pieza personal hasta dirección de arte completa para una marca o un sello musical.",
+      items: {
+        editorial: {
+          title: "Ilustración Editorial",
+          description: "Creación de ilustraciones para libros, revistas y publicaciones digitales, con un estilo narrativo que refuerza el mensaje de cada página."
+        },
+        concept: {
+          title: "Concept Art",
+          description: "Diseño visual para videojuegos, proyectos audiovisuales y narrativa visual: personajes, escenarios y props pensados para un mundo coherente."
+        },
+        character: {
+          title: "Diseño de Personajes",
+          description: "Creación de personajes originales para proyectos creativos, marcas y campañas, con fichas técnicas y guías de estilo."
+        },
+        music: {
+          title: "Portadas Musicales",
+          description: "Arte para álbumes, singles y material promocional, con dirección de arte completa para sellos y artistas independientes."
+        },
+        graphic: {
+          title: "Diseño Gráfico",
+          description: "Identidad visual, banners, catálogos y diseño editorial para proyectos comerciales y culturales."
+        },
+        clay: {
+          title: "Joyería & Arte en Arcilla",
+          description: "Piezas artesanales únicas: joyería, muñecas personalizadas y esculturas en arcilla hechas a mano."
+        }
+      }
     }
   },
   en: {
@@ -257,6 +325,7 @@ export const translations = {
       tagline: "Illustrator & digital artist · Madrid",
       greetingBefore: "Hello,\nI'm ",
       greetingItalic: "Nerea",
+      artline: "I transform ideas into visual worlds with soul.",
       bio1: "With a Master's Degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom dolls, jewelry, and concept art for music projects. Each piece crafted with dedication and love for details.",
       bio2: "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
       viewWorks: "View works",
@@ -274,7 +343,24 @@ export const translations = {
     gallery: {
       title: "Gallery",
       subtitle: "Recent works.\nScroll to explore.",
-      hint: "scroll to navigate"
+      hint: "scroll to navigate",
+      filters: {
+        all: "All",
+        ilustracion: "🎨 Illustration",
+        concept: "🧠 Concept Art",
+        musica: "🎵 Music Design",
+        joyeria: "💍 Jewelry"
+      },
+      alts: {
+        obra1: "Digital illustration of an anthropomorphic flower with pop typography, Musae series",
+        obra2: "Illustrated portrait of a female character with blue hair and marine elements",
+        obra3: "Female character enveloped in flames with a comic bubble, narrative illustration",
+        obra4: "Illustrated still life of creative tools and psychedelic mushrooms for the Diggin' music label",
+        obra5: "Illustrated studio scene with a book shelf and a painting easel",
+        obra6: "Handcrafted jewelry piece with hand-illustrated detail",
+        obra7: "Isometric landscape concept art with a cabin and vegetation",
+        obra8: "Detail of a colored manga character, characteristic Miluarte style"
+      }
     },
     process: {
       title: "The Creative Process",
@@ -482,6 +568,56 @@ export const translations = {
         title: "Request sent!",
         message: "Thank you for reaching out. I will analyze your proposal immediately to bring your idea to life.",
         close: "Back to website"
+      }
+    },
+    featured: {
+      eyebrow: "Featured Project",
+      tag: "Diggin' Records",
+      title: "Diggin' — visual identity of a music label",
+      description: "Complete art direction for the independent label Diggin': album covers, visual identity, campaign illustrations, and animated music videos. A long-term project where Nerea's style became the visual face of the label.",
+      tags: ["Art Direction", "Album Covers", "Music Branding", "Animation"],
+      bullets: [
+        "Visual concept and initial moodboard",
+        "Album and EP covers",
+        "Visual identity of the label",
+        "Social media adaptations"
+      ],
+      viewCase: "View full case →"
+    },
+    clients: {
+      eyebrow: "Clients & collaborations",
+      title: "Brands, labels and projects I've worked with",
+      description: "I've collaborated with musicians, brands and creative projects, developing visual identities and custom illustrations."
+    },
+    seoServices: {
+      eyebrow: "Services",
+      title: "How I can help you",
+      description: "Bespoke artistic commissions, from a personal piece to full art direction for a brand or a music label.",
+      items: {
+        editorial: {
+          title: "Editorial Illustration",
+          description: "Creating illustrations for books, magazines and digital publications, with a storytelling style that reinforces the message of each page."
+        },
+        concept: {
+          title: "Concept Art",
+          description: "Visual design for video games, audiovisual projects and visual storytelling: characters, environments and props designed for a coherent world."
+        },
+        character: {
+          title: "Character Design",
+          description: "Creation of original characters for creative projects, brands and campaigns, with model sheets and style guides."
+        },
+        music: {
+          title: "Music Covers",
+          description: "Artwork for albums, singles and promotional material, with full art direction for labels and independent artists."
+        },
+        graphic: {
+          title: "Graphic Design",
+          description: "Visual identity, banners, catalogs and editorial design for commercial and cultural projects."
+        },
+        clay: {
+          title: "Jewelry & Clay Art",
+          description: "Unique handcrafted pieces: jewelry, custom art-dolls and hand-sculpted clay figures."
+        }
       }
     }
   }
