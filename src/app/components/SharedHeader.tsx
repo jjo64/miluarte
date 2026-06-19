@@ -9,8 +9,8 @@ import { useLanguage } from "../context/LanguageContext";
 // ─── Navigation types ───────────────────────────────────────────────────────
 
 type NavLink =
-  | { label: string; path: string; external?: false }
-  | { label: string; href: string; external: true };
+  | { label: string; path: string; external?: false; thumbnail?: string }
+  | { label: string; href: string; external: true; thumbnail?: string };
 
 interface NavCard {
   label: string;
@@ -130,11 +130,31 @@ export function SharedHeader() {
       label: t("nav.projects"),
       bgColor: theme === "dark" ? "#17120F" : "#FAF6F0",
       links: [
-        { label: "Serie Musae",      path: "/coleccion/ilustracion" },
-        { label: "Diggin' label",    path: "/coleccion/diggin" },
-        { label: "Animas",           path: "/coleccion/animas" },
-        { label: "Retratos y más",   path: "/coleccion/retratos" },
-        { label: "Pasta Ya",         path: "/coleccion/pasta-ya" },
+        { 
+          label: "Serie Musae", 
+          path: "/coleccion/ilustracion",
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg" 
+        },
+        { 
+          label: "Diggin' label", 
+          path: "/coleccion/diggin",
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811474/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg" 
+        },
+        { 
+          label: "Animas", 
+          path: "/coleccion/animas",
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820062/1_Melisa_Completo_nwlyro.jpg" 
+        },
+        { 
+          label: "Retratos y más", 
+          path: "/coleccion/retratos",
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820993/2-Retrato-Anna-Karina_cb505e.jpg" 
+        },
+        { 
+          label: "Pasta Ya", 
+          path: "/coleccion/pasta-ya",
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821171/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg" 
+        },
       ],
     },
     {
@@ -369,7 +389,7 @@ export function SharedHeader() {
 
               <div className="flex flex-col gap-4 items-start">
                 {card.links.map((lnk, i) => {
-                  const linkClass = "font-sans text-brand-cream/80 hover:text-brand-orange text-sm cursor-pointer flex items-center gap-2 bg-transparent border-none p-0 text-left transition-colors duration-200 group w-full";
+                  const linkClass = "font-sans text-brand-cream/80 hover:text-brand-orange text-sm cursor-pointer flex items-center gap-3 bg-transparent border-none p-0 text-left transition-colors duration-200 group w-full";
                   const iconClass = "w-4 h-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200 shrink-0";
                   const textClass = "font-semibold tracking-wide text-brand-cream/80 group-hover:text-brand-cream transition-colors duration-200";
 
@@ -382,7 +402,15 @@ export function SharedHeader() {
                         target={lnk.href.startsWith("mailto") ? undefined : "_blank"}
                         rel="noopener noreferrer"
                       >
-                        <ArrowUpRight className={iconClass} aria-hidden />
+                        {lnk.thumbnail ? (
+                          <img
+                            src={lnk.thumbnail}
+                            alt=""
+                            className="w-[30px] h-[30px] rounded-[6px] object-cover flex-shrink-0 border border-brand-cream/15 group-hover:border-brand-orange transition-all duration-250"
+                          />
+                        ) : (
+                          <ArrowUpRight className={iconClass} aria-hidden />
+                        )}
                         <span className={textClass}>{lnk.label}</span>
                       </a>
                     );
@@ -393,7 +421,15 @@ export function SharedHeader() {
                       className={linkClass}
                       onClick={() => handleNavLink(lnk.path)}
                     >
-                      <ArrowUpRight className={iconClass} aria-hidden />
+                      {lnk.thumbnail ? (
+                        <img
+                          src={lnk.thumbnail}
+                          alt=""
+                          className="w-[30px] h-[30px] rounded-[6px] object-cover flex-shrink-0 border border-brand-cream/15 group-hover:border-brand-orange transition-all duration-250"
+                        />
+                      ) : (
+                        <ArrowUpRight className={iconClass} aria-hidden />
+                      )}
                       <span className={textClass}>{lnk.label}</span>
                     </button>
                   );

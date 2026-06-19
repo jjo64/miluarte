@@ -11,44 +11,53 @@ gsap.registerPlugin(ScrollTrigger);
 const IMAGES = [
   {
     src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
-    alt: "Obra 01",
+    category: "ilustracion",
+    altKey: "obra1",
   },
   {
     src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
-    alt: "Obra 02",
-  },
-  {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg",
-    alt: "Obra 03",
-  },
-  {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
-    alt: "Obra 04",
-  },
-  {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/656284366_18086356694211172_1538926504198666834_n_gwvwyk.webp",
-    alt: "Obra 05",
-  },
-  {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/656747786_18083218367600656_3599812440241416906_n_f8npa1.jpg",
-    alt: "Obra 06",
+    category: "concept",
+    altKey: "obra2",
   },
   {
     src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/719099666_18085459703434740_3604615127722183027_n_apifn2.jpg",
-    alt: "Obra 07",
+    category: "ilustracion",
+    altKey: "obra3",
+  },
+  {
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+    category: "musica",
+    altKey: "obra4",
   },
   {
     src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798273/Captura_de_pantalla_2026-06-18_175704_agpitt.png",
-    alt: "Obra 08",
+    category: "concept",
+    altKey: "obra5",
+  },
+  {
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/656747786_18083218367600656_3599812440241416906_n_f8npa1.jpg",
+    category: "joyeria",
+    altKey: "obra6",
+  },
+  {
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg",
+    category: "concept",
+    altKey: "obra7",
+  },
+  {
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg",
+    category: "ilustracion",
+    altKey: "obra8",
   },
 ];
 
-function GalleryCard({ src, alt, index }: { src: string; alt: string; index: number }) {
+function GalleryCard({ src, altKey, index }: { src: string; altKey: string; index: number }) {
   const [hovered, setHovered] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
   const num = String(index + 1).padStart(2, "0");
+  const localizedAlt = t(`gallery.alts.${altKey}`) || "Artwork";
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = cardRef.current;
@@ -85,7 +94,7 @@ function GalleryCard({ src, alt, index }: { src: string; alt: string; index: num
       <div className="relative overflow-hidden aspect-square rounded-lg shadow-xl" style={{ transform: "translateZ(20px)" }}>
         <img
           src={src}
-          alt={alt}
+          alt={localizedAlt}
           loading="lazy"
           className={`w-full h-full object-cover block transition-all duration-700 ease-[cubic-bezier(0.22, 1, 0.36, 1)] ${
             hovered ? "scale-106 brightness-75" : "brightness-90"
@@ -112,7 +121,12 @@ function GalleryCard({ src, alt, index }: { src: string; alt: string; index: num
 export function HorizontalGallery() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const stripRef   = useRef<HTMLDivElement>(null);
+  const [category, setCategory] = useState<string>("all");
   const { t } = useLanguage();
+
+  const filteredImages = category === "all" 
+    ? IMAGES 
+    : IMAGES.filter((img) => img.category === category);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -134,7 +148,10 @@ export function HorizontalGallery() {
             end: () => `+=${getStripWidth()}`,
             invalidateOnRefresh: true,
           },
-          x: () => -getScrollLength(),
+          x: () => {
+            const len = getScrollLength();
+            return len > 0 ? -len : 0;
+          },
           ease: "none",
         });
       }, wrapper);
@@ -148,10 +165,10 @@ export function HorizontalGallery() {
       const ctx = (wrapper as any)?._gsapCtx;
       if (ctx) ctx.revert();
     };
-  }, []);
+  }, [category]);
 
   return (
-    <section className="bg-brand-dark overflow-hidden">
+    <section id="galeria" className="bg-brand-dark overflow-hidden">
 
       {/* ── Section header (not pinned) ── */}
       <div className="py-11 px-10 pb-8 flex items-end justify-between flex-wrap gap-4">
@@ -189,6 +206,26 @@ export function HorizontalGallery() {
         </motion.p>
       </div>
 
+      {/* Category Filters */}
+      <div className="px-10 pb-6 flex flex-wrap gap-2.5">
+        {(["all", "ilustracion", "concept", "musica", "joyeria"] as const).map((cat) => {
+          const isActive = category === cat;
+          return (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`font-sans text-[11px] md:text-[12px] tracking-wide py-2 px-4 rounded-full border cursor-pointer transition-all duration-250 ${
+                isActive
+                  ? "bg-brand-orange text-brand-ink border-brand-orange font-semibold"
+                  : "bg-transparent border-brand-cream/15 text-brand-cream/65 hover:border-brand-orange hover:text-brand-orange"
+              }`}
+            >
+              {t(`gallery.filters.${cat}`)}
+            </button>
+          );
+        })}
+      </div>
+
       {/* ── Pinned horizontal strip ── */}
       <div
         ref={wrapperRef}
@@ -198,8 +235,8 @@ export function HorizontalGallery() {
           ref={stripRef}
           className="flex flex-nowrap items-center will-change-transform px-[5vw]"
         >
-          {IMAGES.map((img, i) => (
-            <GalleryCard key={i} src={img.src} alt={img.alt} index={i} />
+          {filteredImages.map((img, i) => (
+            <GalleryCard key={`${category}-${i}`} src={img.src} altKey={img.altKey} index={i} />
           ))}
         </div>
       </div>
