@@ -141,7 +141,7 @@ export const translations = {
       contact: "Contacto",
       budget: "Pide presupuesto",
       rights: "© 2024 Miluarte. Todos los derechos reservados.",
-      madeWithCriteria: "Hecho con criterio."
+      madeWithCriteria: "Hecho con amor por @snctryjo - Josue."
     },
     notfound: {
       title: "Página no encontrada",

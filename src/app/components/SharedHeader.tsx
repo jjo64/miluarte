@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { gsap } from "gsap";
 import { ArrowUpRight, Sun, Moon } from "lucide-react";
 import { motion } from "motion/react";
@@ -21,13 +21,30 @@ interface NavCard {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-function LanguageToggle() {
+function LanguageToggle({ variant = "full" }: { variant?: "full" | "compact" }) {
   const { language, setLanguage } = useLanguage();
+
+  if (variant === "compact") {
+    // Single-button pill for the top bar: shows current language, tap to switch.
+    // Saves the horizontal space the old two-button pill needed.
+    const other = language === "es" ? "en" : "es";
+    return (
+      <button
+        onClick={() => setLanguage(other)}
+        className="flex items-center justify-center w-8 h-8 bg-brand-cream/5 border border-brand-cream/10 rounded-lg text-brand-cream text-[10px] font-bold tracking-wider hover:bg-brand-cream/10 transition-colors duration-300 cursor-pointer shrink-0"
+        aria-label={`Cambiar idioma a ${other === "es" ? "Español" : "English"}`}
+      >
+        {language.toUpperCase()}
+      </button>
+    );
+  }
+
+  // Full two-button pill, used inside the expanded menu where there's room
   return (
-    <div className="flex items-center bg-brand-cream/5 border border-brand-cream/10 rounded-lg p-0.5 relative shrink-0">
+    <div className="flex items-center bg-brand-cream/5 border border-brand-cream/10 rounded-lg p-1 gap-1 relative shrink-0">
       <button
         onClick={() => setLanguage("es")}
-        className={`px-2 py-0.5 text-[9px] font-bold tracking-wider rounded transition-all duration-300 cursor-pointer ${
+        className={`flex-1 px-3 py-1.5 text-xs font-bold tracking-wider rounded-md transition-all duration-300 cursor-pointer ${
           language === "es"
             ? "bg-brand-orange text-brand-bg shadow-sm"
             : "text-brand-cream/60 hover:text-brand-cream"
@@ -37,7 +54,7 @@ function LanguageToggle() {
       </button>
       <button
         onClick={() => setLanguage("en")}
-        className={`px-2 py-0.5 text-[9px] font-bold tracking-wider rounded transition-all duration-300 cursor-pointer ${
+        className={`flex-1 px-3 py-1.5 text-xs font-bold tracking-wider rounded-md transition-all duration-300 cursor-pointer ${
           language === "en"
             ? "bg-brand-orange text-brand-bg shadow-sm"
             : "text-brand-cream/60 hover:text-brand-cream"
@@ -49,14 +66,14 @@ function LanguageToggle() {
   );
 }
 
-function ThemeToggle() {
+function ThemeToggle({ className = "" }: { className?: string }) {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
   return (
     <button
       onClick={toggleTheme}
-      className="hidden sm:flex relative w-8 h-8 items-center justify-center rounded-lg bg-brand-cream/5 border border-brand-cream/10 text-brand-cream hover:bg-brand-cream/10 transition-colors duration-300 cursor-pointer overflow-hidden shrink-0"
+      className={`relative w-8 h-8 flex items-center justify-center rounded-lg bg-brand-cream/5 border border-brand-cream/10 text-brand-cream hover:bg-brand-cream/10 transition-colors duration-300 cursor-pointer overflow-hidden shrink-0 ${className}`}
       aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
     >
       <motion.div
@@ -87,8 +104,9 @@ function ThemeToggle() {
 
 export function SharedHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme } = useTheme();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   const [isOpen, setIsOpen]     = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -139,6 +157,8 @@ export function SharedHeader() {
     // On mobile, limit the menu to 85vh so it never overflows the screen
     const maxH = isMobile() ? window.innerHeight * 0.85 : Infinity;
     const contentEl = navEl.querySelector<HTMLElement>(".card-nav-content");
+    const controlsEl = navEl.querySelector<HTMLElement>(".mobile-controls-row");
+    const controlsH = controlsEl && isMobile() ? controlsEl.offsetHeight : 0;
     if (contentEl) {
       const prev = { 
         vis: contentEl.style.visibility, 
@@ -151,7 +171,7 @@ export function SharedHeader() {
       contentEl.style.position = "static";
       contentEl.style.height = "auto";
       void contentEl.offsetHeight; // force repaint
-      const total = 60 + contentEl.scrollHeight + 16;
+      const total = 60 + controlsH + contentEl.scrollHeight + 16;
       contentEl.style.visibility = prev.vis;
       contentEl.style.pointerEvents = prev.pe;
       contentEl.style.position = prev.pos;
@@ -164,7 +184,14 @@ export function SharedHeader() {
   const createTimeline = () => {
     const navEl = navRef.current;
     if (!navEl) return null;
-    gsap.set(navEl, { height: 60, overflow: "hidden" });
+    // Reset BOTH the shorthand and overflowY explicitly. GSAP's onComplete
+    // callback below sets overflowY: "auto" as an inline style once the menu
+    // finishes opening. Setting `overflow: "hidden"` alone does NOT clear
+    // that inline overflowY — it's a separate CSS property — so if the
+    // timeline gets recreated (route change, theme change) while that
+    // leftover "auto" is still applied, the nav keeps showing a scrollbar
+    // even while collapsed at height: 60.
+    gsap.set(navEl, { height: 60, overflow: "hidden", overflowY: "hidden" });
     gsap.set(cardsRef.current, { y: 30, opacity: 0 });
     const tl = gsap.timeline({ 
       paused: true,
@@ -173,7 +200,9 @@ export function SharedHeader() {
         if (navEl) gsap.set(navEl, { overflowY: "auto" });
       },
       onReverseComplete: () => {
-        if (navEl) gsap.set(navEl, { overflow: "hidden" });
+        if (navEl) gsap.set(navEl, { overflow: "hidden", overflowY: "hidden" });
+        setExpanded(false);
+        document.body.style.overflow = "";
       }
     });
     tl.to(navEl, { height: calculateHeight, duration: 0.4, ease: "power3.out" });
@@ -184,7 +213,14 @@ export function SharedHeader() {
   useLayoutEffect(() => {
     const tl = createTimeline();
     tlRef.current = tl;
-    return () => { tl?.kill(); tlRef.current = null; };
+    return () => {
+      tl?.kill();
+      // Belt-and-suspenders: explicitly clear overflowY on unmount/route
+      // change too, in case the timeline is killed mid-animation before
+      // onComplete/onReverseComplete ever had a chance to fire.
+      if (navRef.current) gsap.set(navRef.current, { overflowY: "hidden" });
+      tlRef.current = null;
+    };
   }, [theme]); // Re-create timeline when theme variables update card layouts
 
   useLayoutEffect(() => {
@@ -205,21 +241,45 @@ export function SharedHeader() {
     return () => window.removeEventListener("resize", handleResize);
   }, [expanded, theme]);
 
+  // If the route changes for any reason while the menu is open (e.g. browser
+  // back/forward, not just clicking a link inside the menu), snap it closed
+  // immediately rather than leaving it expanded with stale GSAP state.
+  useEffect(() => {
+    if (expanded) {
+      setIsOpen(false);
+      setExpanded(false);
+      document.body.style.overflow = "";
+      if (navRef.current) {
+        gsap.set(navRef.current, { height: 60, overflow: "hidden", overflowY: "hidden" });
+      }
+      gsap.set(cardsRef.current, { y: 30, opacity: 0 });
+      tlRef.current?.pause(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
   const toggleMenu = () => {
     const tl = tlRef.current;
     if (!tl) return;
-    if (!expanded) {
+    if (!isOpen) {
       setIsOpen(true);
       setExpanded(true);
       // Lock body scroll on mobile when menu opens
       document.body.style.overflow = "hidden";
-      tl.play(0);
+      tl.play();
     } else {
+      // Move focus out of the menu BEFORE it gets aria-hidden. Without this,
+      // clicking a nav link inside the menu leaves that button focused while
+      // its container is hidden from assistive tech — browsers warn about
+      // this (aria-hidden on a focused descendant) and it's a real a11y bug,
+      // not just noise.
+      if (
+        document.activeElement instanceof HTMLElement &&
+        navRef.current?.contains(document.activeElement)
+      ) {
+        document.activeElement.blur();
+      }
       setIsOpen(false);
-      tl.eventCallback("onReverseComplete", () => {
-        setExpanded(false);
-        document.body.style.overflow = "";
-      });
       tl.reverse();
     }
   };
@@ -263,8 +323,11 @@ export function SharedHeader() {
 
           {/* Controls + CTA */}
           <div className="flex items-center gap-1.5 md:gap-3.5 z-20">
-            <LanguageToggle />
-            <ThemeToggle />
+            {/* Language + theme toggles: desktop only here, they live inside the menu on mobile */}
+            <div className="hidden md:flex items-center gap-3.5">
+              <LanguageToggle variant="full" />
+              <ThemeToggle />
+            </div>
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
               className="font-sans text-[9px] md:text-[11px] font-bold tracking-[0.08em] md:tracking-[0.15em] uppercase bg-brand-blush text-brand-ink py-2 px-2.5 md:py-2.5 md:px-6 rounded-lg hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300 border-none cursor-pointer inline-flex items-center shrink-0"
@@ -274,8 +337,25 @@ export function SharedHeader() {
           </div>
         </div>
 
+        {/* ── Mobile-only controls (language + theme), shown inside the open menu ── */}
+        <div className="mobile-controls-row flex md:hidden items-center justify-between gap-3 px-4 pb-4 pt-1">
+          <span className="font-sans text-[10px] font-bold tracking-[0.12em] uppercase text-brand-cream/40">
+            {language === "es" ? "Preferencias" : "Preferences"}
+          </span>
+          <div className="flex items-center gap-2.5">
+            <LanguageToggle variant="full" />
+            <ThemeToggle />
+          </div>
+        </div>
+
         {/* ── Cards ── */}
-        <div className="card-nav-content grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 px-4 md:px-8 pb-4 md:pb-6 w-full overflow-y-auto" style={{ maxHeight: 'calc(85vh - 60px)' }} aria-hidden={!expanded}>
+        <div
+          className={`card-nav-content grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 px-4 md:px-8 pb-4 md:pb-6 w-full ${
+            expanded ? "overflow-y-auto" : "overflow-hidden"
+          }`}
+          style={{ maxHeight: 'calc(85vh - 60px)' }}
+          aria-hidden={!expanded}
+        >
           {navCards.map((card, idx) => (
             <div
               key={card.label}

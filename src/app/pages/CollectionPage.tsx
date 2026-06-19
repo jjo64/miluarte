@@ -753,8 +753,7 @@ export function CollectionPage() {
       <motion.div
         variants={staggerContainer}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-40px" }}
+        animate="visible"
         className="grid grid-cols-3 gap-0.5 mb-1"
       >
         {localizedWorks.map((w) => (
