@@ -12,6 +12,7 @@
   --brand-dark: #EADFD0; /* Soft dark cream for cards/alternating sections */
   --brand-neon: #79A300; /* Contrast neon green */
   --brand-wall: #D6997D;
+  --brand-secondary: #70685A;
 
   --background: var(--brand-bg);
   --foreground: var(--brand-cream);
@@ -62,6 +63,7 @@
   --brand-dark: #0D0908;
   --brand-neon: #B4FF2E;
   --brand-wall: #ECC4B0;
+  --brand-secondary: #8A8070;
 
   --background: var(--brand-bg);
   --foreground: var(--brand-cream);

@@ -1,22 +1,22 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { ease } from "../tokens";
+import { C, SERIF, SANS, ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
 import { HorizontalGallery } from "../components/HorizontalGallery";
 import { ServiceSections } from "../components/ServiceSections";
 import { SketchSlider } from "../components/SketchSlider";
 import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
+import { ClientsMarquee } from "../components/ClientsMarquee";
 
 const animasSketch = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
 const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
-const artPortraits = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
 
 const vp = { once: true, margin: "-70px" } as const;
 
 // ─── Hero / Sobre mí ─────────────────────────────────────────────────────────
 
 function Hero() {
-  const navigate = useNavigate();
   const { t } = useLanguage();
   const skills = (t("hero.skills") || []) as string[];
 
@@ -32,9 +32,9 @@ function Hero() {
 
   return (
     <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-28 pb-16 md:py-24">
-      {/* Content grid */}
+      {/* Content grid — stacks on mobile, two-col on desktop */}
       <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 px-6 md:px-10 max-w-[1200px] mx-auto">
-        
+
         {/* ── Left: Bio ── */}
         <div className="flex flex-col justify-center order-1">
           <motion.p
@@ -127,7 +127,7 @@ function Hero() {
             {skills.map((skill) => (
               <span
                 key={skill}
-                className="font-sans text-brand-cream/80 text-[11px] tracking-wide border border-brand-cream/15 py-2 px-3.5 rounded-full bg-brand-cream/5 flex items-center gap-2 transition-all duration-300 hover:border-brand-orange hover:text-brand-orange"
+                className="font-sans text-brand-cream/80 text-[11px] tracking-wide border border-brand-cream/15 py-2 px-3.5 rounded-full bg-brand-cream/5 flex items-center gap-2 transition-all duration-300 hover:border-brand-blush hover:text-brand-blush"
               >
                 <span>{getSkillEmoji(skill)}</span>
                 <span>{skill}</span>
@@ -171,234 +171,205 @@ function Hero() {
   );
 }
 
+// ─── Proyecto destacado ──────────────────────────────────────────────────────
+
 function FeaturedProject() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [btnH, setBtnH]     = useState(false);
+  const [imgTap, setImgTap] = useState(false);
 
   return (
-    <section className="bg-brand-dark py-24 px-6 md:px-10 border-t border-brand-cream/5" id="proyecto-destacado">
-      <div className="max-w-[1200px] mx-auto">
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.5, ease }}
-          className="flex gap-2.5 items-center mb-6"
-        >
-          <div className="w-8 h-0.5 bg-brand-orange" />
-          <div className="w-2 h-0.5 bg-brand-orange opacity-35" />
-          <span className="font-sans text-brand-orange text-[10px] tracking-[0.28em] uppercase">
-            {t("featured.eyebrow")}
-          </span>
-        </motion.div>
+    <section style={{ backgroundColor: C.dark, padding: "80px 0", borderTop: "1px solid rgba(255,255,255,0.05)" }} id="proyecto-destacado">
+      {/* Label */}
+      <motion.p
+        variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+        style={{ fontFamily: SANS, color: C.blush, fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", padding: "0 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}
+      >
+        <span style={{ width: 2, height: 16, backgroundColor: C.blush, display: "inline-block" }} />
+        {t("featured.eyebrow")}
+      </motion.p>
 
-        {/* Featured Image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={vp}
-          transition={{ duration: 0.7, ease }}
-          className="relative aspect-[16/8] overflow-hidden rounded-md shadow-2xl mb-12 group"
-        >
-          <span className="absolute top-4 left-4 z-10 bg-brand-orange text-brand-ink font-sans text-[10px] tracking-widest uppercase font-bold py-1.5 px-3.5 rounded-full shadow-md">
-            {t("featured.tag")}
-          </span>
-          <img
-            src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg"
-            alt={t("gallery.alts.obra4")}
-            className="w-full h-full object-cover brightness-[0.92] group-hover:scale-103 transition-transform duration-700 ease-out"
-          />
-        </motion.div>
+      {/* Featured Image */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={vp}
+        transition={{ duration: 0.7, ease }}
+        style={{ position: "relative", overflow: "hidden", marginBottom: 0 }}
+        onMouseEnter={() => setImgTap(true)}
+        onMouseLeave={() => setImgTap(false)}
+        onTouchStart={() => setImgTap(true)}
+        onTouchEnd={() => setImgTap(false)}
+      >
+        <img
+          src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg"
+          alt={t("gallery.alts.obra4")}
+          loading="lazy"
+          style={{
+            width:          "100%",
+            height:         "clamp(220px, 45vw, 480px)",
+            objectFit:      "cover",
+            objectPosition: "50% 14%",
+            display:        "block",
+            transform:      imgTap ? "scale(1.02)" : "scale(1)",
+            transition:     "transform 0.6s cubic-bezier(0.22,1,0.36,1)",
+            willChange:     "transform",
+          }}
+        />
+        <span style={{ position: "absolute", top: 12, left: 12, backgroundColor: C.blush, color: C.ink, fontFamily: SANS, fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", padding: "6px 10px", borderRadius: 6 }}>
+          {t("featured.tag")}
+        </span>
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80, background: `linear-gradient(to top, ${C.dark}, transparent)` }} />
+      </motion.div>
 
-        {/* Details Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-12 items-start">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={vp}
-            transition={{ duration: 0.6, ease }}
-          >
-            <h2 className="font-serif text-brand-cream text-[1.8rem] md:text-[2.8rem] font-light leading-[1.1] tracking-tight mb-6">
-              {t("featured.title")}
-            </h2>
-            <p className="font-sans text-brand-cream/58 text-[13.5px] leading-relaxed mb-8 max-w-[520px]">
-              {t("featured.description")}
-            </p>
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2.5 mb-8">
-              {((t("featured.tags") || []) as string[]).map((tag) => (
-                <span
-                  key={tag}
-                  className="font-sans text-brand-orange text-[10.5px] tracking-wide py-1.5 px-3 rounded-full border border-brand-orange/45 bg-brand-orange/5"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
-              className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 hover:bg-brand-blush hover:text-brand-ink transition-all duration-300 font-medium cursor-pointer"
-            >
-              {t("featured.viewCase")}
-            </button>
-          </motion.div>
-
-          {/* Checklist */}
-          <motion.ul
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={vp}
-            transition={{ duration: 0.6, delay: 0.15, ease }}
-            className="list-none p-0 m-0 flex flex-col gap-3.5"
-          >
-            {((t("featured.bullets") || []) as string[]).map((bullet) => (
-              <li
-                key={bullet}
-                className="font-sans text-brand-cream/60 text-[12.5px] flex gap-3 items-start"
-              >
-                <div className="w-1.5 h-1.5 bg-brand-orange rotate-45 flex-shrink-0 mt-2 opacity-70" />
-                <span>{bullet}</span>
-              </li>
-            ))}
-          </motion.ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Clients() {
-  const { t } = useLanguage();
-  const clientNames = [
-    "DIGGIN' RECORDS",
-    "PASTA YA",
-    "ESTUDIO NOVA",
-    "GALERÍA LUMEN",
-    "ANIMAS PROJECT",
-    "COLECTIVO TINTA"
-  ];
-
-  return (
-    <section className="bg-brand-bg py-20 px-6 md:px-10 text-center">
-      <div className="max-w-[1200px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.5, ease }}
-          className="flex justify-center gap-2.5 items-center mb-6"
-        >
-          <div className="w-8 h-0.5 bg-brand-orange" />
-          <div className="w-2 h-0.5 bg-brand-orange opacity-35" />
-          <span className="font-sans text-brand-orange text-[10px] tracking-[0.28em] uppercase">
-            {t("clients.eyebrow")}
-          </span>
-        </motion.div>
-
+      {/* Content block */}
+      <div style={{ padding: "32px 20px 0", maxWidth: 640, margin: "0 auto" }}>
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.6, ease }}
-          className="font-serif text-brand-cream text-[1.6rem] md:text-[2.2rem] font-light mb-4"
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SERIF, color: C.cream, fontSize: "clamp(1.5rem, 5vw, 2rem)", fontWeight: 400, lineHeight: 1.2, marginBottom: 16 }}
         >
-          {t("clients.title")}
+          {t("featured.title")}
         </motion.h2>
 
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.6, delay: 0.1, ease }}
-          className="font-sans text-brand-cream/45 text-[13px] leading-relaxed max-w-[560px] mx-auto mb-12"
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SANS, color: C.secondary, fontSize: "14px", lineHeight: 1.7, marginBottom: 20 }}
         >
-          {t("clients.description")}
+          {t("featured.description")}
         </motion.p>
 
-        {/* Logos Grid */}
+        {/* Bullets */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.65, delay: 0.2, ease }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+          initial="hidden" whileInView="visible" viewport={vp}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+          style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}
         >
-          {clientNames.map((name) => (
-            <div
-              key={name}
-              className="border border-brand-cream/10 rounded-lg py-7 px-4 flex items-center justify-center font-serif text-[13.5px] tracking-wide text-brand-cream/45 hover:border-brand-orange/45 hover:text-brand-cream hover:bg-brand-cream/5 transition-all duration-300 select-none"
+          {((t("featured.bullets") || []) as string[]).map((b) => (
+            <motion.div
+              key={b}
+              variants={{ hidden: { opacity: 0, x: -12 }, visible: { opacity: 1, x: 0, transition: { duration: 0.45, ease } } }}
+              style={{ display: "flex", alignItems: "flex-start", gap: 10 }}
             >
-              {name}
-            </div>
+              <span style={{ color: C.blush, fontSize: "12px", marginTop: 2, flexShrink: 0 }}>◆</span>
+              <span style={{ fontFamily: SANS, color: C.cream, fontSize: "13px", lineHeight: 1.55 }}>{b}</span>
+            </motion.div>
           ))}
         </motion.div>
+
+        {/* Category tags */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
+          {((t("featured.tags") || []) as string[]).map((tag) => (
+            <span
+              key={tag}
+              style={{ fontFamily: SANS, color: C.blush, fontSize: "12px", border: `1px solid ${C.blush}`, borderRadius: "999px", padding: "6px 14px", letterSpacing: "0.04em" }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* CTA button */}
+        <motion.button
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          onClick={() => navigate("/coleccion/diggin")}
+          onMouseEnter={() => setBtnH(true)}
+          onMouseLeave={() => setBtnH(false)}
+          style={{
+            width:           "100%",
+            fontFamily:      SANS,
+            color:           btnH ? "#fff" : C.cream,
+            backgroundColor: btnH ? C.blush : "transparent",
+            fontSize:        "11px",
+            letterSpacing:   "0.2em",
+            textTransform:   "uppercase",
+            border:          `1px solid ${C.cream}`,
+            borderRadius:    8,
+            padding:         "14px 24px",
+            cursor:          "pointer",
+            transition:      "background-color 0.28s, color 0.28s",
+            fontWeight:      500,
+          }}
+        >
+          {t("featured.viewCase")}
+        </motion.button>
       </div>
     </section>
   );
 }
+
+// ─── SeoServices (ServicesOverview style adaptation) ──────────────────────────
 
 function SeoServices() {
   const { t } = useLanguage();
   const keys = ["editorial", "concept", "character", "music", "graphic", "clay"] as const;
 
+  const getServiceIcon = (key: string) => {
+    switch (key) {
+      case "editorial": return "✏️";
+      case "concept":   return "🎭";
+      case "character": return "🧍";
+      case "music":     return "🎵";
+      case "graphic":   return "📐";
+      case "clay":      return "💎";
+      default:          return "✨";
+    }
+  };
+
   return (
-    <section className="bg-brand-bg py-24 px-6 md:px-10 border-t border-brand-cream/5" id="servicios">
-      <div className="max-w-[1200px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.5, ease }}
-          className="flex gap-2.5 items-center mb-6"
+    <section style={{ backgroundColor: C.cardBg, padding: "80px 20px", borderTop: "1px solid rgba(255,255,255,0.05)" }} id="servicios">
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <motion.p
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SANS, color: C.blush, fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}
         >
-          <div className="w-8 h-0.5 bg-brand-orange" />
-          <div className="w-2 h-0.5 bg-brand-orange opacity-35" />
-          <span className="font-sans text-brand-orange text-[10px] tracking-[0.28em] uppercase">
-            {t("seoServices.eyebrow")}
-          </span>
-        </motion.div>
+          <span style={{ width: 2, height: 16, backgroundColor: C.blush, display: "inline-block" }} />
+          {t("seoServices.eyebrow")}
+        </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.6, ease }}
-          className="font-serif text-brand-cream text-[1.8rem] md:text-[2.6rem] font-light mb-4"
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SERIF, color: C.cream, fontSize: "clamp(1.8rem, 6vw, 2.8rem)", fontWeight: 400, lineHeight: 1.15, marginBottom: 12 }}
         >
           {t("seoServices.title")}
         </motion.h2>
 
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={vp}
-          transition={{ duration: 0.6, delay: 0.1, ease }}
-          className="font-sans text-brand-cream/55 text-[13.5px] leading-relaxed max-w-[600px] mb-12"
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SANS, color: C.secondary, fontSize: "14px", lineHeight: 1.7, marginBottom: 48 }}
         >
           {t("seoServices.description")}
         </motion.p>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {keys.map((k, i) => (
+        <motion.div
+          variants={staggerContainer} initial="hidden" whileInView="visible" viewport={vp}
+          style={{
+            display:               "grid",
+            gridTemplateColumns:   "repeat(auto-fill, minmax(260px, 1fr))",
+            gap:                   0,
+          }}
+        >
+          {keys.map((k) => (
             <motion.div
               key={k}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={vp}
-              transition={{ duration: 0.65, delay: i * 0.05, ease }}
-              className="flex flex-col items-start"
+              variants={staggerItem}
+              style={{
+                borderTop:     "1px solid rgba(255,255,255,0.08)",
+                paddingTop:    24,
+                paddingBottom: 24,
+                paddingRight:  16,
+              }}
             >
-              <div className="w-1.5 h-1.5 bg-brand-orange rounded-full mb-3" />
-              <h3 className="font-serif text-brand-cream text-[18px] font-normal mb-2.5">
+              <span style={{ color: C.blush, fontSize: "11px" }}>◆</span>
+              <p style={{ fontFamily: SANS, color: C.cream, fontSize: "15px", fontWeight: 500, marginTop: 8, marginBottom: 8 }}>
                 {t(`seoServices.items.${k}.title`)}
-              </h3>
-              <p className="font-sans text-brand-cream/50 text-[12.5px] leading-relaxed">
+              </p>
+              <p style={{ fontFamily: SANS, color: C.secondary, fontSize: "13px", lineHeight: 1.65 }}>
                 {t(`seoServices.items.${k}.description`)}
               </p>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -409,10 +380,10 @@ function SeoServices() {
 export function HomePage() {
   const { t } = useLanguage();
   return (
-    <div className="bg-brand-bg text-brand-cream">
+    <div style={{ backgroundColor: C.bg, color: C.cream }}>
       <Hero />
       <FeaturedProject />
-      <Clients />
+      <ClientsMarquee />
       <HorizontalGallery />
       <SketchSlider
         sketchImg={animasSketch}

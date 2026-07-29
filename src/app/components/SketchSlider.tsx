@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "motion/react";
-import { ease } from "../tokens";
+import { C, SANS, SERIF, RADIUS, ease, fadeUp } from "../tokens";
 
 interface SketchSliderProps {
   sketchImg: string;
@@ -21,174 +21,201 @@ export function SketchSlider({
   sketchImgPos = "50% 12%",
   finalImgPos = "50% 12%"
 }: SketchSliderProps) {
-  const [sliderPos, setSliderPos] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos]         = useState(0.5);  // 0–1
+  const dragging              = useRef(false);
 
-  const handleMove = (clientX: number) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPos(percentage);
-  };
+  const getRelativePos = useCallback((clientX: number) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return 0.5;
+    return Math.min(Math.max((clientX - rect.left) / rect.width, 0.05), 0.95);
+  }, []);
 
-  const handleTouchMove = (e: TouchEvent) => {
-    if (e.touches && e.touches[0]) {
-      handleMove(e.touches[0].clientX);
-    }
-  };
+  const onMouseDown = useCallback(() => { dragging.current = true; }, []);
 
-  // Add event listeners on window during drag for smooth tracking off-container
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      handleMove(e.clientX);
+      if (!dragging.current) return;
+      setPos(getRelativePos(e.clientX));
     };
-
-    const onMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    const onTouchMoveWindow = (e: TouchEvent) => {
-      if (!isDragging) return;
-      handleTouchMove(e);
-    };
-
-    if (isDragging) {
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
-      window.addEventListener("touchmove", onTouchMoveWindow, { passive: true });
-      window.addEventListener("touchend", onMouseUp);
-    }
-
+    const onMouseUp = () => { dragging.current = false; };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("touchmove", onTouchMoveWindow);
-      window.removeEventListener("touchend", onMouseUp);
     };
-  }, [isDragging]);
+  }, [getRelativePos]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onTouchStart = () => { dragging.current = true; };
+    const onTouchMove  = (e: TouchEvent) => {
+      if (!dragging.current) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setPos(getRelativePos(e.touches[0].clientX));
+    };
+    const onTouchEnd = () => { dragging.current = false; };
+
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchmove",  onTouchMove,  { passive: false });
+    container.addEventListener("touchend",   onTouchEnd);
+
+    return () => {
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove",  onTouchMove);
+      container.removeEventListener("touchend",   onTouchEnd);
+    };
+  }, [getRelativePos]);
+
+  const pct = `${pos * 100}%`;
+  const vp = { once: true, margin: "-60px" } as const;
 
   return (
-    <section className="bg-brand-dark py-24 px-6 md:px-10 border-t border-brand-cream/5">
-      <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-12 md:gap-16 items-center">
+    <section style={{ backgroundColor: C.bg, padding: "80px 20px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <div style={{ maxWidth: 640, margin: "0 auto" }}>
         
-        {/* Left column: Text */}
-        <div>
-          <motion.div
-            initial={{ scaleX: 0, originX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, ease }}
-            className="flex gap-2.5 items-center mb-5"
-          >
-            <div className="w-8 h-0.5 bg-brand-orange" />
-            <div className="w-2 h-0.5 bg-brand-orange opacity-35" />
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, ease }}
-            className="font-sans text-[10px] tracking-[0.28em] uppercase text-brand-orange mb-4"
-          >
-            {title}
-          </motion.p>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease }}
-            className="font-serif text-brand-cream text-[2.2rem] md:text-[3.4rem] font-light leading-[1.05] tracking-tight mb-6"
-          >
-            {subtitle}
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.65, ease }}
-            className="font-sans text-brand-cream/55 text-[13px] leading-relaxed mb-6"
-          >
-            {hint}
-          </motion.p>
-        </div>
-
-        {/* Right column: Slider container */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease }}
-          className="relative w-full aspect-[4/3] overflow-hidden select-none border border-brand-cream/10 rounded-xl shadow-2xl cursor-ew-resize"
-          ref={containerRef}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            setIsDragging(true);
-            handleMove(e.clientX);
-          }}
-          onTouchStart={(e) => {
-            setIsDragging(true);
-            handleMove(e.touches[0].clientX);
-          }}
-          data-cursor={hint}
+        {/* Eyebrow */}
+        <motion.p
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SANS, color: C.blush, fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}
         >
-          {/* Final Art (Background) */}
-          <div className="absolute inset-0 bg-brand-bg select-none pointer-events-none">
-            <img
-              src={finalImg}
-              alt="Arte final"
-              className="w-full h-full object-cover filter brightness-[0.85]"
-              style={{ objectPosition: finalImgPos }}
-            />
-          </div>
+          <span style={{ width: 2, height: 16, backgroundColor: C.blush, display: "inline-block" }} />
+          {title}
+        </motion.p>
 
-          {/* Sketch / Lineart (Overlay layer, clipped horizontally) */}
+        {/* Subtitle */}
+        <motion.h2
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SERIF, color: C.cream, fontSize: "clamp(1.8rem, 6vw, 2.8rem)", fontWeight: 400, lineHeight: 1.15, marginBottom: 16 }}
+        >
+          {subtitle}
+        </motion.h2>
+
+        {/* Hint text */}
+        <motion.p
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
+          style={{ fontFamily: SANS, color: C.secondary, fontSize: "14px", lineHeight: 1.7, marginBottom: 32 }}
+        >
+          {hint}
+        </motion.p>
+
+        {/* Slider container */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={vp}
+          transition={{ duration: 0.7, ease }}
+          ref={containerRef}
+          onMouseDown={onMouseDown}
+          style={{
+            position:      "relative",
+            width:         "100%",
+            height:        340,
+            borderRadius:  12,
+            overflow:      "hidden",
+            cursor:        "ew-resize",
+            userSelect:    "none",
+            touchAction:   "none",
+          }}
+        >
+          {/* Final Art (Background / After) */}
+          <img
+            src={finalImg}
+            alt="Arte final"
+            loading="lazy"
+            draggable={false}
+            style={{
+              position:   "absolute",
+              inset:      0,
+              width:      "100%",
+              height:     "100%",
+              objectFit:  "cover",
+              objectPosition: finalImgPos,
+              filter:     "brightness(0.85)",
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Sketch / Lineart (Clipped overlay / Before) */}
           <div
-            className="absolute inset-0 overflow-hidden select-none pointer-events-none"
-            style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}
+            style={{
+              position:    "absolute",
+              inset:       0,
+              overflow:    "hidden",
+              clipPath:    `polygon(0 0, ${pct} 0, ${pct} 100%, 0 100%)`,
+              willChange:  "clip-path",
+            }}
           >
             <img
               src={sketchImg}
               alt="Boceto"
-              className="absolute inset-0 w-full h-full object-cover filter saturate-0 contrast-[1.8] brightness-[0.7] invert-[0.1]"
+              loading="lazy"
+              draggable={false}
               style={{
-                width: containerRef.current?.getBoundingClientRect().width || "100%",
-                height: "100%",
-                maxWidth: "none",
-                objectPosition: sketchImgPos
+                position:   "absolute",
+                inset:      0,
+                width:      "100%",
+                height:     "100%",
+                objectFit:  "cover",
+                objectPosition: sketchImgPos,
+                filter:     "saturate(0) contrast(1.8) brightness(0.7) invert(0.1)",
+                pointerEvents: "none",
               }}
             />
           </div>
 
-          {/* Slider line separator */}
+          {/* Divider line */}
           <div
-            className="absolute top-0 bottom-0 w-[1.5px] bg-brand-cream/30 pointer-events-none"
-            style={{ left: `${sliderPos}%` }}
+            style={{
+              position:        "absolute",
+              top:             0,
+              bottom:          0,
+              left:            pct,
+              width:           2,
+              backgroundColor: C.cream,
+              transform:       "translateX(-50%)",
+              willChange:      "left",
+              pointerEvents:   "none",
+            }}
+          />
+
+          {/* Handle circle */}
+          <div
+            style={{
+              position:        "absolute",
+              top:             "50%",
+              left:            pct,
+              transform:       "translate(-50%, -50%)",
+              width:           36,
+              height:          36,
+              borderRadius:    "50%",
+              backgroundColor: C.cream,
+              display:         "flex",
+              alignItems:      "center",
+              justifyContent:  "center",
+              fontFamily:      SANS,
+              fontSize:        "13px",
+              color:           C.ink,
+              fontWeight:      600,
+              boxShadow:       "0 2px 12px rgba(0,0,0,0.45)",
+              willChange:      "left",
+              pointerEvents:   "none",
+            }}
           >
-            {/* Center handle knob */}
-            <div 
-              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border border-brand-cream/30 flex items-center justify-center shadow-lg transition-transform duration-300 ${
-                isDragging ? "scale-110 bg-brand-orange border-brand-orange text-brand-ink" : "bg-[#17120f]/80 text-brand-cream"
-              }`}
-            >
-              <span className="font-sans text-[10px] tracking-normal font-semibold">↔</span>
-            </div>
+            ↔
           </div>
 
-          {/* Labels for user feedback */}
-          <span className="absolute bottom-4 left-4 z-10 font-sans text-brand-cream/60 text-[9px] tracking-widest uppercase bg-[#17120f]/78 py-1.5 px-3.5 rounded-sm">
+          {/* Labels */}
+          <span style={{ position: "absolute", bottom: 12, left: 12, fontFamily: SANS, fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.cream, background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: 4, pointerEvents: "none" }}>
             Boceto
           </span>
-          <span className="absolute bottom-4 right-4 z-10 font-sans text-brand-cream/60 text-[9px] tracking-widest uppercase bg-[#17120f]/78 py-1.5 px-3.5 rounded-sm">
+          <span style={{ position: "absolute", bottom: 12, right: 12, fontFamily: SANS, fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.cream, background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: 4, pointerEvents: "none" }}>
             Arte Final
           </span>
-        </motion.div>
 
+        </motion.div>
       </div>
     </section>
   );

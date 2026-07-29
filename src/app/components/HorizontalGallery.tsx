@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ease } from "../tokens";
 import { useLanguage } from "../context/LanguageContext";
 
-
 gsap.registerPlugin(ScrollTrigger);
 
 const IMAGES = [
@@ -96,7 +95,7 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
           src={src}
           alt={localizedAlt}
           loading="lazy"
-          className={`w-full h-full object-cover block transition-all duration-700 ease-[cubic-bezier(0.22, 1, 0.36, 1)] ${
+          className={`w-full h-full object-cover block transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             hovered ? "scale-106 brightness-75" : "brightness-90"
           }`}
         />
@@ -110,7 +109,7 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
         </div>
         {/* Orange corner accent on hover */}
         <div
-          className="absolute bottom-0 left-0 right-0 bg-brand-orange transition-all duration-400 ease-[cubic-bezier(0.22, 1, 0.36, 1)]"
+          className="absolute bottom-0 left-0 right-0 bg-brand-blush transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{ height: hovered ? 3 : 0 }}
         />
       </div>
@@ -121,14 +120,23 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
 export function HorizontalGallery() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const stripRef   = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [category, setCategory] = useState<string>("all");
   const { t } = useLanguage();
 
-  const filteredImages = category === "all" 
-    ? IMAGES 
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const filteredImages = category === "all"
+    ? IMAGES
     : IMAGES.filter((img) => img.category === category);
 
   useEffect(() => {
+    if (isMobile) return;
     const wrapper = wrapperRef.current;
     const strip   = stripRef.current;
     if (!wrapper || !strip) return;
@@ -165,7 +173,7 @@ export function HorizontalGallery() {
       const ctx = (wrapper as any)?._gsapCtx;
       if (ctx) ctx.revert();
     };
-  }, [category]);
+  }, [isMobile, category]);
 
   return (
     <section id="galeria" className="bg-brand-dark overflow-hidden">
@@ -207,17 +215,17 @@ export function HorizontalGallery() {
       </div>
 
       {/* Category Filters */}
-      <div className="px-10 pb-6 flex flex-wrap gap-2.5">
+      <div className="px-5 md:px-10 pb-6 flex flex-wrap gap-2.5 overflow-x-auto scrollbar-hide">
         {(["all", "ilustracion", "concept", "musica", "joyeria"] as const).map((cat) => {
           const isActive = category === cat;
           return (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`font-sans text-[11px] md:text-[12px] tracking-wide py-2 px-4 rounded-full border cursor-pointer transition-all duration-250 ${
+              className={`font-sans text-[11px] md:text-[12px] tracking-wide py-2 px-4 rounded-full border cursor-pointer transition-all duration-250 whitespace-nowrap flex-shrink-0 ${
                 isActive
-                  ? "bg-brand-orange text-brand-ink border-brand-orange font-semibold"
-                  : "bg-transparent border-brand-cream/15 text-brand-cream/65 hover:border-brand-orange hover:text-brand-orange"
+                  ? "bg-brand-blush text-brand-ink border-brand-blush font-semibold"
+                  : "bg-transparent border-brand-cream/15 text-brand-cream/65 hover:border-brand-blush hover:text-brand-blush"
               }`}
             >
               {t(`gallery.filters.${cat}`)}
@@ -226,25 +234,34 @@ export function HorizontalGallery() {
         })}
       </div>
 
-      {/* ── Pinned horizontal strip ── */}
-      <div
-        ref={wrapperRef}
-        className="overflow-hidden h-[75vh] flex items-center"
-      >
-        <div
-          ref={stripRef}
-          className="flex flex-nowrap items-center will-change-transform px-[5vw]"
-        >
+      {/* ── Mobile: horizontal CSS scroll ── */}
+      {isMobile ? (
+        <div className="flex overflow-x-auto gap-3 px-5 pb-8" style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}>
           {filteredImages.map((img, i) => (
             <GalleryCard key={`${category}-${i}`} src={img.src} altKey={img.altKey} index={i} />
           ))}
         </div>
-      </div>
+      ) : (
+        /* ── Desktop: GSAP pinned horizontal strip ── */
+        <div
+          ref={wrapperRef}
+          className="overflow-hidden h-[75vh] flex items-center"
+        >
+          <div
+            ref={stripRef}
+            className="flex flex-nowrap items-center will-change-transform px-[5vw]"
+          >
+            {filteredImages.map((img, i) => (
+              <GalleryCard key={`${category}-${i}`} src={img.src} altKey={img.altKey} index={i} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Drag hint ── */}
       <div className="py-5 px-10 pb-16 flex justify-end">
         <p className="font-sans text-brand-cream/20 text-[10px] tracking-widest uppercase">
-          {t("gallery.hint")}
+          {isMobile ? `← ${t("gallery.hint") || "desliza"} →` : t("gallery.hint")}
         </p>
       </div>
     </section>

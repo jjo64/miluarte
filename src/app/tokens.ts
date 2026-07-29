@@ -9,11 +9,16 @@ export const C = {
   dark:      "var(--brand-dark, #0D0908)",
   neon:      "var(--brand-neon, #B4FF2E)",
   musaeWall: "var(--brand-wall, #ECC4B0)",
+  cardBg:    "var(--brand-dark, #0D0908)",
+  secondary: "var(--brand-secondary, #8A8070)",
 };
 
 
 export const SERIF = "'Fraunces', Georgia, serif";
 export const SANS  = "'Space Grotesk', system-ui, sans-serif";
+
+export const RADIUS      = "12px";
+export const RADIUS_PILL = "999px";
 
 export const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
