@@ -5,6 +5,7 @@ import { CollectionPage } from "./pages/CollectionPage";
 import { RendersPage }    from "./pages/RendersPage";
 import { ResumePage }     from "./pages/ResumePage";
 import { NotFoundPage }   from "./pages/NotFoundPage";
+import { EncargoPage }    from "./pages/EncargoPage";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
       { path: "coleccion/:slug",   Component: CollectionPage },
       { path: "resume",            Component: ResumePage },
       { path: "cv",                Component: ResumePage },
+      { path: "encargo",           Component: EncargoPage },
       { path: "*",                 Component: NotFoundPage },
     ],
   },

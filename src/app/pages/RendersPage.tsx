@@ -46,16 +46,16 @@ const RENDERS: RenderItem[] = [
     description:
       "Propuesta de stand fotorrealista para exhibición de mobiliario de vanguardia. La estructura utiliza materiales ecológicos de alta durabilidad y un sistema modular desmontable de rápida construcción.",
     img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg",
-    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.mp4",
-    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.webm",
+    videoSrcMp4: "/videos/sample-3d.mp4",
+    videoSrcWebm: "/videos/sample-3d.mp4",
     process: [
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Boceto en papel" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", label: "Blockout 3D" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", label: "Clay render" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", label: "Render final" }
     ],
-    makingOfVideoMp4: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-loop-41851-large.mp4",
-    makingOfVideoWebm: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-loop-41851-large.webm"
+    makingOfVideoMp4: "/videos/sample-bbb.mp4",
+    makingOfVideoWebm: "/videos/sample-bbb.mp4"
   },
   {
     id: "altavoz-inteligente",
@@ -68,8 +68,8 @@ const RENDERS: RenderItem[] = [
     description:
       "Visualización publicitaria para el lanzamiento de un altavoz inteligente. Se modelaron con máxima fidelidad las texturas de aluminio cepillado y tela acústica, usando iluminación de estudio realista.",
     img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
-    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-rotating-3d-cube-with-glowing-edges-42353-large.mp4",
-    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-rotating-3d-cube-with-glowing-edges-42353-large.webm",
+    videoSrcMp4: "/videos/sample-bbb.mp4",
+    videoSrcWebm: "/videos/sample-bbb.mp4",
     process: [
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", label: "Referencia" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Blockout 3D" },
@@ -88,16 +88,16 @@ const RENDERS: RenderItem[] = [
     description:
       "Modelado de un pabellón botánico de cristal integrado en el bosque. Destaca el comportamiento de la luz natural a través de los cristales estructurados y la vegetación circundante.",
     img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
-    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-abstract-3d-render-of-geometric-shapes-42354-large.mp4",
-    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-abstract-3d-render-of-geometric-shapes-42354-large.webm",
+    videoSrcMp4: "/videos/sample-3d.mp4",
+    videoSrcWebm: "/videos/sample-3d.mp4",
     process: [
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Boceto en papel" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", label: "Blockout 3D" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", label: "Clay render" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", label: "Render final" }
     ],
-    makingOfVideoMp4: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.mp4",
-    makingOfVideoWebm: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.webm"
+    makingOfVideoMp4: "/videos/sample-bbb.mp4",
+    makingOfVideoWebm: "/videos/sample-bbb.mp4"
   },
   {
     id: "stand-cosmetica-bio",
@@ -110,8 +110,8 @@ const RENDERS: RenderItem[] = [
     description:
       "Visualización de un stand expositivo de cosmética bio. Combina iluminación cálida con texturas de madera y vegetación para transmitir pureza y sostenibilidad.",
     img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
-    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.mp4",
-    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.webm",
+    videoSrcMp4: "/videos/sample-bbb.mp4",
+    videoSrcWebm: "/videos/sample-bbb.mp4",
     process: [
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Boceto en papel" },
       { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", label: "Blockout 3D" },
@@ -191,7 +191,7 @@ function RenderCard({
       <img
         src={item.img}
         alt={item.title}
-        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 z-10"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200 z-10"
         style={{
           opacity: !isTouch && isHovered ? 0 : 1,
         }}
@@ -205,7 +205,7 @@ function RenderCard({
           muted
           playsInline
           poster={item.img}
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200"
           style={{
             opacity: isHovered ? 1 : 0,
           }}
@@ -591,8 +591,7 @@ export function RendersPage() {
                 poster="https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg"
                 className="w-full h-full object-cover"
               >
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.webm" type="video/webm" />
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.mp4" type="video/mp4" />
+                <source src="/videos/sample-bbb.mp4" type="video/mp4" />
               </video>
             </div>
           </div>
