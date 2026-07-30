@@ -120,7 +120,7 @@ export function SharedHeader() {
       bgColor: theme === "dark" ? "#211B14" : "#EADFD0",
       links: [
         { label: t("services.items.diseno-grafico.label"),  path: "/coleccion/diseno-grafico" },
-        { label: t("services.items.3d-stands.label"),     path: "/coleccion/3d-stands" },
+        { label: t("services.items.3d-stands.label"),     path: "/renders" },
         { label: "Diggin'",         path: "/coleccion/diggin" },
         { label: t("services.items.ilustracion.label"),     path: "/coleccion/ilustracion" },
         { label: t("services.items.concept-art.label"),   path: "/coleccion/concept-art" },

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { SharedFooter } from "../components/SharedFooter";
 import { motion } from "motion/react";
 import { ArrowLeft, Printer, Mail, Instagram, Globe } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
@@ -234,6 +235,7 @@ export function ResumePage() {
           </div>
         </motion.div>
       </div>
+      <SharedFooter />
     </div>
   );
 }
