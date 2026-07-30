@@ -107,7 +107,7 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
         >
           {num}
         </div>
-        {/* Orange corner accent on hover */}
+        {/* Blush corner accent on hover */}
         <div
           className="absolute bottom-0 left-0 right-0 bg-brand-blush transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{ height: hovered ? 3 : 0 }}
@@ -188,8 +188,8 @@ export function HorizontalGallery() {
             transition={{ duration: 0.5, ease }}
             className="flex gap-2.5 items-center mb-4.5"
           >
-            <div className="w-8 h-0.5 bg-brand-orange" />
-            <div className="w-2 h-0.5 bg-brand-orange opacity-35" />
+            <div className="w-8 h-0.5 bg-brand-blush" />
+            <div className="w-2 h-0.5 bg-brand-blush opacity-35" />
           </motion.div>
 
           <motion.h2

@@ -443,7 +443,8 @@ function AnimasBibleSection() {
     <section className="bg-[#0e0b07] py-20">
       <div className="px-6 md:px-10 mb-10">
         <motion.div
-          initial={{ scaleX: 0, originX: 0 }} animate={{ scaleX: 1 }}
+          initial={{ scaleX: 0, originX: 0 }} whileInView={{ scaleX: 1 }}
+          viewport={vp}
           transition={{ duration: 0.5 }}
           className="flex gap-2.5 items-center mb-6"
         >
@@ -451,19 +452,19 @@ function AnimasBibleSection() {
           <div className="w-2 h-0.5 opacity-35" style={{ backgroundColor: "#C8A96E" }} />
         </motion.div>
         <motion.p
-          variants={fadeUp} initial="hidden" animate="visible"
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
           className="font-sans text-[10px] tracking-[0.32em] uppercase mb-4" style={{ color: "#C8A96E" }}
         >
           {t("collection.animasBible.tagline")}
         </motion.p>
         <motion.h2
-          variants={fadeUp} initial="hidden" animate="visible"
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
           className="font-serif text-brand-cream text-[2.5rem] md:text-[4.5rem] font-light italic leading-[0.95] tracking-tight mb-5"
         >
           {t("collection.animasBible.title")}
         </motion.h2>
         <motion.p
-          variants={fadeUp} initial="hidden" animate="visible"
+          variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
           className="font-sans text-brand-cream/35 text-[12px] leading-relaxed max-w-[520px]"
         >
           {t("collection.animasBible.description")}
