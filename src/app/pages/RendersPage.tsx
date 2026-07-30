@@ -1,20 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { C, SERIF, SANS, RADIUS, ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
+import { useNavigate } from "react-router";
+import { ArrowUpRight } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { C, RADIUS, ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
 import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
 
-// ─── Viewport config ────────────────────────────────────────────────────────
-const vp = { once: true, margin: "-60px" } as const;
+// Registrar GSAP ScrollTrigger
+gsap.registerPlugin(ScrollTrigger);
 
-// ─── Cloudinary images ───────────────────────────────────────────────────────
-const IMG_WIREFRAME    = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png";
-const IMG_RENDER_FINAL = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg";
-const IMG_3D_A         = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg";
-const IMG_3D_B         = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
-const IMG_3D_C         = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
+// Tipografía local para esta sección específica
+const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const DMSANS = "'DM Sans', system-ui, sans-serif";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── Interfaces ──────────────────────────────────────────────────────────────
 interface RenderItem {
   id: string;
   title: string;
@@ -25,81 +26,99 @@ interface RenderItem {
   delivery: string;
   description: string;
   img: string;
-  imgPos?: string;
+  videoSrcMp4?: string;
+  videoSrcWebm?: string;
   process: { src: string; label: string }[];
-  videoSrc?: string;
+  makingOfVideoMp4?: string;
+  makingOfVideoWebm?: string;
 }
 
-// ─── Data ────────────────────────────────────────────────────────────────────
+// ─── Datos de Proyectos 3D (Mixkit Abstract loops + Cloudinary Images) ─────────
 const RENDERS: RenderItem[] = [
   {
-    id: "stand-feria-01",
-    title: "Stand Feria del Mueble",
-    client: "Proyecto comercial",
-    year: "2024",
+    id: "stand-feria-milan",
+    title: "Stand Modular de Feria — Milán",
+    client: "Fiera Milano S.p.A.",
+    year: "2025",
     badge: "STAND · FERIA",
-    software: ["Blender", "SketchUp"],
-    delivery: "Renders + Planos técnicos",
+    software: ["Blender", "SketchUp", "AutoCAD"],
+    delivery: "Planos técnicos + Renders fotorrealistas",
     description:
-      "Diseño y visualización completa de stand modular para feria. Del boceto inicial al render fotorrealista listo para fabricación.",
-    img: IMG_WIREFRAME,
-    imgPos: "50% 30%",
+      "Propuesta de stand fotorrealista para exhibición de mobiliario de vanguardia. La estructura utiliza materiales ecológicos de alta durabilidad y un sistema modular desmontable de rápida construcción.",
+    img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg",
+    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.mp4",
+    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.webm",
     process: [
-      { src: IMG_WIREFRAME,    label: "Blockout 3D" },
-      { src: IMG_RENDER_FINAL, label: "Render final" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Boceto en papel" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", label: "Blockout 3D" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", label: "Clay render" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", label: "Render final" }
     ],
+    makingOfVideoMp4: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-loop-41851-large.mp4",
+    makingOfVideoWebm: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-loop-41851-large.webm"
   },
   {
-    id: "producto-3d-01",
-    title: "Visualización de Producto",
-    client: "Diggin' Records",
+    id: "altavoz-inteligente",
+    title: "Altavoz Hi-Fi Inteligente 3D",
+    client: "Soundwave Technologies",
     year: "2024",
     badge: "PRODUCTO · 3D",
-    software: ["Blender", "Photoshop"],
-    delivery: "Renders HD + Animación",
+    software: ["Cinema 4D", "Octane Render", "Photoshop"],
+    delivery: "Renders promocionales + Animación publicitaria",
     description:
-      "Render fotorrealista de producto para campaña musical. Iluminación de estudio y materiales procedurales.",
-    img: IMG_RENDER_FINAL,
-    imgPos: "50% 50%",
+      "Visualización publicitaria para el lanzamiento de un altavoz inteligente. Se modelaron con máxima fidelidad las texturas de aluminio cepillado y tela acústica, usando iluminación de estudio realista.",
+    img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-rotating-3d-cube-with-glowing-edges-42353-large.mp4",
+    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-rotating-3d-cube-with-glowing-edges-42353-large.webm",
     process: [
-      { src: IMG_3D_A,         label: "Referencia" },
-      { src: IMG_RENDER_FINAL, label: "Resultado" },
-    ],
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", label: "Referencia" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Blockout 3D" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", label: "Clay render" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", label: "Render final" }
+    ]
   },
   {
-    id: "arquitectura-01",
-    title: "Reconstrucción Arquitectónica",
-    client: "Proyecto interno",
+    id: "pabellon-cristal",
+    title: "Pabellón Botánico de Cristal",
+    client: "Proyecto de investigación",
     year: "2025",
     badge: "ARQUITECTURA",
-    software: ["Blender", "AutoCAD"],
-    delivery: "Planos técnicos + Renders",
+    software: ["Blender", "V-Ray", "Photoshop"],
+    delivery: "Renders fotorrealistas + Recorrido virtual",
     description:
-      "Reconstrucción y visualización de espacio arquitectónico. Modelado desde planos 2D hasta render ambiental.",
-    img: IMG_3D_B,
-    imgPos: "50% 20%",
+      "Modelado de un pabellón botánico de cristal integrado en el bosque. Destaca el comportamiento de la luz natural a través de los cristales estructurados y la vegetación circundante.",
+    img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-abstract-3d-render-of-geometric-shapes-42354-large.mp4",
+    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-abstract-3d-render-of-geometric-shapes-42354-large.webm",
     process: [
-      { src: IMG_3D_B, label: "Wireframe" },
-      { src: IMG_3D_C, label: "Clay render" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Boceto en papel" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", label: "Blockout 3D" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", label: "Clay render" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", label: "Render final" }
     ],
+    makingOfVideoMp4: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.mp4",
+    makingOfVideoWebm: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.webm"
   },
   {
-    id: "stand-modular-02",
-    title: "Módulo Expositivo",
-    client: "Cliente B",
-    year: "2025",
-    badge: "STAND · EXPOSICIÓN",
-    software: ["Cinema 4D", "Blender"],
-    delivery: "Renders + Animación 360°",
+    id: "stand-cosmetica-bio",
+    title: "Stand de Cosmética Orgánica",
+    client: "Natura Cosmetics",
+    year: "2024",
+    badge: "STAND · FERIA",
+    software: ["Blender", "SketchUp", "Substance Painter"],
+    delivery: "Todos (planos técnicos, renders y animación de recorrido)",
     description:
-      "Módulo expositivo polivalente diseñado para múltiples configuraciones. Visualización completa con materiales finales.",
-    img: IMG_3D_C,
-    imgPos: "50% 15%",
+      "Visualización de un stand expositivo de cosmética bio. Combina iluminación cálida con texturas de madera y vegetación para transmitir pureza y sostenibilidad.",
+    img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+    videoSrcMp4: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.mp4",
+    videoSrcWebm: "https://assets.mixkit.co/videos/preview/mixkit-spinning-glowing-3d-dna-double-helix-42355-large.webm",
     process: [
-      { src: IMG_3D_C,      label: "Modelo 3D" },
-      { src: IMG_WIREFRAME, label: "Plano técnico" },
-    ],
-  },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png", label: "Boceto en papel" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", label: "Blockout 3D" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", label: "Clay render" },
+      { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", label: "Render final" }
+    ]
+  }
 ];
 
 // ─── RenderCard ───────────────────────────────────────────────────────────────
@@ -107,69 +126,139 @@ function RenderCard({
   item,
   colSpan,
   onOpen,
+  isTouch,
 }: {
   item: RenderItem;
   colSpan: string;
   onOpen: (item: RenderItem) => void;
+  isTouch: boolean;
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Lazy loading con IntersectionObserver (200px margin)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Control de reproducción del vídeo en hover
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || isTouch) return;
+
+    if (isHovered) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  }, [isHovered, isTouch]);
+
   return (
     <motion.div
+      ref={cardRef}
       variants={staggerItem}
-      className={`${colSpan} relative overflow-hidden cursor-pointer rounded-sm`}
-      style={{ aspectRatio: "4/3" }}
       onClick={() => onOpen(item)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`${colSpan} relative overflow-hidden cursor-pointer rounded-2xl group w-full`}
+      style={{
+        aspectRatio: "16/9",
+        backgroundColor: "var(--brand-dark, #0D0908)",
+        border: "1px solid rgba(245, 237, 224, 0.05)",
+      }}
     >
-      {/* Main image */}
+      {/* Thumbnail Estática (Hover: se desvanece en desktop) */}
       <img
         src={item.img}
         alt={item.title}
-        style={{ objectPosition: item.imgPos ?? "50% 50%" }}
-        className="w-full h-full object-cover brightness-75 hover:brightness-90 hover:scale-105 transition-all duration-700"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 z-10"
+        style={{
+          opacity: !isTouch && isHovered ? 0 : 1,
+        }}
       />
 
-      {/* Badge */}
-      <span
-        className="absolute top-3 right-3 font-sans text-[9px] tracking-widest uppercase rounded-full border border-brand-cream/10"
+      {/* Vídeo en Hover (Lazy loaded y crossfade) */}
+      {!isTouch && isIntersecting && item.videoSrcMp4 && (
+        <video
+          ref={videoRef}
+          loop
+          muted
+          playsInline
+          poster={item.img}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+          style={{
+            opacity: isHovered ? 1 : 0,
+          }}
+        >
+          <source src={item.videoSrcWebm} type="video/webm" />
+          <source src={item.videoSrcMp4} type="video/mp4" />
+        </video>
+      )}
+
+      {/* Play Button Overlay (Sólo en Dispositivos Touch) */}
+      {isTouch && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/25 z-20">
+          <div 
+            className="w-12 h-12 rounded-full flex items-center justify-center text-[#F5EDE0] shadow-lg backdrop-blur-md" 
+            style={{ 
+              backgroundColor: "rgba(229, 84, 39, 0.9)", // Brand Orange
+              border: "1px solid rgba(245, 237, 224, 0.15)"
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5 translate-x-[2px]">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* Badge en Esquina (Neon Green) */}
+      <div
+        className="absolute top-4 right-4 z-20 font-sans text-[9px] font-bold tracking-widest uppercase py-1 px-2.5 rounded-md"
         style={{
-          fontFamily: SANS,
-          padding: "4px 10px",
-          background: "rgba(0,0,0,0.60)",
-          backdropFilter: "blur(4px)",
-          color: "rgba(245,237,224,0.80)",
+          fontFamily: DMSANS,
+          backgroundColor: "rgba(13, 9, 8, 0.85)",
+          color: "#C8FF00",
+          border: "1px solid rgba(200, 255, 0, 0.2)",
+          backdropFilter: "blur(4px)"
         }}
       >
         {item.badge}
-      </span>
+      </div>
 
-      {/* Hover overlay */}
+      {/* Overlay de información (Visible al hacer hover en desktop, estático en touch) */}
       <div
-        className="absolute inset-0 flex flex-col justify-end p-5 opacity-0 hover:opacity-100 transition-opacity duration-400"
+        className={`absolute inset-x-0 bottom-0 p-5 z-20 flex flex-col justify-end transition-all duration-300 ${
+          isTouch ? "opacity-100" : "opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+        }`}
         style={{
-          background:
-            "linear-gradient(to top, var(--brand-bg, #17120F) 0%, rgba(23,18,15,0.40) 55%, transparent 100%)",
+          background: "linear-gradient(to top, rgba(13, 9, 8, 0.95) 0%, rgba(13, 9, 8, 0.4) 70%, transparent 100%)",
         }}
       >
-        <p
-          style={{
-            fontFamily: SERIF,
-            color: C.cream,
-            fontSize: "1rem",
-            fontWeight: 400,
-            lineHeight: 1.2,
-            marginBottom: "4px",
-          }}
-        >
+        <h3 className="font-serif text-[#F5EDE0] text-base font-light leading-tight mb-1" style={{ fontFamily: PLAYFAIR }}>
           {item.title}
-        </p>
-        <p
-          style={{
-            fontFamily: SANS,
-            color: C.blush,
-            fontSize: "10px",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-          }}
-        >
+        </h3>
+        <p className="font-sans text-[10px] tracking-wider uppercase" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
           {item.client}
         </p>
       </div>
@@ -181,186 +270,209 @@ function RenderCard({
 function Lightbox({
   item,
   onClose,
+  language,
 }: {
   item: RenderItem;
   onClose: () => void;
+  language: "es" | "en";
 }) {
-  const [ctaHover, setCtaHover] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
 
-  // ESC key
+  // Cerrar al pulsar tecla ESC
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const fields: { label: string; value: string }[] = [
-    { label: "Cliente",   value: item.client },
-    { label: "Año",       value: item.year },
-    { label: "Tipo",      value: item.badge },
-    { label: "Software",  value: item.software.join(", ") },
-    { label: "Entrega",   value: item.delivery },
-  ];
-
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0"
-        style={{ background: "rgba(0,0,0,0.88)" }}
+    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 md:p-6 no-print">
+      
+      {/* Backdrop (Fade-in) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.92 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
         onClick={onClose}
+        className="absolute inset-0 bg-black cursor-pointer"
       />
 
-      {/* Panel */}
+      {/* Contenedor del Lightbox (Scale y Fade) */}
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.3, ease }}
-        className="relative w-full max-w-[860px] max-h-[92vh] overflow-y-auto rounded-t-2xl md:rounded-xl"
-        style={{ backgroundColor: C.dark }}
+        className="relative w-full h-full md:h-auto md:max-h-[92vh] md:max-w-[860px] bg-brand-dark border-0 md:border border-brand-cream/10 md:rounded-2xl shadow-2xl flex flex-col overflow-y-auto"
+        style={{
+          backgroundColor: "var(--brand-dark, #0D0908)",
+        }}
       >
-        {/* Header */}
-        <div
-          className="sticky top-0 z-10 flex justify-between items-center px-6 py-4"
-          style={{
-            background: "rgba(13,9,8,0.95)",
-            backdropFilter: "blur(8px)",
-            borderBottom: "1px solid rgba(245,237,224,0.08)",
-          }}
-        >
-          <span style={{ fontFamily: SERIF, color: C.cream, fontSize: "1.1rem" }}>
+        {/* Cabecera del Lightbox */}
+        <div className="sticky top-0 z-30 flex justify-between items-center px-6 py-4 border-b border-brand-cream/10" style={{ backgroundColor: "rgba(13, 9, 8, 0.95)", backdropFilter: "blur(8px)" }}>
+          <h2 className="font-serif text-[#F5EDE0] text-base font-normal tracking-wide" style={{ fontFamily: PLAYFAIR }}>
             {item.title}
-          </span>
+          </h2>
           <button
             onClick={onClose}
-            style={{ fontFamily: SANS, color: C.secondary, background: "none", border: "none", cursor: "pointer", fontSize: "1rem" }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = C.cream)}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = C.secondary)}
+            className="w-8 h-8 rounded-full border border-brand-cream/10 flex items-center justify-center text-brand-secondary hover:text-brand-orange hover:bg-brand-cream/5 cursor-pointer transition-all duration-200"
           >
             ✕
           </button>
         </div>
 
-        {/* Main image */}
-        <img
-          src={item.img}
-          alt={item.title}
-          className="w-full object-cover"
-          style={{
-            aspectRatio: "16/9",
-            objectPosition: item.imgPos ?? "50% 50%",
-          }}
-        />
-
-        {/* Process strip */}
-        {item.process.length > 0 && (
-          <div className="px-6 pt-6 pb-4">
-            <p
-              style={{
-                fontFamily: SANS,
-                color: C.blush,
-                fontSize: "9px",
-                letterSpacing: "0.3em",
-                textTransform: "uppercase",
-                marginBottom: "16px",
-              }}
+        {/* Bloque 1 - El render */}
+        <div className="w-full bg-black flex items-center justify-center relative overflow-hidden">
+          {item.videoSrcMp4 ? (
+            <video
+              controls
+              autoPlay
+              className="w-full max-h-[60vh] object-contain bg-black"
+              poster={item.img}
             >
-              EL PROCESO
-            </p>
-            <div
-              className="flex gap-3 pb-2"
-              style={{ overflowX: "auto", scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
+              <source src={item.videoSrcWebm} type="video/webm" />
+              <source src={item.videoSrcMp4} type="video/mp4" />
+            </video>
+          ) : (
+            <div 
+              className="w-full overflow-hidden cursor-zoom-in flex items-center justify-center"
+              onClick={() => setIsZoomed(!isZoomed)}
             >
-              {item.process.map((step, i) => (
-                <div key={i} className="flex-shrink-0 rounded overflow-hidden" style={{ width: "140px" }}>
-                  <img
-                    src={step.src}
-                    alt={step.label}
-                    className="w-full object-cover"
-                    style={{ aspectRatio: "4/3" }}
-                  />
-                  <p
-                    className="text-center mt-1"
-                    style={{
-                      fontFamily: SANS,
-                      color: C.secondary,
-                      fontSize: "9px",
-                    }}
-                  >
-                    {step.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Technical sheet */}
-        <div
-          className="px-6 py-5 grid grid-cols-2 gap-x-6 gap-y-3"
-          style={{ borderTop: "1px solid rgba(245,237,224,0.08)" }}
-        >
-          {fields.map((f) => (
-            <div key={f.label}>
-              <p
+              <img
+                src={item.img}
+                alt={item.title}
+                className="w-full h-auto max-h-[60vh] object-contain transition-transform duration-300"
                 style={{
-                  fontFamily: SANS,
-                  color: C.secondary,
-                  fontSize: "9px",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  marginBottom: "2px",
+                  transform: isZoomed ? "scale(1.3)" : "scale(1)"
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Bloque 2 - El proceso (making of) */}
+        <div className="p-6 md:p-8 flex flex-col gap-6">
+          <div>
+            <p className="font-sans text-[9px] tracking-[0.3em] font-bold text-brand-orange uppercase mb-4" style={{ fontFamily: DMSANS, color: C.orange }}>
+              {language === "es" ? "EL PROCESO" : "THE PROCESS"}
+            </p>
+            
+            {/* Subsección: Software usado */}
+            <div className="mb-6">
+              <h4 className="font-sans text-[10px] font-bold tracking-wider text-brand-secondary uppercase mb-2" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
+                {language === "es" ? "Software usado" : "Software used"}
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {item.software.map((sw) => (
+                  <span key={sw} className="font-sans text-xs px-3.5 py-1.5 rounded-full bg-brand-cream/5 border border-brand-cream/10 text-brand-cream" style={{ fontFamily: DMSANS }}>
+                    {sw}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Subsección: Del boceto al render */}
+            <div className="mb-6">
+              <h4 className="font-sans text-[10px] font-bold tracking-wider text-brand-secondary uppercase mb-3" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
+                {language === "es" ? "Del boceto al render" : "From sketch to render"}
+              </h4>
+              
+              {/* Carrusel horizontal con snap */}
+              <div 
+                className="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none"
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none"
                 }}
               >
-                {f.label}
-              </p>
-              <p style={{ fontFamily: SANS, color: C.cream, fontSize: "12px" }}>
-                {f.value}
-              </p>
+                {item.process.map((step, i) => (
+                  <div key={i} className="flex-shrink-0 snap-start flex flex-col gap-2" style={{ width: "200px" }}>
+                    <div className="w-[200px] h-[150px] overflow-hidden rounded-lg border border-brand-cream/10 bg-brand-dark/30">
+                      <img
+                        src={step.src}
+                        alt={step.label}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    <p className="font-sans text-[11px] text-center text-brand-cream/60" style={{ fontFamily: DMSANS }}>
+                      {step.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
 
-        {/* Description */}
-        <div className="px-6 pb-4" style={{ borderTop: "1px solid rgba(245,237,224,0.08)", paddingTop: "16px" }}>
-          <p
-            style={{
-              fontFamily: SANS,
-              color: C.secondary,
-              fontSize: "13px",
-              lineHeight: 1.7,
-            }}
-          >
-            {item.description}
-          </p>
-        </div>
+            {/* Subsección: Vídeo making of (Opcional) */}
+            {item.makingOfVideoMp4 && (
+              <div className="mb-6">
+                <h4 className="font-sans text-[10px] font-bold tracking-wider text-brand-secondary uppercase mb-3" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
+                  {language === "es" ? "Vídeo making of" : "Making of video"}
+                </h4>
+                <div className="w-full rounded-lg overflow-hidden border border-brand-cream/10 bg-black">
+                  <video controls className="w-full max-h-[30vh] object-cover">
+                    <source src={item.makingOfVideoWebm} type="video/webm" />
+                    <source src={item.makingOfVideoMp4} type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            )}
 
-        {/* CTA button */}
-        <div className="mx-6 mb-6">
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
-            onMouseEnter={() => setCtaHover(true)}
-            onMouseLeave={() => setCtaHover(false)}
-            style={{
-              width: "100%",
-              border: `1px solid ${C.blush}`,
-              color: ctaHover ? C.ink : C.blush,
-              backgroundColor: ctaHover ? C.blush : "transparent",
-              fontFamily: SANS,
-              fontSize: "11px",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              padding: "14px 28px",
-              borderRadius: RADIUS,
-              cursor: "pointer",
-              transition: "background-color 0.28s, color 0.28s",
-            }}
-          >
-            PEDIR UN RENDER SIMILAR →
-          </button>
+            {/* Ficha técnica */}
+            <div className="py-6 border-t border-brand-cream/10">
+              <h4 className="font-sans text-[10px] font-bold tracking-wider text-brand-secondary uppercase mb-4" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
+                {language === "es" ? "Ficha Técnica" : "Technical Sheet"}
+              </h4>
+              <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm mb-6">
+                <div>
+                  <p className="text-[10px] text-brand-secondary uppercase tracking-widest font-semibold" style={{ fontFamily: DMSANS }}>
+                    {language === "es" ? "Cliente" : "Client"}
+                  </p>
+                  <p className="text-brand-cream font-medium" style={{ fontFamily: DMSANS }}>{item.client}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-brand-secondary uppercase tracking-widest font-semibold" style={{ fontFamily: DMSANS }}>
+                    {language === "es" ? "Año" : "Year"}
+                  </p>
+                  <p className="text-brand-cream font-medium" style={{ fontFamily: DMSANS }}>{item.year}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-brand-secondary uppercase tracking-widest font-semibold" style={{ fontFamily: DMSANS }}>
+                    {language === "es" ? "Tipo" : "Type"}
+                  </p>
+                  <p className="text-brand-cream font-medium" style={{ fontFamily: DMSANS }}>{item.badge.replace(" · ", " / ")}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-brand-secondary uppercase tracking-widest font-semibold" style={{ fontFamily: DMSANS }}>
+                    {language === "es" ? "Software" : "Software"}
+                  </p>
+                  <p className="text-brand-cream font-medium" style={{ fontFamily: DMSANS }}>{item.software.join(", ")}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-[10px] text-brand-secondary uppercase tracking-widest font-semibold" style={{ fontFamily: DMSANS }}>
+                    {language === "es" ? "Formato de entrega" : "Delivery format"}
+                  </p>
+                  <p className="text-brand-cream font-medium" style={{ fontFamily: DMSANS }}>{item.delivery}</p>
+                </div>
+              </div>
+
+              {/* Botón encargo similar */}
+              <button
+                onClick={() => {
+                  onClose();
+                  window.dispatchEvent(new CustomEvent("open-booking-modal"));
+                }}
+                className="w-full py-4 border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-brand-ink rounded-lg font-sans font-bold text-xs uppercase tracking-widest cursor-pointer transition-all duration-300"
+                style={{ fontFamily: DMSANS }}
+              >
+                {language === "es" ? "PEDIR UN RENDER SIMILAR →" : "ORDER A SIMILAR RENDER →"}
+              </button>
+            </div>
+
+          </div>
         </div>
       </motion.div>
     </div>
@@ -369,267 +481,207 @@ function Lightbox({
 
 // ─── RendersPage ──────────────────────────────────────────────────────────────
 export function RendersPage() {
-  useLanguage(); // keep context subscribed for future i18n
+  const { language } = useLanguage();
+  const navigate = useNavigate();
   const [active, setActive] = useState<RenderItem | null>(null);
-  const [ctaHover, setCtaHover] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
+
+  const heroVideoRef = useRef<HTMLDivElement>(null);
+  const heroVideoContainerRef = useRef<HTMLDivElement>(null);
+
+  // Detectar dispositivo táctil
+  useEffect(() => {
+    setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0);
+  }, []);
+
+  // Animación parallax del vídeo del Hero mediante GSAP ScrollTrigger
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    const container = heroVideoContainerRef.current;
+    if (!video || !container) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(video, 
+        { yPercent: -10 },
+        {
+          yPercent: 10,
+          ease: "none",
+          scrollTrigger: {
+            trigger: container,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          }
+        }
+      );
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  // Alternancia asimétrica de columnas en desktop (60% / 40% o 40% / 60%)
+  const getColSpan = (i: number) => {
+    const isSecondInRow = i % 2 === 1;
+    const isOddRow = Math.floor(i / 2) % 2 === 1;
+    if (!isOddRow) {
+      return isSecondInRow ? "md:col-span-2" : "md:col-span-3";
+    } else {
+      return isSecondInRow ? "md:col-span-3" : "md:col-span-2";
+    }
+  };
 
   return (
     <div style={{ backgroundColor: C.bg, minHeight: "100vh" }}>
-
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section
-        style={{
-          padding: "clamp(96px, 12vw, 140px) clamp(20px, 5vw, 56px) clamp(48px, 6vw, 80px)",
-        }}
-      >
-        <div
-          className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] items-center"
-          style={{ gap: "48px", maxWidth: "1200px", margin: "0 auto" }}
-        >
-          {/* Left: text */}
-          <div>
-            {/* Decorative bar */}
-            <motion.div
-              initial={{ scaleX: 0, originX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={vp}
-              transition={{ duration: 0.5, delay: 0.1, ease }}
-              className="flex gap-2.5 items-center mb-6"
-            >
-              <div className="w-8 h-0.5" style={{ backgroundColor: C.blush }} />
-              <div className="w-2 h-0.5 opacity-35" style={{ backgroundColor: C.blush }} />
-            </motion.div>
-
-            {/* Eyebrow */}
+      
+      {/* ── HERO SECTION ── */}
+      <section className="relative pt-32 pb-16 px-6 md:px-10 max-w-[1200px] mx-auto">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+          
+          {/* Texto Hero */}
+          <div className="w-full lg:w-[40%] flex flex-col justify-center">
             <motion.p
               variants={fadeUp}
               initial="hidden"
-              whileInView="visible"
-              viewport={vp}
-              style={{
-                fontFamily: SANS,
-                color: C.blush,
-                fontSize: "10px",
-                letterSpacing: "0.28em",
-                textTransform: "uppercase",
-                marginBottom: "20px",
-              }}
+              animate="visible"
+              className="font-sans text-[10px] tracking-[0.3em] font-semibold text-brand-orange uppercase mb-4"
+              style={{ fontFamily: DMSANS, color: C.orange }}
             >
-              3D &amp; VISUALIZACIÓN
+              {language === "es" ? "3D & VISUALIZACIÓN" : "3D & VISUALIZATION"}
             </motion.p>
-
-            {/* H1 */}
+            
             <motion.h1
               variants={fadeUp}
               initial="hidden"
-              whileInView="visible"
-              viewport={vp}
-              style={{
-                fontFamily: SERIF,
-                color: C.cream,
-                fontSize: "clamp(2.8rem, 7vw, 5.5rem)",
-                fontWeight: 400,
-                lineHeight: 0.95,
-                whiteSpace: "pre-line",
-                marginBottom: "28px",
+              animate="visible"
+              className="font-serif font-light text-brand-cream tracking-tight mb-6"
+              style={{ 
+                fontFamily: PLAYFAIR, 
+                fontSize: "clamp(34px, 5vw, 56px)",
+                lineHeight: 1.1 
               }}
             >
-              {"Del plano\na la pantalla"}
+              {language === "es" ? "Del plano a la pantalla" : "From blueprint to screen"}
             </motion.h1>
 
-            {/* Subheading */}
             <motion.p
               variants={fadeUp}
               initial="hidden"
-              whileInView="visible"
-              viewport={vp}
-              style={{
-                fontFamily: SANS,
-                color: C.secondary,
-                fontSize: "14px",
-                lineHeight: 1.8,
-                maxWidth: "520px",
-              }}
+              animate="visible"
+              className="font-sans text-base leading-relaxed text-brand-secondary"
+              style={{ fontFamily: DMSANS, color: C.secondary }}
             >
-              Renders, modelado y visualización de espacios, productos y stands.
-              Cada pieza comienza en papel y termina en un mundo tridimensional.
+              {language === "es" 
+                ? "Renders, modelado y visualización de espacios, productos y stands. Cada pieza comienza en papel y termina en un mundo tridimensional."
+                : "Renders, modeling and visualization of spaces, products and stands. Each piece begins on paper and ends in a three-dimensional world."}
             </motion.p>
           </div>
 
-          {/* Right: hero image */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={vp}
-            style={{ borderRadius: "12px", overflow: "hidden", aspectRatio: "16/9" }}
+          {/* Vídeo Hero con Parallax */}
+          <div 
+            ref={heroVideoContainerRef}
+            className="w-full lg:w-[60%] overflow-hidden relative shadow-2xl"
+            style={{ borderRadius: "16px", aspectRatio: "16/9" }}
           >
-            <img
-              src={IMG_RENDER_FINAL}
-              alt="Render 3D destacado"
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
+            <div ref={heroVideoRef} className="w-full h-full scale-[1.2]">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster="https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg"
+                className="w-full h-full object-cover"
+              >
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.webm" type="video/webm" />
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-3d-glowing-lines-42356-large.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* ── Grid de renders ───────────────────────────────────────────────── */}
-      <section
-        style={{
-          backgroundColor: C.dark,
-          padding: "clamp(48px, 8vw, 96px) clamp(20px, 5vw, 56px)",
-        }}
-      >
-        {/* Eyebrow */}
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={vp}
-          style={{
-            fontFamily: SANS,
-            color: C.blush,
-            fontSize: "10px",
-            letterSpacing: "0.28em",
-            textTransform: "uppercase",
-            marginBottom: "24px",
-          }}
-        >
-          TRABAJOS
-        </motion.p>
+      {/* ── GRID PRINCIPAL ── */}
+      <section className="py-20 px-6 md:px-10 bg-brand-dark" style={{ backgroundColor: "var(--brand-dark, #0D0908)", borderTop: "1px solid rgba(255, 255, 255, 0.03)" }}>
+        <div className="max-w-[1200px] mx-auto">
+          
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            className="font-sans text-[10px] tracking-[0.3em] font-semibold text-brand-orange uppercase mb-12"
+            style={{ fontFamily: DMSANS, color: C.orange }}
+          >
+            {language === "es" ? "PROYECTOS RECIENTES" : "RECENT PROJECTS"}
+          </motion.p>
 
-        {/* Stagger grid */}
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={vp}
-          className="grid grid-cols-1 md:grid-cols-5 gap-1"
-        >
-          {RENDERS.map((item, i) => {
-            // Alternating asymmetric columns: odd indices → 3/2, even indices → 2/3
-            const isOdd = i % 2 !== 0;
-            const colA = isOdd ? "md:col-span-3" : "md:col-span-2";
-            const colB = isOdd ? "md:col-span-2" : "md:col-span-3";
-            // Each item occupies one "slot" in pairs
-            const colSpan = i % 2 === 0 ? colA : colB;
-            return (
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 md:grid-cols-5 gap-6"
+          >
+            {RENDERS.map((item, i) => (
               <RenderCard
                 key={item.id}
                 item={item}
-                colSpan={colSpan}
+                colSpan={getColSpan(i)}
                 onOpen={setActive}
+                isTouch={isTouch}
               />
-            );
-          })}
-        </motion.div>
-      </section>
-
-      {/* ── CTA Section ───────────────────────────────────────────────────── */}
-      <section
-        style={{
-          backgroundColor: C.bg,
-          padding: "clamp(72px, 10vw, 120px) clamp(20px, 5vw, 56px)",
-          borderTop: "1px solid rgba(245,237,224,0.05)",
-        }}
-      >
-        <div style={{ maxWidth: "760px" }}>
-          {/* Eyebrow */}
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={vp}
-            style={{
-              fontFamily: SANS,
-              color: C.blush,
-              fontSize: "10px",
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              marginBottom: "20px",
-            }}
-          >
-            ¿NECESITAS VISUALIZAR TU PROYECTO?
-          </motion.p>
-
-          {/* H2 */}
-          <motion.h2
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={vp}
-            style={{
-              fontFamily: SERIF,
-              color: C.cream,
-              fontSize: "clamp(1.8rem, 4vw, 3rem)",
-              fontWeight: 400,
-              whiteSpace: "pre-line",
-              lineHeight: 1.1,
-              marginBottom: "20px",
-            }}
-          >
-            {"Del papel a la pantalla,\nsin sorpresas"}
-          </motion.h2>
-
-          {/* Description */}
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={vp}
-            style={{
-              fontFamily: SANS,
-              color: C.secondary,
-              fontSize: "14px",
-              lineHeight: 1.8,
-              marginBottom: "36px",
-              maxWidth: "540px",
-            }}
-          >
-            Presentamos cada proyecto con renders de alta fidelidad antes de pasar
-            a producción. Sin ambigüedades, sin revisiones infinitas.
-          </motion.p>
-
-          {/* CTA button */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={vp}
-          >
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
-              onMouseEnter={() => setCtaHover(true)}
-              onMouseLeave={() => setCtaHover(false)}
-              style={{
-                backgroundColor: ctaHover ? "rgba(234,168,152,0.85)" : C.blush,
-                color: C.ink,
-                fontFamily: SANS,
-                fontSize: "13px",
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                padding: "16px 36px",
-                borderRadius: RADIUS,
-                border: "none",
-                cursor: "pointer",
-                transition: "background-color 0.25s",
-              }}
-            >
-              Pedir presupuesto
-            </button>
+            ))}
           </motion.div>
+
         </div>
       </section>
 
-      {/* ── Footer ───────────────────────────────────────────────────────── */}
+      {/* ── SECCIÓN CTA INFERIOR ── */}
+      <section className="bg-brand-bg py-24 px-6 md:px-10 overflow-hidden select-none border-t border-brand-cream/5" style={{ backgroundColor: "var(--brand-bg, #17120F)" }}>
+        <div className="max-w-[1100px] mx-auto group">
+          <div
+            onClick={() => navigate("/encargo")}
+            className="inline-block no-underline cursor-pointer"
+          >
+            <p 
+              className="font-sans text-brand-orange text-[10px] tracking-[0.3em] uppercase mb-4 transition-transform duration-300 group-hover:translate-x-1"
+              style={{ fontFamily: DMSANS, color: C.orange }}
+            >
+              {language === "es" ? "¿TIENES UN PROYECTO?" : "HAVE A PROJECT?"}
+            </p>
+            <h2 
+              className="font-serif text-brand-cream text-[2.2rem] md:text-[4rem] font-light leading-[1.15] tracking-tight hover:text-brand-blush transition-colors duration-500 flex flex-col gap-2"
+              style={{ fontFamily: PLAYFAIR }}
+            >
+              <span>
+                {language === "es" ? "¿Necesitas visualizar tu proyecto" : "Need to visualize your project"}
+              </span>
+              <span 
+                className="italic text-brand-blush font-light group-hover:text-brand-orange transition-colors duration-500 flex items-center gap-3"
+                style={{ color: "var(--brand-blush, #EAA898)" }}
+              >
+                {language === "es" ? "antes de construirlo?" : "before building it?"}
+                <ArrowUpRight className="w-8 h-8 md:w-12 md:h-12 stroke-[1] transition-transform duration-300 group-hover:translate-x-2 group-hover:-translate-y-2" />
+              </span>
+            </h2>
+          </div>
+        </div>
+      </section>
+
+      {/* Shared Footer */}
       <SharedFooter />
 
-      {/* ── Lightbox ─────────────────────────────────────────────────────── */}
+      {/* Lightbox con AnimatePresence */}
       <AnimatePresence>
         {active && (
-          <Lightbox item={active} onClose={() => setActive(null)} />
+          <Lightbox 
+            item={active} 
+            onClose={() => setActive(null)} 
+            language={language}
+          />
         )}
       </AnimatePresence>
+
     </div>
   );
 }

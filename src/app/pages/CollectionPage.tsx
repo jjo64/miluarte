@@ -20,6 +20,7 @@ interface CollectionMeta {
   label: string;
   statement: string;
   accent: string;
+  twoColumns?: boolean;
 }
 
 const META: Record<string, CollectionMeta> = {
@@ -34,6 +35,7 @@ const META: Record<string, CollectionMeta> = {
     label: "Sello musical · Dirección de arte",
     statement: "Portadas, identidad y dirección de arte para el sello independiente Diggin'. Graffiti, psicodelia y hip-hop en formato visual.",
     accent: "var(--color-brand-neon)",
+    twoColumns: true,
   },
   "concept-art": {
     title: "Concept Art",
@@ -197,12 +199,14 @@ function WorkCard({
   work, 
   accent, 
   onClick, 
-  imgRef 
+  imgRef,
+  isTwoColumns = false
 }: { 
   work: Work; 
   accent: string; 
   onClick: () => void; 
   imgRef: (el: HTMLImageElement | null) => void;
+  isTwoColumns?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
@@ -297,7 +301,7 @@ function WorkCard({
     <motion.div
       ref={cardRef}
       variants={staggerItem}
-      className={`relative overflow-hidden cursor-pointer col-span-3 ${work.gridCol}`}
+      className={`relative overflow-hidden cursor-pointer group col-span-1 ${work.gridCol}`}
       onMouseEnter={() => setHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -322,9 +326,7 @@ function WorkCard({
 
         {/* Museum label overlay */}
         <div
-          className={`absolute inset-0 bg-gradient-to-t from-brand-bg/97 via-brand-bg/30 to-transparent flex flex-col justify-end p-6 transition-opacity duration-400 ${
-            hovered ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 bg-gradient-to-t from-brand-bg/97 via-brand-bg/30 to-transparent flex flex-col justify-end p-6 transition-opacity duration-400 opacity-100 md:opacity-0 group-hover:opacity-100"
         >
           <p 
             className="font-sans text-[9px] tracking-widest uppercase mb-2.5" 
@@ -557,6 +559,7 @@ export function CollectionPage() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const meta = META[slug] ?? META["ilustracion"];
+  const isTwoColumns = meta.twoColumns ?? false;
   
   // Localize metadata dynamically
   const localizedMeta = {
@@ -755,7 +758,7 @@ export function CollectionPage() {
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-3 gap-0.5 mb-1"
+        className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} md:grid-cols-3 gap-2 md:gap-0.5 mb-1`}
       >
         {localizedWorks.map((w) => (
           <WorkCard 
@@ -764,6 +767,7 @@ export function CollectionPage() {
             accent={localizedMeta.accent} 
             onClick={() => handleWorkClick(w)}
             imgRef={(el) => { gridRefs.current[w.id] = el; }}
+            isTwoColumns={isTwoColumns}
           />
         ))}
       </motion.div>
