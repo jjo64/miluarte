@@ -635,37 +635,7 @@ export function RendersPage() {
         </div>
       </section>
 
-      {/* ── SECCIÓN CTA INFERIOR ── */}
-      <section className="bg-brand-bg py-24 px-6 md:px-10 overflow-hidden select-none border-t border-brand-cream/5" style={{ backgroundColor: "var(--brand-bg, #17120F)" }}>
-        <div className="max-w-[1100px] mx-auto group">
-          <div
-            onClick={() => navigate("/encargo")}
-            className="inline-block no-underline cursor-pointer"
-          >
-            <p 
-              className="font-sans text-brand-orange text-[10px] tracking-[0.3em] uppercase mb-4 transition-transform duration-300 group-hover:translate-x-1"
-              style={{ fontFamily: DMSANS, color: C.orange }}
-            >
-              {language === "es" ? "¿TIENES UN PROYECTO?" : "HAVE A PROJECT?"}
-            </p>
-            <h2 
-              className="font-serif text-brand-cream text-[2.2rem] md:text-[4rem] font-light leading-[1.15] tracking-tight hover:text-brand-blush transition-colors duration-500 flex flex-col gap-2"
-              style={{ fontFamily: PLAYFAIR }}
-            >
-              <span>
-                {language === "es" ? "¿Necesitas visualizar tu proyecto" : "Need to visualize your project"}
-              </span>
-              <span 
-                className="italic text-brand-blush font-light group-hover:text-brand-orange transition-colors duration-500 flex items-center gap-3"
-                style={{ color: "var(--brand-blush, #EAA898)" }}
-              >
-                {language === "es" ? "antes de construirlo?" : "before building it?"}
-                <ArrowUpRight className="w-8 h-8 md:w-12 md:h-12 stroke-[1] transition-transform duration-300 group-hover:translate-x-2 group-hover:-translate-y-2" />
-              </span>
-            </h2>
-          </div>
-        </div>
-      </section>
+
 
       {/* Shared Footer */}
       <SharedFooter />
