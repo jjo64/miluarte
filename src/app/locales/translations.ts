@@ -19,16 +19,7 @@ export const translations = {
       bio1: "Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas, joyería y concept art para proyectos musicales. Cada pieza hecha con dedicación y amor por los detalles.",
       bio2: "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
       viewWorks: "Ver trabajos",
-      sendInquiry: "Escribir encargo",
-      skills: [
-        "Ilustración", 
-        "Concept art", 
-        "Diseño gráfico", 
-        "Desarrollo de personajes", 
-        "Joyería & arcilla", 
-        "Merchandising musical", 
-        "Lienzos & galería"
-      ]
+      sendInquiry: "Escribir encargo"
     },
     gallery: {
       title: "Galería",
@@ -167,7 +158,7 @@ export const translations = {
     },
     resume: {
       title: "Currículum Vitae",
-      subtitle: "Nerea — Artista Visual, Diseñadora 3D e Ilustradora",
+      subtitle: "Artista Visual, Diseñadora 3D e Ilustradora",
       downloadPDF: "Guardar como PDF / Imprimir",
       back: "Volver al inicio",
       sections: {
@@ -177,37 +168,53 @@ export const translations = {
         skills: "Habilidades",
         languages: "Idiomas"
       },
-      profileText: "Artista visual multidisciplinar con un Máster en Ilustración y Arte Digital. Especializada en la dirección de arte para proyectos musicales, diseño tridimensional de stands comerciales y modelado físico de muñecas personalizadas y joyería. Combino técnicas tradicionales con herramientas digitales de última generación para crear narrativas visuales coherentes y espacios físicos impactantes.",
+      profileText: "Artista visual multidisciplinar con un Máster en Arte e Ilustración Digital. Especializada en la dirección de arte para proyectos musicales, diseño tridimensional de stands comerciales y modelado físico de muñecas personalizadas y joyería. Combino técnicas tradicionales con herramientas digitales de última generación para crear narrativas visuales coherentes y espacios físicos impactantes.",
       experienceItems: [
         {
-          role: "Dirección de Arte & Diseño de Merchandising",
-          company: "Diggin' Records (Sello independiente)",
-          period: "2022 - Presente",
-          description: "Dirección artística general de lanzamientos físicos y digitales. Diseño de portadas de vinilos, merchandising oficial, campañas promocionales ilustradas y dirección de videoclips animados."
+          role: "Ilustradora Creativa",
+          company: "Por cuenta propia / Freelance",
+          period: "2024 - Actualidad",
+          description: "Trabajos independientes de ilustración editorial, diseño de personajes y desarrollo de concept art para diversos proyectos comerciales independientes."
         },
         {
-          role: "Diseño 3D de Stands & Espacios Expositivos",
-          company: "Freelance / Agencias de Eventos",
-          period: "2021 - Presente",
-          description: "Diseño y visualización fotorrealista en 3D de stands para ferias comerciales, exposiciones y tiendas retail. Elaboración de planos técnicos para producción y fabricación real."
+          role: "Diseñadora Gráfica",
+          company: "Ledme Europa",
+          period: "2024 - Actualidad",
+          description: "Creación integral de catálogos (diseño, maquetación, dibujos técnicos, edición fotográfica y subida a web). Diseño y mantenimiento de página web y tienda online, y creación de contenido para redes sociales."
         },
         {
-          role: "Artista Plástica e Ilustradora Freelance",
-          company: "Estudio Propio (Miluarte)",
-          period: "2020 - Presente",
-          description: "Creación de obra artística personal expuesta en galerías de Madrid. Realización de encargos de retratos personalizados, modelado de muñecas articuladas en arcilla polimérica y diseño de joyería artesanal."
+          role: "Ilustradora Gráfica",
+          company: "Sello musical Diggin'",
+          period: "2024 - Actualidad",
+          description: "Ilustración digital y diseño gráfico para lanzamientos de música, portadas de álbumes y merchandising oficial del sello en remoto."
+        },
+        {
+          role: "Diseñadora Gráfica Freelance",
+          company: "Varias Empresas",
+          period: "2019 - Actualidad",
+          description: "Diseño gráfico general, identidad de marca, modelado y renderizado 3D de stands para ferias comerciales y espacios expositivos para diversos clientes."
         }
       ],
       educationItems: [
         {
-          degree: "Máster en Ilustración y Arte Digital",
-          school: "ESNE - Escuela Universitaria de Diseño, Innovación y Tecnología, Madrid",
-          period: "2019 - 2020"
+          degree: "Máster en Arte e Ilustración Digital",
+          school: "Trazos",
+          period: "2023 - 2024"
         },
         {
-          degree: "Grado en Diseño Gráfico y Dirección de Arte",
-          school: "Universidad de Barcelona / Escuelas de Diseño",
-          period: "2015 - 2019"
+          degree: "Máster en Arte Digital",
+          school: "Trazos",
+          period: "2024"
+        },
+        {
+          degree: "Máster en Ilustración",
+          school: "Trazos de Arte",
+          period: "2024"
+        },
+        {
+          degree: "Bachillerato",
+          school: "IES La Arboleda",
+          period: ""
         }
       ],
       skillsItems: {
@@ -217,7 +224,8 @@ export const translations = {
       },
       languagesItems: [
         { language: "Español", level: "Nativo" },
-        { language: "Inglés", level: "Fluido (C1 / Profesional)" }
+        { language: "Inglés", level: "Competencia básica profesional" },
+        { language: "Chino", level: "Competencia básica profesional" }
       ]
     },
     booking: {
@@ -309,6 +317,31 @@ export const translations = {
           description: "Piezas artesanales únicas: joyería, muñecas personalizadas y esculturas en arcilla hechas a mano."
         }
       }
+    },
+    contactModal: {
+      title: "Contacto General",
+      subtitle: "Usa este formulario para ofertas de trabajo, colaboraciones o proyectos de gran envergadura.",
+      close: "Cerrar",
+      submit: "Enviar mensaje",
+      success: {
+        title: "¡Mensaje enviado!",
+        message: "Gracias por contactar. Analizaré tu propuesta de inmediato y te responderé lo antes posible.",
+        close: "Volver a la web"
+      },
+      fields: {
+        name: "Nombre completo",
+        email: "Correo electrónico",
+        company: "Empresa / Organización (Opcional)",
+        subject: "Motivo del contacto",
+        message: "Mensaje / Detalles de la propuesta",
+        messagePlaceholder: "Describe detalladamente las condiciones, plazos o tu propuesta...",
+        subjectOptions: {
+          job: "Oferta Laboral",
+          collab: "Colaboración / Alianza",
+          gigantic: "Proyecto de Gran Envergadura",
+          other: "Otro Asunto"
+        }
+      }
     }
   },
   en: {
@@ -329,16 +362,7 @@ export const translations = {
       bio1: "With a Master's Degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom dolls, jewelry, and concept art for music projects. Each piece crafted with dedication and love for details.",
       bio2: "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
       viewWorks: "View works",
-      sendInquiry: "Send inquiry",
-      skills: [
-        "Illustration", 
-        "Concept art", 
-        "Graphic design", 
-        "Character development", 
-        "Clay & jewelry", 
-        "Music merchandising", 
-        "Canvases & gallery"
-      ]
+      sendInquiry: "Send inquiry"
     },
     gallery: {
       title: "Gallery",
@@ -477,7 +501,7 @@ export const translations = {
     },
     resume: {
       title: "Curriculum Vitae",
-      subtitle: "Nerea — Visual Artist, 3D Designer & Illustrator",
+      subtitle: "Visual Artist, 3D Designer & Illustrator",
       downloadPDF: "Save as PDF / Print",
       back: "Back to home",
       sections: {
@@ -487,37 +511,53 @@ export const translations = {
         skills: "Skills",
         languages: "Languages"
       },
-      profileText: "Multidisciplinary visual artist with a Master's in Illustration and Digital Art. Specialized in art direction for music projects, 3D stand design for commercial fairs, and custom ball-jointed clay doll and jewelry creation. I combine traditional techniques with cutting-edge digital tools to create cohesive visual stories and impactful physical spaces.",
+      profileText: "Multidisciplinary visual artist with a Master's in Digital Art and Illustration. Specialized in art direction for music projects, 3D stand design for commercial fairs, and custom ball-jointed clay doll and jewelry creation. I combine traditional techniques with cutting-edge digital tools to create cohesive visual stories and impactful physical spaces.",
       experienceItems: [
         {
-          role: "Art Direction & Merchandising Design",
-          company: "Diggin' Records (Independent label)",
-          period: "2022 - Present",
-          description: "General art direction for physical and digital releases. Vinyl cover design, official merchandise, illustrated promotional campaigns, and art direction for animated music videos."
+          role: "Creative Illustrator",
+          company: "Self-employed / Freelance",
+          period: "2024 - Present",
+          description: "Freelance work in editorial illustration, character design, and concept art development for independent clients and commercial projects."
         },
         {
-          role: "3D Stand & Exhibition Design",
-          company: "Freelance / Event Agencies",
-          period: "2021 - Present",
-          description: "3D design and photorealistic rendering of stands for commercial fairs, exhibitions, and retail stores. Development of technical plans for production and real construction."
+          role: "Graphic Designer",
+          company: "Ledme Europa",
+          period: "2024 - Present",
+          description: "Comprehensive catalog creation (design, layout, technical drawings, photo editing, and web upload). Design and maintenance of website and online store, and content creation for social media."
         },
         {
-          role: "Visual Artist & Freelance Illustrator",
-          company: "Own Studio (Miluarte)",
-          period: "2020 - Present",
-          description: "Creation of personal art pieces exhibited in galleries in Madrid. Customized portrait commissions, ball-jointed doll sculpting in polymer clay, and handmade jewelry design."
+          role: "Graphic Illustrator",
+          company: "Diggin' Records",
+          period: "2024 - Present",
+          description: "Digital illustration and graphic design for musical releases, album covers, and official merchandise for the label remotely."
+        },
+        {
+          role: "Freelance Graphic Designer",
+          company: "Various Companies",
+          period: "2019 - Present",
+          description: "General graphic design, brand identity, 3D modeling and rendering of stands for trade shows and exhibitions for multiple clients."
         }
       ],
       educationItems: [
         {
-          degree: "Master's Degree in Illustration and Digital Art",
-          school: "ESNE - University School of Design, Innovation and Technology, Madrid",
-          period: "2019 - 2020"
+          degree: "Master's Degree in Digital Art & Illustration",
+          school: "Trazos",
+          period: "2023 - 2024"
         },
         {
-          degree: "Bachelor's Degree in Graphic Design & Art Direction",
-          school: "University of Barcelona / Design Schools",
-          period: "2015 - 2019"
+          degree: "Master's Degree in Digital Art",
+          school: "Trazos",
+          period: "2024"
+        },
+        {
+          degree: "Master's Degree in Illustration",
+          school: "Trazos de Arte",
+          period: "2024"
+        },
+        {
+          degree: "High School Diploma",
+          school: "IES La Arboleda",
+          period: ""
         }
       ],
       skillsItems: {
@@ -527,7 +567,8 @@ export const translations = {
       },
       languagesItems: [
         { language: "Spanish", level: "Native" },
-        { language: "English", level: "Fluent (C1 / Professional)" }
+        { language: "English", level: "Basic Professional Proficiency" },
+        { language: "Chinese", level: "Basic Professional Proficiency" }
       ]
     },
     booking: {
@@ -617,6 +658,31 @@ export const translations = {
         clay: {
           title: "Jewelry & Clay Art",
           description: "Unique handcrafted pieces: jewelry, custom art-dolls and hand-sculpted clay figures."
+        }
+      }
+    },
+    contactModal: {
+      title: "General Contact",
+      subtitle: "Use this form for job offers, collaborations, or large-scale projects.",
+      close: "Close",
+      submit: "Send message",
+      success: {
+        title: "Message sent!",
+        message: "Thank you for reaching out. I will review your proposal and get back to you as soon as possible.",
+        close: "Back to website"
+      },
+      fields: {
+        name: "Full Name",
+        email: "Email address",
+        company: "Company / Organization (Optional)",
+        subject: "Reason for contact",
+        message: "Message / Proposal details",
+        messagePlaceholder: "Describe in detail the conditions, timeline or your proposal...",
+        subjectOptions: {
+          job: "Job Offer",
+          collab: "Collaboration / Partnership",
+          gigantic: "Large-Scale Project",
+          other: "Other Inquiries"
         }
       }
     }

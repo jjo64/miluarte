@@ -31,14 +31,14 @@ export function SharedFooter() {
             className="inline-block no-underline"
           >
             <p className="font-sans text-brand-orange text-[10px] tracking-[0.3em] uppercase mb-4 transition-transform duration-300 group-hover:translate-x-1">
-              {language === "es" ? "Comenzar un proyecto" : "Start a project"}
+              {language === "es" ? "¿Tienes un proyecto?" : "Have a project?"}
             </p>
             <h2 className="font-serif text-brand-cream text-[2.6rem] md:text-[4.8rem] font-light leading-[1.05] tracking-tight hover:text-brand-blush transition-colors duration-500 cursor-pointer flex flex-wrap items-center gap-x-6">
               <span>
-                {language === "es" ? "¿Tienes una idea?" : "Have an idea?"}
+                {language === "es" ? "¿Necesitas visualizar tu proyecto" : "Need to visualize your project"}
               </span>
               <span className="italic text-brand-blush font-light group-hover:text-brand-orange transition-colors duration-500 flex items-center gap-3">
-                {language === "es" ? "Démosle vida" : "Let's bring it to life"}
+                {language === "es" ? "antes de construirlo?" : "before building it?"}
                 <ArrowUpRight className="w-8 h-8 md:w-14 md:h-14 stroke-[1] transition-transform duration-300 group-hover:translate-x-2 group-hover:-translate-y-2" />
               </span>
             </h2>
@@ -52,7 +52,7 @@ export function SharedFooter() {
           <div className="flex flex-col justify-between gap-6">
             <div>
               <p className="font-serif text-brand-cream text-2xl font-light tracking-wide mb-4">Miluarte</p>
-              <p className="font-sans text-brand-cream/35 text-xs leading-relaxed max-w-[280px]">
+              <p className="font-sans text-brand-cream/65 text-xs leading-relaxed max-w-[280px]">
                 {t("footer.studio")}
               </p>
             </div>
@@ -63,7 +63,7 @@ export function SharedFooter() {
                 href="https://www.instagram.com/naraneko13/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-sans text-brand-cream/30 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
+                className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
               >
                 Instagram
               </a>
@@ -71,7 +71,7 @@ export function SharedFooter() {
                 href="https://www.linkedin.com/in/nerealucaspajares4815162342/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-sans text-brand-cream/30 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
+                className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
               >
                 LinkedIn
               </a>
@@ -88,7 +88,7 @@ export function SharedFooter() {
                 <button
                   key={idx}
                   onClick={() => navigate(`/coleccion/${item.slug}`)}
-                  className="font-sans text-brand-cream/50 hover:text-brand-cream text-xs bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline text-left"
+                  className="font-sans text-brand-cream/65 hover:text-brand-cream text-xs bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline text-left"
                 >
                   {item.label}
                 </button>
@@ -102,8 +102,18 @@ export function SharedFooter() {
               <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-6">
                 {t("footer.contact")}
               </p>
-              <p className="font-sans text-brand-cream/50 text-xs mb-1">hola@miluarte.com</p>
-              <p className="font-sans text-brand-cream/35 text-[11px]">Miluartedenara@gmail.com</p>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
+                className="font-sans text-brand-cream/65 hover:text-brand-orange text-xs mb-1.5 bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline text-left block"
+              >
+                hola@miluartedenara.com
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
+                className="font-sans text-brand-cream/60 hover:text-brand-orange text-[11px] bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline text-left block"
+              >
+                Miluartedenara@gmail.com
+              </button>
             </div>
 
             <div className="flex flex-col gap-3.5 items-start">
@@ -126,7 +136,7 @@ export function SharedFooter() {
         </div>
 
         {/* ── Bottom Strip ── */}
-        <div className="border-t border-brand-cream/5 pt-8 flex flex-col md:flex-row justify-between gap-4 font-sans text-brand-cream/15 text-[10.5px]">
+        <div className="border-t border-brand-cream/5 pt-8 flex flex-col md:flex-row justify-between gap-4 font-sans text-brand-cream/50 text-[10.5px]">
           <p>{t("footer.rights")}</p>
           <p className="flex items-center gap-1.5">
             <span>{t("footer.madeWithCriteria")}</span>

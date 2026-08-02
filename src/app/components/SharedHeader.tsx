@@ -10,7 +10,8 @@ import { useLanguage } from "../context/LanguageContext";
 
 type NavLink =
   | { label: string; path: string; external?: false; thumbnail?: string }
-  | { label: string; href: string; external: true; thumbnail?: string };
+  | { label: string; href: string; external: true; thumbnail?: string }
+  | { label: string; onClick: () => void; external?: never; thumbnail?: string };
 
 interface NavCard {
   label: string;
@@ -113,6 +114,10 @@ export function SharedHeader() {
   const navRef   = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef    = useRef<gsap.core.Timeline | null>(null);
+  const lastWidthRef = useRef(window.innerWidth);
+  const expandedRef  = useRef(expanded);
+
+  expandedRef.current = expanded;
 
   const navCards: NavCard[] = [
     {
@@ -161,7 +166,10 @@ export function SharedHeader() {
       label: t("nav.contact"),
       bgColor: theme === "dark" ? "#0D0908" : "#E5D9C8",
       links: [
-        { label: "Miluartedenara@gmail.com", href: "mailto:Miluartedenara@gmail.com", external: true },
+        { 
+          label: "Miluartedenara@gmail.com", 
+          onClick: () => window.dispatchEvent(new CustomEvent("open-contact-modal")) 
+        },
         { label: "Instagram",       href: "https://www.instagram.com/naraneko13/", external: true },
         { label: "LinkedIn",        href: "https://www.linkedin.com/in/nerealucaspajares4815162342/", external: true },
         { label: t("nav.resume"),   path: "/resume" },
@@ -225,7 +233,7 @@ export function SharedHeader() {
         document.body.style.overflow = "";
       }
     });
-    tl.to(navEl, { height: calculateHeight, duration: 0.4, ease: "power3.out" });
+    tl.fromTo(navEl, { height: 60 }, { height: calculateHeight, duration: 0.4, ease: "power3.out" });
     tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out", stagger: 0.08 }, "-=0.1");
     return tl;
   };
@@ -233,6 +241,10 @@ export function SharedHeader() {
   useLayoutEffect(() => {
     const tl = createTimeline();
     tlRef.current = tl;
+    if (expandedRef.current && tl) {
+      // Keep it open if it was already open when theme changed
+      tl.progress(1);
+    }
     return () => {
       tl?.kill();
       // Belt-and-suspenders: explicitly clear overflowY on unmount/route
@@ -245,9 +257,12 @@ export function SharedHeader() {
 
   useLayoutEffect(() => {
     const handleResize = () => {
+      const width = window.innerWidth;
+      if (width === lastWidthRef.current) return;
+      lastWidthRef.current = width;
+
       if (!tlRef.current) return;
       if (expanded) {
-        gsap.set(navRef.current, { height: calculateHeight() });
         tlRef.current.kill();
         const newTl = createTimeline();
         if (newTl) { newTl.progress(1); tlRef.current = newTl; }
@@ -309,6 +324,22 @@ export function SharedHeader() {
     if (expanded) toggleMenu();
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const navEl = navRef.current;
+      if (navEl && !navEl.contains(event.target as Node)) {
+        toggleMenu();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   const setCardRef = (i: number) => (el: HTMLDivElement | null) => {
     if (el) cardsRef.current[i] = el;
   };
@@ -317,7 +348,7 @@ export function SharedHeader() {
     <div className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1200px] z-50">
       <nav
         ref={navRef}
-        className="w-full relative overflow-hidden rounded-2xl border border-brand-cream/10 shadow-2xl bg-brand-bg/90 backdrop-blur-md transition-all duration-300"
+        className="w-full relative overflow-hidden rounded-2xl border border-brand-cream/10 shadow-2xl bg-brand-bg/90 backdrop-blur-md transition-colors duration-300"
       >
         {/* ── Top bar ── */}
         <div className="h-[60px] flex items-center justify-between px-4 md:px-10 relative z-20 gap-2">
@@ -379,7 +410,7 @@ export function SharedHeader() {
           {navCards.map((card, idx) => (
             <div
               key={card.label}
-              className="p-4 md:p-8 flex flex-col justify-between border border-brand-cream/5 rounded-xl shadow-inner min-h-[160px] md:min-h-[220px]"
+              className="p-4 md:p-8 flex flex-col justify-start border border-brand-cream/5 rounded-xl shadow-inner min-h-[160px] md:min-h-[220px]"
               ref={setCardRef(idx)}
               style={{ backgroundColor: card.bgColor, color: "var(--color-brand-cream)" }}
             >
@@ -392,6 +423,30 @@ export function SharedHeader() {
                   const linkClass = "font-sans text-brand-cream/80 hover:text-brand-orange text-sm cursor-pointer flex items-center gap-3 bg-transparent border-none p-0 text-left transition-colors duration-200 group w-full";
                   const iconClass = "w-4 h-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200 shrink-0";
                   const textClass = "font-semibold tracking-wide text-brand-cream/80 group-hover:text-brand-cream transition-colors duration-200";
+
+                  if ("onClick" in lnk) {
+                    return (
+                      <button
+                        key={i}
+                        className={linkClass}
+                        onClick={() => {
+                          lnk.onClick();
+                          setIsOpen(false);
+                        }}
+                      >
+                        {lnk.thumbnail ? (
+                          <img
+                            src={lnk.thumbnail}
+                            alt=""
+                            className="w-[30px] h-[30px] rounded-[6px] object-cover flex-shrink-0 border border-brand-cream/15 group-hover:border-brand-orange transition-all duration-250"
+                          />
+                        ) : (
+                          <ArrowUpRight className={iconClass} aria-hidden />
+                        )}
+                        <span className={textClass}>{lnk.label}</span>
+                      </button>
+                    );
+                  }
 
                   if ("href" in lnk) {
                     return (

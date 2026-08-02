@@ -19,13 +19,12 @@ export function ResumePage() {
   const languagesItems = t("resume.languagesItems") || [];
 
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-cream pt-28 pb-20 px-6 md:px-10 print:bg-white print:text-neutral-900 print:pt-0 print:pb-0">
+    <div className="min-h-screen bg-brand-bg text-brand-cream print:bg-white print:text-neutral-900">
       
       {/* ── Print Styles Override ── */}
       <style>{`
         @media print {
           nav, 
-          header, 
           footer,
           .no-print {
             display: none !important;
@@ -55,7 +54,7 @@ export function ResumePage() {
         }
       `}</style>
 
-      <div className="max-w-[920px] mx-auto print-container">
+      <div className="max-w-[920px] mx-auto print-container pt-28 pb-20 px-6 md:px-10 print:pt-0 print:pb-0">
         
         {/* ── Navigation & Actions (Hidden during print) ── */}
         <div className="flex justify-between items-center mb-12 no-print">
@@ -81,26 +80,40 @@ export function ResumePage() {
           transition={{ duration: 0.6, ease }}
           className="border-b border-brand-cream/15 pb-9 mb-10 print-border print:pb-6 print:mb-8"
         >
-          <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-6 items-end">
-            <div>
-              <h1 className="font-serif text-[2.8rem] md:text-[3.8rem] font-light leading-[1.05] tracking-tight mb-3 print-text-dark print:text-[2.2rem]">
-                Nerea
-              </h1>
-              <p className="font-sans text-brand-blush text-[12px] md:text-[13px] tracking-[0.2em] uppercase font-medium print-text-dark print:tracking-[0.15em] print:text-[11px]">
-                {t("resume.subtitle")}
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 items-end">
+            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+              <img
+                src="https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png"
+                alt="Nerea Lucas Pajares"
+                className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover border border-brand-cream/15 shadow-sm shrink-0 print:w-20 print:h-20"
+              />
+              <div>
+                <h1 className="font-serif text-[2.5rem] md:text-[3.2rem] font-light leading-[1.05] tracking-tight mb-3 print-text-dark print:text-[2rem]">
+                  Nerea Lucas Pajares
+                </h1>
+                <p className="font-sans text-brand-blush text-[12px] md:text-[13px] tracking-[0.2em] uppercase font-medium print-text-dark print:tracking-[0.15em] print:text-[11px]">
+                  {t("resume.subtitle")}
+                </p>
+              </div>
             </div>
             
             {/* Contact Details Grid */}
             <div className="flex flex-col gap-2 font-sans text-brand-cream/60 text-xs md:items-end print-text-muted print:text-[10px] print:gap-1">
-              <a href="mailto:Miluartedenara@gmail.com" className="flex items-center gap-2 hover:text-brand-orange no-underline transition-colors duration-200">
+              <a 
+                href="mailto:Miluartedenara@gmail.com" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent("open-contact-modal"));
+                }}
+                className="flex items-center gap-2 hover:text-brand-orange no-underline transition-colors duration-200 cursor-pointer"
+              >
                 <Mail size={12} className="text-brand-blush print-text-dark" /> Miluartedenara@gmail.com
               </a>
               <a href="https://www.instagram.com/naraneko13/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-brand-orange no-underline transition-colors duration-200">
                 <Instagram size={12} className="text-brand-blush print-text-dark" /> @naraneko13
               </a>
               <span className="flex items-center gap-2">
-                <Globe size={12} className="text-brand-blush print-text-dark" /> miluarte.com
+                <Globe size={12} className="text-brand-blush print-text-dark" /> miluartedenara.com
               </span>
             </div>
           </div>

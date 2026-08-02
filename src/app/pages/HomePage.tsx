@@ -18,17 +18,6 @@ const vp = { once: true, margin: "-70px" } as const;
 
 function Hero() {
   const { t } = useLanguage();
-  const skills = (t("hero.skills") || []) as string[];
-
-  const getSkillEmoji = (skill: string) => {
-    const s = skill.toLowerCase();
-    if (s.includes("ilustra")) return "🎨";
-    if (s.includes("concept") || s.includes("personaje") || s.includes("character") || s.includes("desarrollo")) return "🧠";
-    if (s.includes("gráfi") || s.includes("graph")) return "📖";
-    if (s.includes("musi") || s.includes("merch") || s.includes("musical")) return "🎵";
-    if (s.includes("joye") || s.includes("clay") || s.includes("arcilla")) return "💍";
-    return "✨";
-  };
 
   return (
     <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-28 pb-16 md:py-24">
@@ -115,26 +104,13 @@ function Hero() {
           </motion.div>
         </div>
 
-        {/* ── Right: Skills + framed artwork ── */}
+        {/* ── Right: Framed artwork ── */}
         <motion.div
           initial={{ opacity: 0, x: 32 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.35, ease }}
-          className="flex flex-col justify-center gap-6 mt-8 md:mt-0 order-2"
+          className="flex flex-col justify-start mt-4 md:mt-0 order-2 gap-5"
         >
-          {/* Skill tags */}
-          <div className="flex flex-wrap gap-2">
-            {skills.map((skill) => (
-              <span
-                key={skill}
-                className="font-sans text-brand-cream/80 text-[11px] tracking-wide border border-brand-cream/15 py-2 px-3.5 rounded-full bg-brand-cream/5 flex items-center gap-2 transition-all duration-300 hover:border-brand-blush hover:text-brand-blush"
-              >
-                <span>{getSkillEmoji(skill)}</span>
-                <span>{skill}</span>
-              </span>
-            ))}
-          </div>
-
           {/* Framed Miluarte artwork */}
           <div className="relative rounded-lg overflow-hidden shadow-2xl aspect-[4/5] bg-brand-dark">
             <img
@@ -143,22 +119,25 @@ function Hero() {
               className="w-full h-full object-cover block"
             />
             {/* Small badge overlay */}
-            <div className="absolute bottom-3.5 left-3.5 flex items-center gap-2 bg-[#180E09]/78 backdrop-blur-sm py-1.5 px-3 rounded-full border border-brand-cream/10 select-none pointer-events-none">
+            <div className="absolute bottom-3.5 left-3.5 flex items-center gap-2 bg-[#180E09]/78 backdrop-blur-sm py-1.5 px-3 rounded-full border border-white/10 select-none pointer-events-none">
               <img
                 src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg"
                 alt=""
                 className="w-6 h-6 rounded-full object-cover"
               />
-              <span className="font-sans text-brand-cream text-[9px] tracking-widest uppercase">
+              <span className="font-sans text-[#F5EDE0] text-[9px] tracking-widest uppercase">
                 Miluarte
               </span>
             </div>
           </div>
 
           {/* Email */}
-          <p className="font-sans text-brand-cream/30 text-[11px] tracking-wider">
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
+            className="font-sans text-brand-cream/60 hover:text-brand-orange text-[11px] tracking-wider bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline block"
+          >
             Miluartedenara@gmail.com
-          </p>
+          </button>
         </motion.div>
       </div>
 
