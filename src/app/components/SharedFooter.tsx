@@ -126,7 +126,7 @@ export function SharedFooter() {
               
               <button
                 onClick={handleOpenBooking}
-                className="font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3.5 px-6 rounded-lg cursor-pointer transition-colors duration-300 font-semibold shadow-lg"
+                className="font-sans bg-brand-blush hover:bg-brand-cream text-brand-ink text-[10px] tracking-widest uppercase border-none py-3.5 px-6 rounded-lg cursor-pointer transition-colors duration-300 font-semibold shadow-lg"
               >
                 {t("footer.budget")}
               </button>

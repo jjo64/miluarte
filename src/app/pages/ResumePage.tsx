@@ -67,7 +67,7 @@ export function ResumePage() {
 
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-2.5 px-5 rounded-lg cursor-pointer transition-colors duration-300 font-medium shadow-md"
+            className="flex items-center gap-2 font-sans bg-brand-blush hover:bg-brand-cream text-brand-ink text-[10px] tracking-widest uppercase border-none py-2.5 px-5 rounded-lg cursor-pointer transition-colors duration-300 font-medium shadow-md"
           >
             <Printer size={13} /> {t("resume.downloadPDF")}
           </button>

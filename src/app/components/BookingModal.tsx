@@ -566,10 +566,10 @@ export function BookingModal() {
                     type="button"
                     disabled={isSubmitting}
                     onClick={handleSubmit}
-                    className="flex items-center gap-2 font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3 px-6 rounded-lg cursor-pointer transition-colors duration-250 font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 font-sans bg-brand-blush hover:bg-brand-cream text-brand-ink text-[10px] tracking-widest uppercase border-none py-3 px-6 rounded-lg cursor-pointer transition-colors duration-250 font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
-                      <span className="w-3.5 h-3.5 border-2 border-brand-cream border-t-transparent rounded-full animate-spin" />
+                      <span className="w-3.5 h-3.5 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
                         {t("booking.submit")}

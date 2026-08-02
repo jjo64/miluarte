@@ -67,7 +67,7 @@ function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.55, ease }}
-            className="font-sans text-brand-cream/60 text-[13.5px] leading-relaxed mb-4 max-w-[480px]"
+            className="font-sans text-brand-cream/80 text-[13.5px] leading-relaxed mb-4 max-w-[480px]"
           >
             {t("hero.bio1")}
           </motion.p>
@@ -76,7 +76,7 @@ function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.65, ease }}
-            className="font-sans text-brand-cream/45 text-[13.5px] leading-relaxed mb-10 max-w-[480px]"
+            className="font-sans text-brand-cream/70 text-[13.5px] leading-relaxed mb-10 max-w-[480px]"
           >
             {t("hero.bio2")}
           </motion.p>
@@ -144,7 +144,7 @@ function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-7 right-10 flex flex-col items-center gap-2.5 opacity-30 z-10 hidden md:flex select-none">
+      <div className="absolute bottom-7 right-10 flex flex-col items-center gap-2.5 opacity-65 z-10 hidden md:flex select-none">
         <span className="font-sans text-[9px] tracking-widest uppercase text-brand-cream [writing-mode:vertical-rl]">Scroll</span>
         <div className="w-[1px] h-12 bg-brand-cream" />
       </div>

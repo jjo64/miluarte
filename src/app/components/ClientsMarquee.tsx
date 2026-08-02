@@ -99,7 +99,7 @@ function LogoChip({ name }: { name: string }) {
         letterSpacing:   "0.12em",
         textTransform:   "uppercase",
         color:           "var(--brand-cream, rgba(255,255,255,0.4))",
-        opacity:         0.4,
+        opacity:         0.7,
         marginRight:     16,
         flexShrink:      0,
       }}

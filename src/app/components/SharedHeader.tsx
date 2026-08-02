@@ -390,7 +390,10 @@ export function SharedHeader() {
         </div>
 
         {/* ── Mobile-only controls (language + theme), shown inside the open menu ── */}
-        <div className="mobile-controls-row flex md:hidden items-center justify-between gap-3 px-4 pb-4 pt-1">
+        <div 
+          className="mobile-controls-row flex md:hidden items-center justify-between gap-3 px-4 pb-4 pt-1"
+          style={{ display: expanded ? undefined : "none" }}
+        >
           <span className="font-sans text-[10px] font-bold tracking-[0.12em] uppercase text-brand-cream/40">
             {language === "es" ? "Preferencias" : "Preferences"}
           </span>
@@ -405,7 +408,10 @@ export function SharedHeader() {
           className={`card-nav-content grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 px-4 md:px-8 pb-4 md:pb-6 w-full ${
             expanded ? "overflow-y-auto" : "overflow-hidden"
           }`}
-          style={{ maxHeight: 'calc(85vh - 60px)' }}
+          style={{ 
+            maxHeight: 'calc(85vh - 60px)',
+            display: expanded ? "grid" : "none"
+          }}
           aria-hidden={!expanded}
         >
           {navCards.map((card, idx) => (
