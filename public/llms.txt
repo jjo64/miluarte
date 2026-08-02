@@ -1,0 +1,29 @@
+﻿# Miluarte - Portafolio Creativo de Nerea
+
+## Sobre Miluarte
+
+Miluarte es el estudio creativo de Nerea, ilustradora y artista digital con base en Madrid. Especializada en ilustracion, concept art, diseno grafico, joyeria artesanal y proyectos artisticos a medida.
+
+## Servicios
+
+- Ilustracion digital y tradicional
+- Concept Art para videojuegos, animacion y proyectos creativos
+- Diseno grafico e identidad visual
+- Joyeria artesanal personalizada
+- Retratos y encargos artisticos
+
+## Paginas del sitio
+
+- [Inicio](https://miluartedenara.com/) - Portada principal y presentacion
+- [Coleccion](https://miluartedenara.com/coleccion/) - Galeria de obras y trabajos realizados
+- [Renders 3D & Stands](https://miluartedenara.com/renders/) - Diseno y visualizacion 3D
+- [Curriculum](https://miluartedenara.com/resume/) - Formacion y experiencia profesional
+
+## Contacto
+
+- Email: hola@miluartedenara.com
+- Sitio web: https://miluartedenara.com
+
+## Colaboraciones y clientes
+
+Ha colaborado con musicos, marcas y proyectos creativos incluyendo: Diggin Records, Pasta Ya, Estudio Nova, Galeria Lumen, Animas Project y Colectivo Tinta.
