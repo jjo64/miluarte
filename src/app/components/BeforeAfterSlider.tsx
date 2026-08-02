@@ -23,17 +23,42 @@ export function BeforeAfterSlider({
   beforeFilter,
 }: BeforeAfterSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const containerRect = useRef<DOMRect | null>(null);
   const [pos, setPos]         = useState(0.5);  // 0–1
   const dragging              = useRef(false);
 
+  const updateRect = useCallback(() => {
+    if (containerRef.current) {
+      containerRect.current = containerRef.current.getBoundingClientRect();
+    }
+  }, []);
+
   const getRelativePos = useCallback((clientX: number) => {
-    const rect = containerRef.current?.getBoundingClientRect();
+    let rect = containerRect.current;
+    if (!rect) {
+      if (containerRef.current) {
+        rect = containerRef.current.getBoundingClientRect();
+        containerRect.current = rect;
+      }
+    }
     if (!rect) return 0.5;
     return Math.min(Math.max((clientX - rect.left) / rect.width, 0.05), 0.95);
   }, []);
 
+  // Recalculate container geometry if window resizes
+  useEffect(() => {
+    const handleResize = () => {
+      containerRect.current = null;
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Mouse events
-  const onMouseDown = useCallback(() => { dragging.current = true; }, []);
+  const onMouseDown = useCallback(() => {
+    updateRect();
+    dragging.current = true;
+  }, [updateRect]);
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
@@ -54,7 +79,10 @@ export function BeforeAfterSlider({
     const container = containerRef.current;
     if (!container) return;
 
-    const onTouchStart = () => { dragging.current = true; };
+    const onTouchStart = () => {
+      updateRect();
+      dragging.current = true;
+    };
     const onTouchMove  = (e: TouchEvent) => {
       if (!dragging.current) return;
       e.preventDefault();
@@ -72,7 +100,7 @@ export function BeforeAfterSlider({
       container.removeEventListener("touchmove",  onTouchMove);
       container.removeEventListener("touchend",   onTouchEnd);
     };
-  }, [getRelativePos]);
+  }, [getRelativePos, updateRect]);
 
   const pct = `${pos * 100}%`;
 

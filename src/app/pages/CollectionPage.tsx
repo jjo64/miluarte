@@ -212,6 +212,7 @@ function WorkCard({
   const [hovered, setHovered] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
+  const cardRectRef = useRef<DOMRect | null>(null);
   const { t, language } = useLanguage();
 
   const getLocalizedPrice = (price: string) => {
@@ -281,9 +282,13 @@ function WorkCard({
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
+    let rect = cardRectRef.current;
+    if (!rect) {
+      const card = cardRef.current;
+      if (!card) return;
+      rect = card.getBoundingClientRect();
+      cardRectRef.current = rect;
+    }
     const width = rect.width;
     const height = rect.height;
     const mouseX = e.clientX - rect.left - width / 2;
@@ -294,6 +299,7 @@ function WorkCard({
   };
 
   const handleMouseLeave = () => {
+    cardRectRef.current = null;
     setHovered(false);
     setRotate({ x: 0, y: 0 });
   };
@@ -625,10 +631,14 @@ export function CollectionPage() {
 
   // Magnifying glass detail zoom state
   const [zoomState, setZoomState] = useState({ show: false, x: 0, y: 0, bgX: 0, bgY: 0 });
+  const modalRectRef = useRef<DOMRect | null>(null);
 
   const handleModalMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-    const rect = container.getBoundingClientRect();
+    let rect = modalRectRef.current;
+    if (!rect) {
+      rect = e.currentTarget.getBoundingClientRect();
+      modalRectRef.current = rect;
+    }
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
@@ -646,6 +656,7 @@ export function CollectionPage() {
   };
 
   const handleModalMouseLeave = () => {
+    modalRectRef.current = null;
     setZoomState((prev) => ({ ...prev, show: false }));
   };
 

@@ -55,14 +55,19 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
   const [hovered, setHovered] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
+  const cardRectRef = useRef<DOMRect | null>(null);
   const { t } = useLanguage();
   const num = String(index + 1).padStart(2, "0");
   const localizedAlt = t(`gallery.alts.${altKey}`) || "Artwork";
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
+    let rect = cardRectRef.current;
+    if (!rect) {
+      const card = cardRef.current;
+      if (!card) return;
+      rect = card.getBoundingClientRect();
+      cardRectRef.current = rect;
+    }
     const width = rect.width;
     const height = rect.height;
     const mouseX = e.clientX - rect.left - width / 2;
@@ -73,6 +78,7 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
   };
 
   const handleMouseLeave = () => {
+    cardRectRef.current = null;
     setHovered(false);
     setRotate({ x: 0, y: 0 });
   };
