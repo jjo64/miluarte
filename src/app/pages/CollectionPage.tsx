@@ -442,7 +442,7 @@ function AnimasBibleSection() {
   }, []);
 
   return (
-    <section className="bg-[#0e0b07] py-20">
+    <section className="bg-brand-dark py-20">
       <div className="px-6 md:px-10 mb-10">
         <motion.div
           initial={{ scaleX: 0, originX: 0 }} whileInView={{ scaleX: 1 }}
@@ -467,7 +467,7 @@ function AnimasBibleSection() {
         </motion.h2>
         <motion.p
           variants={fadeUp} initial="hidden" whileInView="visible" viewport={vp}
-          className="font-sans text-brand-cream/35 text-[12px] leading-relaxed max-w-[520px]"
+          className="font-sans text-brand-cream/65 text-[12px] leading-relaxed max-w-[520px]"
         >
           {t("collection.animasBible.description")}
         </motion.p>
@@ -509,7 +509,7 @@ function AnimasBibleSection() {
 
         {!scrolled && (
           <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 flex items-center gap-2 pointer-events-none group-hover/slider:opacity-0 transition-opacity duration-300">
-            <span className="font-sans text-[9px] tracking-widest uppercase text-brand-cream/30">
+            <span className="font-sans text-[9px] tracking-widest uppercase text-brand-cream/60">
               {language === "es" ? "desplazar" : "scroll"}
             </span>
             <div className="w-6 h-[1px] bg-brand-cream/20" />

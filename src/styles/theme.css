@@ -9,7 +9,7 @@
   --brand-orange: #D43E11; /* Deeper orange for contrast */
   --brand-blush: #B55C49; /* Deeper terracotta/blush for readability */
   --brand-ink: #FAF6F0; /* Light ink (inverted for contrast components) */
-  --brand-dark: #EADFD0; /* Soft dark cream for cards/alternating sections */
+  --brand-dark: #F2DFDB; /* Soft dark cream/blush for cards/alternating sections */
   --brand-neon: #79A300; /* Contrast neon green */
   --brand-wall: #D6997D;
   --brand-secondary: #70685A;
@@ -219,3 +219,13 @@
     line-height: 1.5;
   }
 }
+
+/* Hide default scrollbars in the expanded navbar menu */
+nav, .card-nav-content {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+nav::-webkit-scrollbar, .card-nav-content::-webkit-scrollbar {
+  display: none !important;
+}
+
