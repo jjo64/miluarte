@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, CheckCircle2, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useLanguage } from "../context/LanguageContext";
 import { ease } from "../tokens";
@@ -18,8 +18,14 @@ export function BookingModal() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   
-  // Validation states
+  // Calendar states
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
+  
+  // Validation and Submission states
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => {
@@ -30,6 +36,9 @@ export function BookingModal() {
       setBudget("");
       setName("");
       setEmail("");
+      setSelectedDate(null);
+      setCurrentMonth(new Date());
+      setShowCalendar(false);
       setError("");
       setIsOpen(true);
       document.body.style.overflow = "hidden"; // Lock page scroll
@@ -46,15 +55,65 @@ export function BookingModal() {
     document.body.style.overflow = ""; // Unlock page scroll
   };
 
+  const months = language === "es"
+    ? ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+    : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+  const weekDays = language === "es"
+    ? ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"]
+    : ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (year: number, month: number) => {
+    const day = new Date(year, month, 1).getDay();
+    return day === 0 ? 6 : day - 1; // Adjust so Monday is 0, Sunday is 6
+  };
+
+  const handleMonthChange = (direction: "prev" | "next") => {
+    setCurrentMonth((prev) => {
+      const newDate = new Date(prev);
+      if (direction === "prev") {
+        newDate.setMonth(newDate.getMonth() - 1);
+      } else {
+        newDate.setMonth(newDate.getMonth() + 1);
+      }
+      return newDate;
+    });
+  };
+
+  const isDateBeforeToday = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
+  const isSelectedDate = (date: Date) => {
+    if (!selectedDate) return false;
+    return (
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear()
+    );
+  };
+
   const handleNext = () => {
     setError("");
     if (step === 1 && !projectType) {
       setError(language === "es" ? "Por favor, selecciona un tipo de proyecto" : "Please select a project type");
       return;
     }
-    if (step === 2 && !description.trim()) {
-      setError(language === "es" ? "Por favor, introduce una descripción de tu idea" : "Please describe your idea");
-      return;
+    if (step === 2) {
+      if (!description.trim()) {
+        setError(language === "es" ? "Por favor, introduce una descripción de tu idea" : "Please describe your idea");
+        return;
+      }
+      if (!selectedDate) {
+        setError(language === "es" ? "Por favor, selecciona una fecha en el calendario" : "Please select a date on the calendar");
+        return;
+      }
     }
     setStep((prev) => prev + 1);
   };
@@ -64,14 +123,15 @@ export function BookingModal() {
     setStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     if (!name.trim()) {
       setError(language === "es" ? "Por favor, introduce tu nombre" : "Please enter your name");
       return;
     }
-    if (!email.trim() || !email.includes("@")) {
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError(language === "es" ? "Por favor, introduce un correo electrónico válido" : "Please enter a valid email");
       return;
     }
@@ -80,15 +140,60 @@ export function BookingModal() {
       return;
     }
 
-    // Trigger canvas-confetti explosion
-    confetti({
-      particleCount: 120,
-      spread: 80,
-      origin: { y: 0.6 },
-      colors: ["#E55427", "#EAA898", "#F5EDE0", "#B4FF2E"]
-    });
+    setIsSubmitting(true);
 
-    setStep(4);
+    try {
+      const response = await fetch("/api/send-booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          projectType,
+          description,
+          timeline: selectedDate ? selectedDate.toLocaleDateString(language === "es" ? "es-ES" : "en-US", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          }) : "",
+          budget,
+          name,
+          email
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ["#E55427", "#EAA898", "#F5EDE0", "#B4FF2E"]
+        });
+        setStep(4);
+      } else {
+        setError(data.error || (language === "es" ? "Error al enviar la solicitud" : "Error sending request"));
+      }
+    } catch (err) {
+      console.error(err);
+      const isLocalDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      if (isLocalDev) {
+        console.warn("API endpoint not available in local Vite server. Simulating success in development.");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ["#E55427", "#EAA898", "#F5EDE0", "#B4FF2E"]
+        });
+        setStep(4);
+      } else {
+        setError(language === "es" ? "Error de conexión con el servidor. Inténtalo de nuevo." : "Connection error. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const budgetRanges = t("booking.fields.budgetRanges") || [];
@@ -113,7 +218,7 @@ export function BookingModal() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 30 }}
             transition={{ duration: 0.4, ease }}
-            className="relative w-full max-w-[640px] h-full sm:h-auto max-h-[100vh] sm:max-h-[85vh] bg-brand-bg border border-brand-cream/10 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden text-brand-cream p-6 sm:p-10"
+            className="relative w-full max-w-[640px] h-full sm:h-auto max-h-[100vh] sm:max-h-[85vh] bg-brand-bg border border-brand-cream/10 sm:rounded-2xl shadow-2xl flex flex-col sm:overflow-visible overflow-hidden text-brand-cream p-6 sm:p-10"
           >
             {/* Header */}
             <div className="flex justify-between items-start mb-6">
@@ -222,18 +327,128 @@ export function BookingModal() {
                       />
                     </div>
 
-                    {/* Timeline Input */}
-                    <div className="flex flex-col gap-2.5">
+                    {/* Timeline Input with Custom Calendar */}
+                    <div className="flex flex-col gap-2.5 relative">
                       <label className="font-sans text-brand-cream/70 text-xs font-semibold">
                         {t("booking.fields.timeline")}
                       </label>
-                      <input
-                        type="text"
-                        value={timeline}
-                        onChange={(e) => setTimeline(e.target.value)}
-                        placeholder={t("booking.fields.timelinePlaceholder")}
-                        className="bg-brand-dark/50 border border-brand-cream/10 rounded-lg p-3 text-[12.5px] font-sans text-brand-cream placeholder:text-brand-cream/25 focus:border-brand-orange focus:outline-none transition-colors duration-200"
-                      />
+                      <div className="relative">
+                        <input
+                          type="text"
+                          readOnly
+                          value={
+                            selectedDate
+                              ? selectedDate.toLocaleDateString(language === "es" ? "es-ES" : "en-US", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })
+                              : ""
+                          }
+                          onClick={() => setShowCalendar(!showCalendar)}
+                          placeholder={t("booking.fields.timelinePlaceholder")}
+                          className="w-full bg-brand-dark/50 border border-brand-cream/10 rounded-lg p-3 pr-10 text-[12.5px] font-sans text-brand-cream placeholder:text-brand-cream/25 focus:border-brand-orange focus:outline-none transition-colors duration-200 cursor-pointer select-none"
+                        />
+                        <Calendar
+                          size={15}
+                          className="absolute right-3 top-3 text-brand-cream/40 pointer-events-none"
+                        />
+                      </div>
+
+                      {/* Calendar Popover */}
+                      <AnimatePresence>
+                        {showCalendar && (
+                          <>
+                            {/* Overlay to catch clicks outside the calendar popover */}
+                            <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setShowCalendar(false)} />
+                            
+                            <motion.div
+                              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                              transition={{ duration: 0.2 }}
+                              className="absolute bottom-full left-0 right-0 z-50 mb-2 bg-brand-dark border border-brand-cream/10 rounded-xl p-4 shadow-2xl text-brand-cream select-none"
+                            >
+                              {/* Header */}
+                              <div className="flex justify-between items-center mb-3">
+                                <button
+                                  type="button"
+                                  onClick={() => handleMonthChange("prev")}
+                                  className="w-7 h-7 flex items-center justify-center rounded-lg border border-brand-cream/10 hover:bg-brand-cream/10 text-brand-cream/60 hover:text-brand-cream transition-colors duration-150 cursor-pointer"
+                                >
+                                  <ChevronLeft size={14} />
+                                </button>
+                                <span className="font-serif text-xs font-light text-brand-cream/90">
+                                  {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleMonthChange("next")}
+                                  className="w-7 h-7 flex items-center justify-center rounded-lg border border-brand-cream/10 hover:bg-brand-cream/10 text-brand-cream/60 hover:text-brand-cream transition-colors duration-150 cursor-pointer"
+                                >
+                                  <ChevronRight size={14} />
+                                </button>
+                              </div>
+
+                              {/* Weekdays */}
+                              <div className="grid grid-cols-7 gap-1 text-center mb-1">
+                                {weekDays.map((wd) => (
+                                  <span key={wd} className="font-sans text-[9px] font-bold text-brand-cream/35">
+                                    {wd}
+                                  </span>
+                                ))}
+                              </div>
+
+                              {/* Days Grid */}
+                              <div className="grid grid-cols-7 gap-1 text-center">
+                                {(() => {
+                                  const yr = currentMonth.getFullYear();
+                                  const mo = currentMonth.getMonth();
+                                  const totalDays = getDaysInMonth(yr, mo);
+                                  const firstDayOffset = getFirstDayOfMonth(yr, mo);
+                                  
+                                  const cells = [];
+                                  
+                                  // Empty offset slots
+                                  for (let i = 0; i < firstDayOffset; i++) {
+                                    cells.push(<div key={`empty-${i}`} className="w-8 h-8" />);
+                                  }
+                                  
+                                  // Day cells
+                                  for (let d = 1; d <= totalDays; d++) {
+                                    const date = new Date(yr, mo, d);
+                                    const disabled = isDateBeforeToday(date);
+                                    const selected = isSelectedDate(date);
+                                    
+                                    cells.push(
+                                      <button
+                                        key={`day-${d}`}
+                                        type="button"
+                                        disabled={disabled}
+                                        onClick={() => {
+                                          setSelectedDate(date);
+                                          setShowCalendar(false);
+                                        }}
+                                        className={`w-8 h-8 rounded-lg text-[11px] font-sans flex items-center justify-center transition-all duration-150 ${
+                                          selected
+                                            ? "bg-brand-orange text-brand-ink font-bold shadow-md scale-105"
+                                            : disabled
+                                            ? "text-brand-cream/15 cursor-not-allowed"
+                                            : "text-brand-cream hover:bg-brand-cream/10 hover:text-brand-orange cursor-pointer"
+                                        }`}
+                                      >
+                                        {d}
+                                      </button>
+                                    );
+                                  }
+                                  
+                                  return cells;
+                                })()}
+                              </div>
+                            </motion.div>
+                          </>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </motion.div>
                 )}
@@ -329,8 +544,9 @@ export function BookingModal() {
               {step > 1 && step < 4 && (
                 <button
                   type="button"
+                  disabled={isSubmitting}
                   onClick={handlePrev}
-                  className="flex items-center gap-2 font-sans text-brand-cream/50 hover:text-brand-cream text-[10px] tracking-widest uppercase bg-transparent border border-brand-cream/10 py-3 px-5 rounded-lg cursor-pointer transition-colors duration-200"
+                  className="flex items-center gap-2 font-sans text-brand-cream/50 hover:text-brand-cream text-[10px] tracking-widest uppercase bg-transparent border border-brand-cream/10 py-3 px-5 rounded-lg cursor-pointer transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ArrowLeft size={13} /> {t("booking.prev")}
                 </button>
@@ -348,10 +564,17 @@ export function BookingModal() {
                 ) : step === 3 ? (
                   <button
                     type="button"
+                    disabled={isSubmitting}
                     onClick={handleSubmit}
-                    className="flex items-center gap-2 font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3 px-6 rounded-lg cursor-pointer transition-colors duration-250 font-bold shadow-md"
+                    className="flex items-center gap-2 font-sans bg-brand-orange hover:bg-[#c94520] text-brand-cream text-[10px] tracking-widest uppercase border-none py-3 px-6 rounded-lg cursor-pointer transition-colors duration-250 font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {t("booking.submit")}
+                    {isSubmitting ? (
+                      <span className="w-3.5 h-3.5 border-2 border-brand-cream border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        {t("booking.submit")}
+                      </>
+                    )}
                   </button>
                 ) : (
                   <button
