@@ -33,4 +33,20 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  build: {
+    rollupOptions: {
+      output: {
+        // Vendor splitting: separate heavy libraries into cacheable chunks.
+        // React ecosystem, GSAP, Framer Motion and icons each get their own file.
+        // Browsers cache them independently — on repeat visits only changed chunks re-download.
+        manualChunks: {
+          'vendor-react':  ['react', 'react-dom', 'react-router'],
+          'vendor-motion': ['motion/react'],
+          'vendor-gsap':   ['gsap'],
+          'vendor-icons':  ['lucide-react'],
+        },
+      },
+    },
+  },
 })

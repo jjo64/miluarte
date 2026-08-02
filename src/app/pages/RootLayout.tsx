@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { Outlet, useLocation } from "react-router";
 import { SharedHeader } from "../components/SharedHeader";
 import { CursorFollower } from "../components/CursorFollower";
@@ -24,9 +24,11 @@ export function RootLayout() {
       <CursorFollower />
       <BookingModal />
       <ContactModal />
-      <main id="main-content">
-        <Outlet />
-      </main>
+      <Suspense fallback={<div style={{ minHeight: "100vh", backgroundColor: C.bg }} />}>
+        <main id="main-content">
+          <Outlet />
+        </main>
+      </Suspense>
     </div>
   );
 }
