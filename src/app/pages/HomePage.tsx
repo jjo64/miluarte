@@ -136,7 +136,7 @@ function Hero() {
           {/* Email */}
           <button
             onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
-            className="font-sans text-brand-cream/60 hover:text-brand-orange text-[11px] tracking-wider bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline block"
+            className="font-sans text-brand-cream/60 hover:text-brand-orange text-[11px] tracking-wider bg-transparent border-none py-2 px-1 cursor-pointer transition-colors duration-200 hover:underline block min-h-[44px] flex items-center"
           >
             Miluartedenara@gmail.com
           </button>

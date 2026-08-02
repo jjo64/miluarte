@@ -24,7 +24,9 @@ export function RootLayout() {
       <CursorFollower />
       <BookingModal />
       <ContactModal />
-      <Outlet />
+      <main id="main-content">
+        <Outlet />
+      </main>
     </div>
   );
 }

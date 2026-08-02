@@ -104,13 +104,13 @@ export function SharedFooter() {
               </p>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
-                className="font-sans text-brand-cream/65 hover:text-brand-orange text-xs mb-1.5 bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline text-left block"
+                className="font-sans text-brand-cream/65 hover:text-brand-orange text-xs bg-transparent border-none py-2 px-1 cursor-pointer transition-colors duration-200 hover:underline text-left block min-h-[44px] flex items-center"
               >
                 hola@miluartedenara.com
               </button>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
-                className="font-sans text-brand-cream/60 hover:text-brand-orange text-[11px] bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline text-left block"
+                className="font-sans text-brand-cream/60 hover:text-brand-orange text-[11px] bg-transparent border-none py-2 px-1 cursor-pointer transition-colors duration-200 hover:underline text-left block min-h-[44px] flex items-center"
               >
                 Miluartedenara@gmail.com
               </button>
