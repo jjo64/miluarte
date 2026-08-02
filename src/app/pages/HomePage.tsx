@@ -8,6 +8,7 @@ import { SketchSlider } from "../components/SketchSlider";
 import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
 import { ClientsMarquee } from "../components/ClientsMarquee";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 const animasSketch = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
 const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
@@ -114,14 +115,14 @@ function Hero() {
           {/* Framed Miluarte artwork */}
           <div className="relative rounded-lg overflow-hidden shadow-2xl aspect-[4/5] bg-brand-dark">
             <img
-              src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg"
+              src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg", 800)}
               alt={t("gallery.alts.obra3")}
               className="w-full h-full object-cover block"
             />
             {/* Small badge overlay */}
             <div className="absolute bottom-3.5 left-3.5 flex items-center gap-2 bg-[#180E09]/78 backdrop-blur-sm py-1.5 px-3 rounded-full border border-white/10 select-none pointer-events-none">
               <img
-                src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg"
+                src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg", 80)}
                 alt=""
                 className="w-6 h-6 rounded-full object-cover"
               />
@@ -182,7 +183,7 @@ function FeaturedProject() {
         onTouchEnd={() => setImgTap(false)}
       >
         <img
-          src="https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg"
+          src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1200)}
           alt={t("gallery.alts.obra4")}
           loading="lazy"
           style={{

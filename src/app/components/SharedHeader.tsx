@@ -5,6 +5,7 @@ import { ArrowUpRight, Sun, Moon } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 // ─── Navigation types ───────────────────────────────────────────────────────
 
@@ -436,7 +437,7 @@ export function SharedHeader() {
                       >
                         {lnk.thumbnail ? (
                           <img
-                            src={lnk.thumbnail}
+                            src={getOptimizedImageUrl(lnk.thumbnail, 80)}
                             alt=""
                             className="w-[30px] h-[30px] rounded-[6px] object-cover flex-shrink-0 border border-brand-cream/15 group-hover:border-brand-orange transition-all duration-250"
                           />
@@ -459,7 +460,7 @@ export function SharedHeader() {
                       >
                         {lnk.thumbnail ? (
                           <img
-                            src={lnk.thumbnail}
+                            src={getOptimizedImageUrl(lnk.thumbnail, 80)}
                             alt=""
                             className="w-[30px] h-[30px] rounded-[6px] object-cover flex-shrink-0 border border-brand-cream/15 group-hover:border-brand-orange transition-all duration-250"
                           />
@@ -478,7 +479,7 @@ export function SharedHeader() {
                     >
                       {lnk.thumbnail ? (
                         <img
-                          src={lnk.thumbnail}
+                          src={getOptimizedImageUrl(lnk.thumbnail, 80)}
                           alt=""
                           className="w-[30px] h-[30px] rounded-[6px] object-cover flex-shrink-0 border border-brand-cream/15 group-hover:border-brand-orange transition-all duration-250"
                         />

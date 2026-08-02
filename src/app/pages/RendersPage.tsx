@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { C, RADIUS, ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
 import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 // Registrar GSAP ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
@@ -189,7 +190,7 @@ function RenderCard({
     >
       {/* Thumbnail Estática (Hover: se desvanece en desktop) */}
       <img
-        src={item.img}
+        src={getOptimizedImageUrl(item.img, 800)}
         alt={item.title}
         className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200 z-10"
         style={{
@@ -331,7 +332,7 @@ function Lightbox({
               controls
               autoPlay
               className="w-full max-h-[60vh] object-contain bg-black"
-              poster={item.img}
+              poster={getOptimizedImageUrl(item.img, 1200)}
             >
               <source src={item.videoSrcWebm} type="video/webm" />
               <source src={item.videoSrcMp4} type="video/mp4" />
@@ -342,7 +343,7 @@ function Lightbox({
               onClick={() => setIsZoomed(!isZoomed)}
             >
               <img
-                src={item.img}
+                src={getOptimizedImageUrl(item.img, 1200)}
                 alt={item.title}
                 className="w-full h-auto max-h-[60vh] object-contain transition-transform duration-300"
                 style={{
@@ -392,7 +393,7 @@ function Lightbox({
                   <div key={i} className="flex-shrink-0 snap-start flex flex-col gap-2" style={{ width: "200px" }}>
                     <div className="w-[200px] h-[150px] overflow-hidden rounded-lg border border-brand-cream/10 bg-brand-dark/30">
                       <img
-                        src={step.src}
+                        src={getOptimizedImageUrl(step.src, 400)}
                         alt={step.label}
                         className="w-full h-full object-cover"
                         loading="lazy"
@@ -588,7 +589,7 @@ export function RendersPage() {
                 muted
                 loop
                 playsInline
-                poster="https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg"
+                poster={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1000)}
                 className="w-full h-full object-cover"
               >
                 <source src="/videos/sample-bbb.mp4" type="video/mp4" />

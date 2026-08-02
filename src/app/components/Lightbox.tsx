@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { C, SANS, ease } from "../tokens";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 export interface LightboxItem {
   src:          string;
@@ -178,7 +179,7 @@ export function Lightbox({ items, initialIndex, accent, onClose }: LightboxProps
             {!loaded && <Shimmer />}
             <img
               key={item.src}
-              src={item.src}
+              src={getOptimizedImageUrl(item.src, 1200)}
               alt={item.alt}
               onLoad={() => setLoaded(true)}
               style={{

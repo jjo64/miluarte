@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
 import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 
 gsap.registerPlugin(Flip);
@@ -316,7 +317,7 @@ function WorkCard({
       <div className="relative overflow-hidden w-full h-full" style={{ aspectRatio: work.aspect }}>
         <img
           ref={imgRef}
-          src={work.img}
+          src={getOptimizedImageUrl(work.img, 800)}
           alt={work.title}
           className={`w-full h-full object-cover transition-all duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
             hovered ? "scale-105 brightness-[0.82] saturate-[1.1]" : "brightness-[0.72]"
@@ -528,7 +529,7 @@ function AnimasBibleSection() {
               style={{ width: "clamp(260px, 28vw, 420px)", aspectRatio: "16/9" }}
             >
               <img
-                src={src}
+                src={getOptimizedImageUrl(src, 600)}
                 alt={`Animas slide ${i + 1}`}
                 loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
@@ -805,7 +806,7 @@ export function CollectionPage() {
             <>
               <img
                 ref={modalImgRef}
-                src={activeWork.img}
+                src={getOptimizedImageUrl(activeWork.img, 1200)}
                 alt={activeWork.title}
                 className="w-full h-full object-contain cursor-pointer"
                 onClick={closeModal}
@@ -816,7 +817,7 @@ export function CollectionPage() {
                   style={{
                     left: zoomState.x,
                     top: zoomState.y,
-                    backgroundImage: `url(${activeWork.img})`,
+                    backgroundImage: `url(${getOptimizedImageUrl(activeWork.img, 1600)})`,
                     backgroundPosition: `${zoomState.bgX}% ${zoomState.bgY}%`,
                     backgroundSize: "280%",
                     backgroundRepeat: "no-repeat",

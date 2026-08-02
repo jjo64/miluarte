@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ease } from "../tokens";
 import { useLanguage } from "../context/LanguageContext";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -92,7 +93,7 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
     >
       <div className="relative overflow-hidden aspect-square rounded-lg shadow-xl" style={{ transform: "translateZ(20px)" }}>
         <img
-          src={src}
+          src={getOptimizedImageUrl(src, 800)}
           alt={localizedAlt}
           loading="lazy"
           className={`w-full h-full object-cover block transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
