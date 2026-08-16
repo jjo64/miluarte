@@ -79,6 +79,26 @@
       "twoColumns": false,
       "order": 7,
       "featured": false
+    },
+    {
+      "slug": "pruebaxd",
+      "title": "pruebaxd",
+      "label": "prueba",
+      "statement": "esto es una prueba",
+      "accent": "#EAA898",
+      "twoColumns": false,
+      "order": 8,
+      "featured": false
+    },
+    {
+      "slug": "prueba2",
+      "title": "prueba2",
+      "label": "prueba",
+      "statement": "esto es una pruebaaaaaaa",
+      "accent": "#EAA898",
+      "twoColumns": false,
+      "order": 9,
+      "featured": false
     }
   ],
   "miluarte:renders": [
@@ -1026,1477 +1046,2226 @@
   },
   "miluarte:changelog": [
     {
-      "id": "init-1",
-      "timestamp": "2026-08-16T13:30:24.878Z",
-      "action": "Sistema CMS inicializado y datos migrados correctamente",
-      "section": "system"
+      "id": "pAE-vLKHyfWN9vAKNX7pR",
+      "timestamp": "2026-08-16T13:32:51.432Z",
+      "action": "Creó la galería \"prueba2\"",
+      "section": "galleries",
+      "snapshotId": "snap-1786887170848--AB3",
+      "canRollback": true
+    },
+    {
+      "id": "6bsgSGHboFs8LcFtOGANr",
+      "timestamp": "2026-08-16T13:32:15.464Z",
+      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
+      "section": "system",
+      "snapshotId": "snap-1786887134899-tpGH",
+      "canRollback": true
+    },
+    {
+      "id": "0SXIb8ij1lHyyu-2f6oWu",
+      "timestamp": "2026-08-16T13:15:58.448Z",
+      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
+      "section": "system",
+      "snapshotId": "snap-1786886157598-eRcu",
+      "canRollback": true
+    },
+    {
+      "id": "kdTYs7rD8kVJHieVwjjfg",
+      "timestamp": "2026-08-16T13:15:42.616Z",
+      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
+      "section": "system",
+      "snapshotId": "snap-1786886141961-Ulgo",
+      "canRollback": true
+    },
+    {
+      "id": "fQYrlI1KoSKkWa16T07Ww",
+      "timestamp": "2026-08-16T13:14:44.312Z",
+      "action": "Actualizó los enlaces de redes sociales",
+      "section": "social",
+      "snapshotId": "snap-1786886083410-YTT1",
+      "canRollback": true
+    },
+    {
+      "id": "6dPCjG8pmqLB2RhfpB2Oz",
+      "timestamp": "2026-08-16T13:14:33.354Z",
+      "action": "Actualizó los enlaces de redes sociales",
+      "section": "social",
+      "snapshotId": "snap-1786886072353-Njev",
+      "canRollback": true
+    },
+    {
+      "id": "-yHN4pY08IxUz6ltqW4IN",
+      "timestamp": "2026-08-16T13:12:46.860Z",
+      "action": "Actualizó textos del sitio web (ES/EN)",
+      "section": "texts",
+      "snapshotId": "snap-1786885965938-u977",
+      "canRollback": true
+    },
+    {
+      "id": "eKoaRH2uB_fy6X7H4xeOi",
+      "timestamp": "2026-08-16T13:12:39.292Z",
+      "action": "Actualizó textos del sitio web (ES/EN)",
+      "section": "texts",
+      "snapshotId": "snap-1786885958585-yKlo",
+      "canRollback": true
+    },
+    {
+      "id": "OGgqzKPaKnz4h5vWXNKlQ",
+      "timestamp": "2026-08-16T13:12:16.635Z",
+      "action": "Actualizó textos del sitio web (ES/EN)",
+      "section": "texts",
+      "snapshotId": "snap-1786885936014-Bh0S",
+      "canRollback": true
+    },
+    {
+      "id": "iiaYu3wZ1Jnw2A_nVilkh",
+      "timestamp": "2026-08-16T13:09:27.900Z",
+      "action": "Reordenó las obras de la galería \"ilustracion\"",
+      "section": "works",
+      "snapshotId": "snap-1786885767176-xM2j",
+      "canRollback": true
+    },
+    {
+      "id": "jFQa0KNlb8GX3-LAttxeI",
+      "timestamp": "2026-08-16T13:09:26.158Z",
+      "action": "Reordenó las obras de la galería \"ilustracion\"",
+      "section": "works",
+      "snapshotId": "snap-1786885765360-io1u",
+      "canRollback": true
+    },
+    {
+      "id": "eWytiGEKMiV-urCPv-CRG",
+      "timestamp": "2026-08-16T13:06:30.033Z",
+      "action": "Subió la obra \"Prueba nueva galeria\" en la galería \"pruebaxd\"",
+      "section": "works",
+      "snapshotId": "snap-1786885589231-DsIF",
+      "canRollback": true
+    },
+    {
+      "id": "wi_NvSYP-Fv-LvmL4dRNA",
+      "timestamp": "2026-08-16T13:05:27.263Z",
+      "action": "Creó la galería \"pruebaxd\"",
+      "section": "galleries",
+      "snapshotId": "snap-1786885526751-GSdu",
+      "canRollback": true
+    },
+    {
+      "id": "EVnaFtKQ2CjPk-8HRwzC8",
+      "timestamp": "2026-08-16T13:03:46.232Z",
+      "action": "Subió la obra \"Prueba 1\" en la galería \"ilustracion\"",
+      "section": "works",
+      "snapshotId": "snap-1786885425608-Ks2I",
+      "canRollback": true
     }
   ],
   "miluarte:messages:contact": [],
   "miluarte:messages:booking": [],
-  "miluarte:gallery:ilustracion": [
-    {
-      "id": "mu1",
-      "title": "Tell Me a Joke",
-      "year": "2024",
-      "technique": "Acrílico sobre lienzo",
-      "size": "100 × 80 cm",
-      "price": "€650",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819794/TELL_ME_A_JOKE_mq8n1l.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 0,
-      "featured": true
+  "miluarte:snapshot:snap-1786887134899-tpGH": {
+    "galleries": [
+      {
+        "slug": "ilustracion",
+        "title": "Ilustración",
+        "label": "Obra personal",
+        "statement": "Obra personal que explora la tensión entre forma y vacío. Series que se construyen desde la intuición y se resuelven en el material. Cada pieza es un estado, no una conclusión.",
+        "accent": "var(--color-brand-blush)",
+        "twoColumns": false,
+        "order": 0,
+        "featured": true
+      },
+      {
+        "slug": "diggin",
+        "title": "Diggin'",
+        "label": "Sello musical · Dirección de arte",
+        "statement": "Portadas, identidad y dirección de arte para el sello independiente Diggin'. Graffiti, psicodelia y hip-hop en formato visual.",
+        "accent": "var(--color-brand-neon)",
+        "twoColumns": true,
+        "order": 1,
+        "featured": true
+      },
+      {
+        "slug": "concept-art",
+        "title": "Concept Art",
+        "label": "Desarrollo visual",
+        "statement": "Concept art e ilustración editorial. Personajes, atmósferas y narrativa visual construidos desde la emoción.",
+        "accent": "var(--color-brand-orange)",
+        "twoColumns": false,
+        "order": 2,
+        "featured": true
+      },
+      {
+        "slug": "diseno-grafico",
+        "title": "Diseño Gráfico",
+        "label": "Identidad visual",
+        "statement": "Sistemas de identidad, publicaciones y diseño editorial. La imagen al servicio del mensaje.",
+        "accent": "var(--color-brand-orange)",
+        "twoColumns": false,
+        "order": 3,
+        "featured": false
+      },
+      {
+        "slug": "3d-stands",
+        "title": "3D & Stands",
+        "label": "Diseño de espacios · Ferias",
+        "statement": "Diseño y visualización 3D de stands y espacios expositivos para ferias y eventos.",
+        "accent": "var(--color-brand-blush)",
+        "twoColumns": false,
+        "order": 4,
+        "featured": false
+      },
+      {
+        "slug": "animas",
+        "title": "Animas",
+        "label": "Concept Art · Universo propio",
+        "statement": "Un mundo construido desde dentro: criaturas que nacen de la naturaleza, personajes con historia propia y un bestiario de formas que nunca termina de revelarse.",
+        "accent": "#C8A96E",
+        "twoColumns": false,
+        "order": 5,
+        "featured": true
+      },
+      {
+        "slug": "retratos",
+        "title": "Retratos y más",
+        "label": "Estudio artístico · Obra de clase",
+        "statement": "El cuaderno de trabajo. Retratos de iconos que se niegan al olvido, anatomía al límite del cartoon y ciudades que Lovecraft hubiera firmado.",
+        "accent": "#9B7FA6",
+        "twoColumns": false,
+        "order": 6,
+        "featured": false
+      },
+      {
+        "slug": "pasta-ya",
+        "title": "Pasta Ya",
+        "label": "Diseño de personajes · Campaña",
+        "statement": "Cuando la pasta italiana cobra vida propia y muy mal carácter. Siete personajes de diseño para campaña: expresivos, únicos e inconfundibles.",
+        "accent": "#E8854A",
+        "twoColumns": false,
+        "order": 7,
+        "featured": false
+      },
+      {
+        "slug": "pruebaxd",
+        "title": "pruebaxd",
+        "label": "prueba",
+        "statement": "esto es una prueba",
+        "accent": "#EAA898",
+        "twoColumns": false,
+        "order": 8,
+        "featured": false
+      }
+    ],
+    "renders": [
+      {
+        "id": "stand-feria-milan",
+        "title": "Stand Modular de Feria — Milán",
+        "client": "Fiera Milano S.p.A.",
+        "year": "2025",
+        "badge": "STAND · FERIA",
+        "software": [
+          "Blender",
+          "SketchUp",
+          "AutoCAD"
+        ],
+        "delivery": "Planos técnicos + Renders fotorrealistas",
+        "description": "Propuesta de stand fotorrealista para exhibición de mobiliario de vanguardia. La estructura utiliza materiales ecológicos de alta durabilidad y un sistema modular desmontable de rápida construcción.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg",
+        "videoSrcMp4": "/videos/sample-3d.mp4",
+        "videoSrcWebm": "/videos/sample-3d.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Boceto en papel"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg",
+            "label": "Render final"
+          }
+        ],
+        "makingOfVideoMp4": "/videos/sample-bbb.mp4",
+        "makingOfVideoWebm": "/videos/sample-bbb.mp4",
+        "order": 0
+      },
+      {
+        "id": "altavoz-inteligente",
+        "title": "Altavoz Hi-Fi Inteligente 3D",
+        "client": "Soundwave Technologies",
+        "year": "2024",
+        "badge": "PRODUCTO · 3D",
+        "software": [
+          "Cinema 4D",
+          "Octane Render",
+          "Photoshop"
+        ],
+        "delivery": "Renders promocionales + Animación publicitaria",
+        "description": "Visualización publicitaria para el lanzamiento de un altavoz inteligente. Se modelaron con máxima fidelidad las texturas de aluminio cepillado y tela acústica, usando iluminación de estudio realista.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+        "videoSrcMp4": "/videos/sample-bbb.mp4",
+        "videoSrcWebm": "/videos/sample-bbb.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+            "label": "Referencia"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Render final"
+          }
+        ],
+        "order": 1
+      },
+      {
+        "id": "pabellon-cristal",
+        "title": "Pabellón Botánico de Cristal",
+        "client": "Proyecto de investigación",
+        "year": "2025",
+        "badge": "ARQUITECTURA",
+        "software": [
+          "Blender",
+          "V-Ray",
+          "Photoshop"
+        ],
+        "delivery": "Renders fotorrealistas + Recorrido virtual",
+        "description": "Modelado de un pabellón botánico de cristal integrado en el bosque. Destaca el comportamiento de la luz natural a través de los cristales estructurados y la vegetación circundante.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+        "videoSrcMp4": "/videos/sample-3d.mp4",
+        "videoSrcWebm": "/videos/sample-3d.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Boceto en papel"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Render final"
+          }
+        ],
+        "makingOfVideoMp4": "/videos/sample-bbb.mp4",
+        "makingOfVideoWebm": "/videos/sample-bbb.mp4",
+        "order": 2
+      },
+      {
+        "id": "stand-cosmetica-bio",
+        "title": "Stand de Cosmética Orgánica",
+        "client": "Natura Cosmetics",
+        "year": "2024",
+        "badge": "STAND · FERIA",
+        "software": [
+          "Blender",
+          "SketchUp",
+          "Substance Painter"
+        ],
+        "delivery": "Todos (planos técnicos, renders y animación de recorrido)",
+        "description": "Visualización de un stand expositivo de cosmética bio. Combina iluminación cálida con texturas de madera y vegetación para transmitir pureza y sostenibilidad.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+        "videoSrcMp4": "/videos/sample-bbb.mp4",
+        "videoSrcWebm": "/videos/sample-bbb.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Boceto en papel"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+            "label": "Render final"
+          }
+        ],
+        "order": 3
+      }
+    ],
+    "texts": {
+      "es": {
+        "nav": {
+          "services": "Servicios",
+          "projects": "Proyectos",
+          "contact": "Contacto",
+          "commission": "ENCARGO",
+          "resume": "Currículum",
+          "closeMenu": "Cerrar menú",
+          "openMenu": "Abrir menú"
+        },
+        "hero": {
+          "tagline": "Naziiii xd",
+          "greetingBefore": "Hola,\nsoy ",
+          "greetingItalic": "XD",
+          "artline": "Transformo ideas en mundos visuales con alma.",
+          "bio1": "Me llamo Nerea Lucas Pajares, artísticamente conocida como Miluartedenara. Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, joyería artesanal hecha a mano y concept art para proyectos musicales. Cada pieza está hecha con dedicación y amor por los detalles.",
+          "bio2": "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
+          "viewWorks": "Ver trabajos",
+          "sendInquiry": "Escribir encargo"
+        },
+        "gallery": {
+          "title": "Galería",
+          "subtitle": "Obras recientes.\nDesplázate para explorar.",
+          "hint": "scroll para explorar",
+          "filters": {
+            "all": "Todos",
+            "ilustracion": "🎨 Ilustración",
+            "concept": "🧠 Concept Art",
+            "musica": "🎵 Diseño musical",
+            "joyeria": "💍 Joyería"
+          },
+          "alts": {
+            "obra1": "Ilustración digital de una flor antropomorfa con tipografía pop, serie Musae",
+            "obra2": "Retrato ilustrado de personaje femenino con cabello azul y elementos marinos",
+            "obra3": "Personaje femenino envuelto en llamas con bocadillo de cómic, ilustración narrativa",
+            "obra4": "Bodegón ilustrado de herramientas creativas y setas psicodélicas para el sello musical Diggin'",
+            "obra5": "Escena de estudio ilustrado con estantería de libros y caballete de pintura",
+            "obra6": "Pieza de joyería artesanal con detalle ilustrado a mano",
+            "obra7": "Concept art de paisaje isométrico con cabaña y vegetación",
+            "obra8": "Detalle de personaje manga a color, estilo característico de Miluarte"
+          }
+        },
+        "process": {
+          "title": "El Proceso Creativo",
+          "subtitle": "Del Boceto al Arte Final",
+          "hint": "Desliza la barra central para comparar el trazo de boceto y el acabado digital final de la ilustración.",
+          "cursorHint": "Deslizar"
+        },
+        "services": {
+          "ctaBeforeAfter": "↔ Desplázate para ver antes & después",
+          "render3D": "Render 3D",
+          "realResult": "Resultado real",
+          "viewWorks": "Ver trabajos",
+          "items": {
+            "diseno-grafico": {
+              "label": "Diseño Gráfico",
+              "title": "Identidad visual\ny comunicación",
+              "description": "Desde el logotipo hasta el catálogo completo. Banners, publicidad, retoque y composición fotográfica con Photoshop, e ilustración técnica para proyectos comerciales.",
+              "bullets": [
+                "Logotipos & identidad visual",
+                "Banners & material publicitario",
+                "Catálogos & diseño editorial",
+                "Composición fotográfica",
+                "Ilustración técnica & planos"
+              ]
+            },
+            "3d-stands": {
+              "label": "3D & Stands",
+              "title": "Del plano\na la realidad",
+              "description": "Diseño y visualización 3D de stands para ferias, productos y espacios. Reconstrucciones arquitectónicas y conversión a planos técnicos listos para fabricación y construcción.",
+              "bullets": [
+                "Diseño de stands para ferias",
+                "Renders de producto fotorrealistas",
+                "Reconstrucciones arquitectónicas",
+                "Planos técnicos para producción",
+                "Visualización de espacios & interiores"
+              ]
+            },
+            "diggin": {
+              "label": "Diggin'",
+              "title": "Diseñadora oficial\ndel sello musical",
+              "description": "Dirección de arte completa para el sello musical independiente Diggin'. Portadas, identidad visual, ilustraciones para campañas y videoclips animados.",
+              "bullets": [
+                "Portadas de álbum & EP",
+                "Identidad visual del sello",
+                "Ilustraciones musicales",
+                "Videoclips animados",
+                "Merchandising musical"
+              ]
+            },
+            "ilustracion": {
+              "label": "Ilustraciones",
+              "title": "Arte personal\nsin filtros",
+              "description": "Obra libre y la serie Musae. Personajes femeninos, naturaleza subvertida y mundos propios en tinta y color. También muñecas personalizadas, arte en arcilla y joyería artesanal.",
+              "bullets": [
+                "Serie Musae — prints firmados",
+                "Retratos & encargos personales",
+                "Muñecas articuladas a medida",
+                "Arte en arcilla & escultura",
+                "Joyería artesanal"
+              ]
+            },
+            "concept-art": {
+              "label": "Concept Art",
+              "title": "Del concepto\nal universo",
+              "description": "No solo el dibujo final: el proceso completo de construir un mundo visual desde cero. Personajes con ficha técnica, escenarios coherentes y props diseñados para funcionar en la narrativa.",
+              "bullets": [
+                "Diseño de personajes & fichas técnicas",
+                "Escenarios & worldbuilding",
+                "Props & objetos narrativos",
+                "Biblias visuales & guías de estilo",
+                "Concept para videojuegos & animación"
+              ]
+            }
+          }
+        },
+        "collection": {
+          "back": "Volver",
+          "interest": "¿Te interesa alguna pieza?",
+          "requestQuote": "Pide presupuesto",
+          "animasBible": {
+            "tagline": "Presentación · Biblia Visual Completa",
+            "title": "El universo Animas",
+            "description": "Una presentación de 31 páginas que documenta el proceso completo: desde los primeros bocetos de personajes hasta el arte final, las fichas técnicas y el elenco completo del universo."
+          },
+          "meta": {
+            "ilustracion": {
+              "title": "Ilustración",
+              "label": "Obra personal",
+              "statement": "Obra personal que explora la tensión entre forma y vacío. Series que se construyen desde la intuición y se resuelven en el material. Cada pieza es un estado, no una conclusión."
+            },
+            "diggin": {
+              "title": "Diggin'",
+              "label": "Sello musical · Dirección de arte",
+              "statement": "Portadas, identidad y dirección de arte para el sello independiente Diggin'. Graffiti, psicodelia y hip-hop en formato visual."
+            },
+            "concept-art": {
+              "title": "Concept Art",
+              "label": "Desarrollo visual",
+              "statement": "Concept art e ilustración editorial. Personajes, atmósferas y narrativa visual construidos desde la emoción."
+            },
+            "diseno-grafico": {
+              "title": "Diseño Gráfico",
+              "label": "Identidad visual",
+              "statement": "Sistemas de identidad, publicaciones y diseño editorial. La imagen al servicio del mensaje."
+            },
+            "3d-stands": {
+              "title": "3D & Stands",
+              "label": "Diseño de espacios · Ferias",
+              "statement": "Diseño y visualización 3D de stands y espacios expositivos para ferias y eventos."
+            },
+            "animas": {
+              "title": "Animas",
+              "label": "Concept Art · Universo propio",
+              "statement": "Un mundo construido desde dentro: criaturas que nacen de la naturaleza, personajes con historia propia y un bestiario de formas que nunca termina de revelarse. Animas es un proyecto de concept art completo —fichas técnicas, turn-arounds, expresiones, armas y mascotas— creado como ejercicio de worldbuilding personal."
+            },
+            "retratos": {
+              "title": "Retratos y más",
+              "label": "Estudio artístico · Obra de clase",
+              "statement": "El cuaderno de trabajo. Retratos de iconos que se niegan al olvido, anatomía llevada al límite del cartoon, criaturas extraídas de pesadillas elegantes y ciudades que Lovecraft hubiera firmado. Un archivo de lo que el lápiz aprende cuando no tiene miedo."
+            },
+            "pasta-ya": {
+              "title": "Pasta Ya",
+              "label": "Diseño de personajes · Campaña",
+              "statement": "Cuando la pasta italiana cobra vida propia y muy mal carácter. Bravioli, Tortastini y sus colegas son personajes de diseño para campaña: expresivos, únicos y con más personalidad por centímetro cuadrado que la mayoría de protagonistas de Hollywood."
+            }
+          },
+          "availability": {
+            "available": "Disponible",
+            "unavailable": "No disponible",
+            "musicalProject": "Proyecto musical"
+          }
+        },
+        "footer": {
+          "studio": "Estudio creativo multidisciplinar.\nIlustración, diseño y dirección de arte.\nMadrid, España.",
+          "work": "Trabajo",
+          "contact": "Contacto",
+          "budget": "Pide presupuesto",
+          "rights": "© 2024 Miluarte. Todos los derechos reservados.",
+          "madeWithCriteria": "Hecho con amor por @snctryjo - Josue."
+        },
+        "notfound": {
+          "title": "Página no encontrada",
+          "back": "Volver al inicio"
+        },
+        "resume": {
+          "title": "Currículum Vitae",
+          "subtitle": "Artista Visual, Diseñadora 3D e Ilustradora",
+          "downloadPDF": "Guardar como PDF / Imprimir",
+          "back": "Volver al inicio",
+          "sections": {
+            "profile": "Sobre Mí",
+            "experience": "Experiencia Profesional",
+            "education": "Educación",
+            "skills": "Habilidades",
+            "languages": "Idiomas"
+          },
+          "profileText": "Artista visual multidisciplinar con un Máster en Arte e Ilustración Digital. Especializada en la dirección de arte para proyectos musicales, diseño tridimensional de stands comerciales y modelado físico de muñecas personalizadas y joyería. Combino técnicas tradicionales con herramientas digitales de última generación para crear narrativas visuales coherentes y espacios físicos impactantes.",
+          "experienceItems": [
+            {
+              "role": "Ilustradora Creativa",
+              "company": "Por cuenta propia / Freelance",
+              "period": "2024 - Actualidad",
+              "description": "Trabajos independientes de ilustración editorial, diseño de personajes y desarrollo de concept art para diversos proyectos comerciales independientes."
+            },
+            {
+              "role": "Diseñadora Gráfica",
+              "company": "Ledme Europa",
+              "period": "2024 - Actualidad",
+              "description": "Creación integral de catálogos (diseño, maquetación, dibujos técnicos, edición fotográfica y subida a web). Diseño y mantenimiento de página web y tienda online, y creación de contenido para redes sociales."
+            },
+            {
+              "role": "Ilustradora Gráfica",
+              "company": "Sello musical Diggin'",
+              "period": "2024 - Actualidad",
+              "description": "Ilustración digital y diseño gráfico para lanzamientos de música, portadas de álbumes y merchandising oficial del sello en remoto."
+            },
+            {
+              "role": "Diseñadora Gráfica Freelance",
+              "company": "Varias Empresas",
+              "period": "2019 - Actualidad",
+              "description": "Diseño gráfico general, identidad de marca, modelado y renderizado 3D de stands para ferias comerciales y espacios expositivos para diversos clientes."
+            }
+          ],
+          "educationItems": [
+            {
+              "degree": "Máster en Arte e Ilustración Digital",
+              "school": "Trazos",
+              "period": "2023 - 2024"
+            },
+            {
+              "degree": "Máster en Arte Digital",
+              "school": "Trazos",
+              "period": "2024"
+            },
+            {
+              "degree": "Máster en Ilustración",
+              "school": "Trazos de Arte",
+              "period": "2024"
+            },
+            {
+              "degree": "Bachillerato",
+              "school": "IES La Arboleda",
+              "period": ""
+            }
+          ],
+          "skillsItems": {
+            "digital": "Digital: Photoshop, Illustrator, Procreate, Blender 3D, CAD (Planos Técnicos).",
+            "traditional": "Tradicional: Pintura al óleo, acuarela, tinta, escultura en arcilla, joyería artesanal.",
+            "creative": "Concepto: Dirección de arte, concept art, diseño de personajes, maquetación editorial."
+          },
+          "languagesItems": [
+            {
+              "language": "Español",
+              "level": "Nativo"
+            },
+            {
+              "language": "Inglés",
+              "level": "Competencia básica profesional"
+            },
+            {
+              "language": "Chino",
+              "level": "Competencia básica profesional"
+            }
+          ]
+        },
+        "booking": {
+          "title": "Cuéntame tu proyecto",
+          "subtitle": "Hablemos de tu idea. Rellena los pasos y te responderé en menos de 48 horas.",
+          "close": "Cerrar",
+          "next": "Siguiente",
+          "prev": "Atrás",
+          "submit": "Enviar solicitud",
+          "steps": {
+            "step": "Paso",
+            "of": "de",
+            "type": "Tipo de proyecto",
+            "details": "Detalles del encargo",
+            "contact": "Datos de contacto"
+          },
+          "types": {
+            "commercial": {
+              "title": "Proyecto Comercial",
+              "desc": "Stands 3D, identidad visual corporativa, branding, concept art para estudios/discográficas."
+            },
+            "personal": {
+              "title": "Proyecto Personal",
+              "desc": "Muñecas de arcilla personalizadas, joyería a medida, prints firmados, retratos digitales."
+            }
+          },
+          "fields": {
+            "description": "Describe tu idea (estilo, referencias, materiales...)",
+            "descriptionPlaceholder": "Ej: Quiero una muñeca personalizada inspirada en la temática del bosque, de unos 20 cm...",
+            "timeline": "¿Cuándo lo necesitas?",
+            "timelinePlaceholder": "Ej: Para antes del 15 de Octubre",
+            "name": "Nombre completo",
+            "email": "Correo electrónico",
+            "budget": "Presupuesto aproximado",
+            "budgetRanges": [
+              "Menos de 300€",
+              "300€ - 1.000€",
+              "1.000€ - 3.000€",
+              "Más de 3.000€"
+            ]
+          },
+          "success": {
+            "title": "¡Solicitud enviada!",
+            "message": "Gracias por contactar. Analizaré tu propuesta de inmediato para darle vida a tu idea.",
+            "close": "Volver a la web"
+          }
+        },
+        "featured": {
+          "eyebrow": "Proyecto destacado",
+          "tag": "Diggin' Records",
+          "title": "Diggin' — identidad visual de un sello musical",
+          "description": "Dirección de arte completa para el sello independiente Diggin': portadas de álbum, identidad visual, ilustraciones para campañas y videoclips animados. Un proyecto largo donde el estilo de Nerea se convirtió en la cara visual del sello.",
+          "tags": [
+            "Dirección de arte",
+            "Portadas de álbum",
+            "Branding musical",
+            "Animación"
+          ],
+          "bullets": [
+            "Concepto visual y moodboard inicial",
+            "Portadas de álbum y EP",
+            "Identidad visual del sello",
+            "Adaptaciones para redes sociales"
+          ],
+          "viewCase": "Ver caso completo →"
+        },
+        "clients": {
+          "eyebrow": "Clientes & colaboraciones",
+          "title": "Marcas, sellos y proyectos con los que he trabajado",
+          "description": "He colaborado con músicos, marcas y proyectos creativos desarrollando identidades visuales e ilustraciones personalizadas."
+        },
+        "seoServices": {
+          "eyebrow": "Servicios",
+          "title": "En qué puedo ayudarte",
+          "description": "Encargos artísticos a medida, desde una pieza personal hasta dirección de arte completa para una marca o un sello musical.",
+          "items": {
+            "editorial": {
+              "title": "Ilustración Editorial",
+              "description": "Creación de ilustraciones para libros, revistas y publicaciones digitales, con un estilo narrativo que refuerza el mensaje de cada página."
+            },
+            "concept": {
+              "title": "Concept Art",
+              "description": "Diseño visual para videojuegos, proyectos audiovisuales y narrativa visual: personajes, escenarios y props pensados para un mundo coherente."
+            },
+            "character": {
+              "title": "Diseño de Personajes",
+              "description": "Creación de personajes originales para proyectos creativos, marcas y campañas, con fichas técnicas y guías de estilo."
+            },
+            "music": {
+              "title": "Portadas Musicales",
+              "description": "Arte para álbumes, singles y material promocional, con dirección de arte completa para sellos y artistas independientes."
+            },
+            "graphic": {
+              "title": "Diseño Gráfico",
+              "description": "Identidad visual, banners, catálogos y diseño editorial para proyectos comerciales y culturales."
+            },
+            "clay": {
+              "title": "Joyería & Arte en Arcilla",
+              "description": "Piezas artesanales únicas: joyería, muñecas personalizadas y esculturas en arcilla hechas a mano."
+            }
+          }
+        },
+        "contactModal": {
+          "title": "Contacto General",
+          "subtitle": "Usa este formulario para ofertas de trabajo, colaboraciones o proyectos de gran envergadura.",
+          "close": "Cerrar",
+          "submit": "Enviar mensaje",
+          "success": {
+            "title": "¡Mensaje enviado!",
+            "message": "Gracias por contactar. Analizaré tu propuesta de inmediato y te responderé lo antes posible.",
+            "close": "Volver a la web"
+          },
+          "fields": {
+            "name": "Nombre completo",
+            "email": "Correo electrónico",
+            "company": "Empresa / Organización (Opcional)",
+            "subject": "Motivo del contacto",
+            "message": "Mensaje / Detalles de la propuesta",
+            "messagePlaceholder": "Describe detalladamente las condiciones, plazos o tu propuesta...",
+            "subjectOptions": {
+              "job": "Oferta Laboral",
+              "collab": "Colaboración / Alianza",
+              "gigantic": "Proyecto de Gran Envergadura",
+              "other": "Otro Asunto"
+            }
+          }
+        }
+      },
+      "en": {
+        "nav": {
+          "services": "Services",
+          "projects": "Projects",
+          "contact": "Contact",
+          "commission": "COMMISSION",
+          "resume": "Resume / CV",
+          "closeMenu": "Close menu",
+          "openMenu": "Open menu"
+        },
+        "hero": {
+          "tagline": "Illustrator & digital artist · Madrid",
+          "greetingBefore": "Hello,\nI'm ",
+          "greetingItalic": "Nerea",
+          "artline": "I transform ideas into visual worlds with soul.",
+          "bio1": "I am Nerea Lucas Pajares, artistically known as Miluartedenara. With a Master's Degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom clay dolls, handmade jewelry, and concept art for music projects. Each piece is crafted with dedication and love for details.",
+          "bio2": "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
+          "viewWorks": "View works",
+          "sendInquiry": "Send inquiry"
+        },
+        "gallery": {
+          "title": "Gallery",
+          "subtitle": "Recent works.\nScroll to explore.",
+          "hint": "scroll to navigate",
+          "filters": {
+            "all": "All",
+            "ilustracion": "🎨 Illustration",
+            "concept": "🧠 Concept Art",
+            "musica": "🎵 Music Design",
+            "joyeria": "💍 Jewelry"
+          },
+          "alts": {
+            "obra1": "Digital illustration of an anthropomorphic flower with pop typography, Musae series",
+            "obra2": "Illustrated portrait of a female character with blue hair and marine elements",
+            "obra3": "Female character enveloped in flames with a comic bubble, narrative illustration",
+            "obra4": "Illustrated still life of creative tools and psychedelic mushrooms for the Diggin' music label",
+            "obra5": "Illustrated studio scene with a book shelf and a painting easel",
+            "obra6": "Handcrafted jewelry piece with hand-illustrated detail",
+            "obra7": "Isometric landscape concept art with a cabin and vegetation",
+            "obra8": "Detail of a colored manga character, characteristic Miluarte style"
+          }
+        },
+        "process": {
+          "title": "The Creative Process",
+          "subtitle": "From Sketch to Final Art",
+          "hint": "Slide the center bar to compare the pencil sketch lines and the final digital render of the artwork.",
+          "cursorHint": "Slide"
+        },
+        "services": {
+          "ctaBeforeAfter": "↔ Scroll to see before & after",
+          "render3D": "3D Render",
+          "realResult": "Real result",
+          "viewWorks": "View works",
+          "items": {
+            "diseno-grafico": {
+              "label": "Graphic Design",
+              "title": "Visual identity\n& communication",
+              "description": "From logos to full catalogs. Banners, advertising, photo editing and composition with Photoshop, and technical illustration for commercial projects.",
+              "bullets": [
+                "Logos & visual identity",
+                "Banners & advertising material",
+                "Catalogs & editorial design",
+                "Photographic composition",
+                "Technical illustration & drafts"
+              ]
+            },
+            "3d-stands": {
+              "label": "3D & Stands",
+              "title": "From blueprint\nto reality",
+              "description": "3D design and visualization of exhibition stands, products, and spaces. Architectural reconstructions and technical blueprints ready for manufacturing and construction.",
+              "bullets": [
+                "Fair stand design",
+                "Photorealistic product renders",
+                "Architectural reconstructions",
+                "Technical blueprints for production",
+                "Space & interior visualization"
+              ]
+            },
+            "diggin": {
+              "label": "Diggin'",
+              "title": "Official designer\nof the music label",
+              "description": "Complete art direction for the independent music label Diggin'. Covers, visual identity, campaign illustrations, and animated music videos.",
+              "bullets": [
+                "Album & EP covers",
+                "Label visual identity",
+                "Musical illustrations",
+                "Animated music videos",
+                "Music merchandising"
+              ]
+            },
+            "ilustracion": {
+              "label": "Illustrations",
+              "title": "Personal art\nwithout filters",
+              "description": "Free work and the Musae series. Female characters, subverted nature, and unique worlds in ink and color. Also custom art-dolls, clay art, and handmade jewelry.",
+              "bullets": [
+                "Musae Series — signed prints",
+                "Portraits & personal commissions",
+                "Custom ball-jointed dolls",
+                "Clay art & sculpture",
+                "Handmade jewelry"
+              ]
+            },
+            "concept-art": {
+              "label": "Concept Art",
+              "title": "From concept\nto universe",
+              "description": "Not just the final drawing: the complete process of building a visual world from scratch. Characters with model sheets, coherent environments, and props designed for narrative function.",
+              "bullets": [
+                "Character design & model sheets",
+                "Environments & worldbuilding",
+                "Props & narrative objects",
+                "Visual bibles & style guides",
+                "Concept for games & animation"
+              ]
+            }
+          }
+        },
+        "collection": {
+          "back": "Back",
+          "interest": "Interested in any piece?",
+          "requestQuote": "Request quote",
+          "animasBible": {
+            "tagline": "Presentation · Complete Visual Bible",
+            "title": "The Animas Universe",
+            "description": "A 31-page presentation documenting the full process: from early character sketches to final art, model sheets, and the complete cast of the universe."
+          },
+          "meta": {
+            "ilustracion": {
+              "title": "Illustration",
+              "label": "Personal work",
+              "statement": "Personal work exploring the tension between form and void. Series built from intuition and resolved in the material. Each piece is a state, not a conclusion."
+            },
+            "diggin": {
+              "title": "Diggin'",
+              "label": "Music label · Art direction",
+              "statement": "Covers, identity, and art direction for the independent label Diggin'. Graffiti, psychedelia, and hip-hop in visual format."
+            },
+            "concept-art": {
+              "title": "Concept Art",
+              "label": "Visual development",
+              "statement": "Concept art and editorial illustration. Characters, atmospheres, and visual storytelling built from emotion."
+            },
+            "diseno-grafico": {
+              "title": "Graphic Design",
+              "label": "Visual identity",
+              "statement": "Identity systems, publications, and editorial design. The image at the service of the message."
+            },
+            "3d-stands": {
+              "title": "3D & Stands",
+              "label": "Space design · Fairs",
+              "statement": "3D design and visualization of stands and exhibition spaces for fairs and events."
+            },
+            "animas": {
+              "title": "Animas",
+              "label": "Concept Art · Personal Universe",
+              "statement": "A world built from within: creatures born of nature, characters with their own story, and a bestiary of forms that never stops revealing itself. Animas is a complete concept art project — model sheets, turn-arounds, expressions, weapons, and companion creatures — created as a personal worldbuilding exercise."
+            },
+            "retratos": {
+              "title": "Portraits & more",
+              "label": "Art studies · Sketchbook",
+              "statement": "The working sketchbook. Portraits of icons who refuse to be forgotten, anatomy pushed to the edge of cartoon, creatures pulled from elegant nightmares, and cities Lovecraft himself would have signed. An archive of what the pencil learns when it has nothing to fear."
+            },
+            "pasta-ya": {
+              "title": "Pasta Ya",
+              "label": "Character design · Campaign",
+              "statement": "When Italian pasta takes on a life of its own — and a very bad attitude. Bravioli, Tortastini, and their crew are campaign-ready character designs: expressive, unique, and packed with more personality per square centimetre than most Hollywood protagonists."
+            }
+          },
+          "availability": {
+            "available": "Available",
+            "unavailable": "Not available",
+            "musicalProject": "Music project"
+          }
+        },
+        "footer": {
+          "studio": "Multidisciplinary creative studio.\nIllustration, design, and art direction.\nBarcelona, Spain.",
+          "work": "Work",
+          "contact": "Contact",
+          "budget": "Request budget",
+          "rights": "© 2024 All rights reserved.",
+          "madeWithCriteria": "Made with criteria."
+        },
+        "notfound": {
+          "title": "Page not found",
+          "back": "Back to home"
+        },
+        "resume": {
+          "title": "Curriculum Vitae",
+          "subtitle": "Visual Artist, 3D Designer & Illustrator",
+          "downloadPDF": "Save as PDF / Print",
+          "back": "Back to home",
+          "sections": {
+            "profile": "Profile",
+            "experience": "Professional Experience",
+            "education": "Education",
+            "skills": "Skills",
+            "languages": "Languages"
+          },
+          "profileText": "Multidisciplinary visual artist with a Master's in Digital Art and Illustration. Specialized in art direction for music projects, 3D stand design for commercial fairs, and custom ball-jointed clay doll and jewelry creation. I combine traditional techniques with cutting-edge digital tools to create cohesive visual stories and impactful physical spaces.",
+          "experienceItems": [
+            {
+              "role": "Creative Illustrator",
+              "company": "Self-employed / Freelance",
+              "period": "2024 - Present",
+              "description": "Freelance work in editorial illustration, character design, and concept art development for independent clients and commercial projects."
+            },
+            {
+              "role": "Graphic Designer",
+              "company": "Ledme Europa",
+              "period": "2024 - Present",
+              "description": "Comprehensive catalog creation (design, layout, technical drawings, photo editing, and web upload). Design and maintenance of website and online store, and content creation for social media."
+            },
+            {
+              "role": "Graphic Illustrator",
+              "company": "Diggin' Records",
+              "period": "2024 - Present",
+              "description": "Digital illustration and graphic design for musical releases, album covers, and official merchandise for the label remotely."
+            },
+            {
+              "role": "Freelance Graphic Designer",
+              "company": "Various Companies",
+              "period": "2019 - Present",
+              "description": "General graphic design, brand identity, 3D modeling and rendering of stands for trade shows and exhibitions for multiple clients."
+            }
+          ],
+          "educationItems": [
+            {
+              "degree": "Master's Degree in Digital Art & Illustration",
+              "school": "Trazos",
+              "period": "2023 - 2024"
+            },
+            {
+              "degree": "Master's Degree in Digital Art",
+              "school": "Trazos",
+              "period": "2024"
+            },
+            {
+              "degree": "Master's Degree in Illustration",
+              "school": "Trazos de Arte",
+              "period": "2024"
+            },
+            {
+              "degree": "High School Diploma",
+              "school": "IES La Arboleda",
+              "period": ""
+            }
+          ],
+          "skillsItems": {
+            "digital": "Digital: Photoshop, Illustrator, Procreate, Blender 3D, CAD (Technical Plans).",
+            "traditional": "Traditional: Oil painting, watercolor, ink, clay sculpting, handmade jewelry.",
+            "creative": "Concept: Art direction, concept art, character design, editorial layout."
+          },
+          "languagesItems": [
+            {
+              "language": "Spanish",
+              "level": "Native"
+            },
+            {
+              "language": "English",
+              "level": "Basic Professional Proficiency"
+            },
+            {
+              "language": "Chinese",
+              "level": "Basic Professional Proficiency"
+            }
+          ]
+        },
+        "booking": {
+          "title": "Tell me about your project",
+          "subtitle": "Let's talk about your idea. Fill in the steps and I will get back to you within 48 hours.",
+          "close": "Close",
+          "next": "Next",
+          "prev": "Back",
+          "submit": "Submit request",
+          "steps": {
+            "step": "Step",
+            "of": "of",
+            "type": "Project Type",
+            "details": "Project Details",
+            "contact": "Contact Information"
+          },
+          "types": {
+            "commercial": {
+              "title": "Commercial Project",
+              "desc": "3D stands, corporate visual identity, branding, concept art for studios/labels."
+            },
+            "personal": {
+              "title": "Personal Project",
+              "desc": "Custom clay dolls, bespoke jewelry, signed prints, digital portraits."
+            }
+          },
+          "fields": {
+            "description": "Describe your idea (style, references, materials...)",
+            "descriptionPlaceholder": "E.g. I would like a custom clay doll inspired by forest themes, about 20 cm...",
+            "timeline": "When do you need it?",
+            "timelinePlaceholder": "E.g. Before October 15th",
+            "name": "Full Name",
+            "email": "Email address",
+            "budget": "Approximate budget",
+            "budgetRanges": [
+              "Under €300",
+              "€300 - €1,000",
+              "€1,000 - €3,000",
+              "Over €3,000"
+            ]
+          },
+          "success": {
+            "title": "Request sent!",
+            "message": "Thank you for reaching out. I will analyze your proposal immediately to bring your idea to life.",
+            "close": "Back to website"
+          }
+        },
+        "featured": {
+          "eyebrow": "Featured Project",
+          "tag": "Diggin' Records",
+          "title": "Diggin' — visual identity of a music label",
+          "description": "Complete art direction for the independent label Diggin': album covers, visual identity, campaign illustrations, and animated music videos. A long-term project where Nerea's style became the visual face of the label.",
+          "tags": [
+            "Art Direction",
+            "Album Covers",
+            "Music Branding",
+            "Animation"
+          ],
+          "bullets": [
+            "Visual concept and initial moodboard",
+            "Album and EP covers",
+            "Visual identity of the label",
+            "Social media adaptations"
+          ],
+          "viewCase": "View full case →"
+        },
+        "clients": {
+          "eyebrow": "Clients & collaborations",
+          "title": "Brands, labels and projects I've worked with",
+          "description": "I've collaborated with musicians, brands and creative projects, developing visual identities and custom illustrations."
+        },
+        "seoServices": {
+          "eyebrow": "Services",
+          "title": "How I can help you",
+          "description": "Bespoke artistic commissions, from a personal piece to full art direction for a brand or a music label.",
+          "items": {
+            "editorial": {
+              "title": "Editorial Illustration",
+              "description": "Creating illustrations for books, magazines and digital publications, with a storytelling style that reinforces the message of each page."
+            },
+            "concept": {
+              "title": "Concept Art",
+              "description": "Visual design for video games, audiovisual projects and visual storytelling: characters, environments and props designed for a coherent world."
+            },
+            "character": {
+              "title": "Character Design",
+              "description": "Creation of original characters for creative projects, brands and campaigns, with model sheets and style guides."
+            },
+            "music": {
+              "title": "Music Covers",
+              "description": "Artwork for albums, singles and promotional material, with full art direction for labels and independent artists."
+            },
+            "graphic": {
+              "title": "Graphic Design",
+              "description": "Visual identity, banners, catalogs and editorial design for commercial and cultural projects."
+            },
+            "clay": {
+              "title": "Jewelry & Clay Art",
+              "description": "Unique handcrafted pieces: jewelry, custom art-dolls and hand-sculpted clay figures."
+            }
+          }
+        },
+        "contactModal": {
+          "title": "General Contact",
+          "subtitle": "Use this form for job offers, collaborations, or large-scale projects.",
+          "close": "Close",
+          "submit": "Send message",
+          "success": {
+            "title": "Message sent!",
+            "message": "Thank you for reaching out. I will review your proposal and get back to you as soon as possible.",
+            "close": "Back to website"
+          },
+          "fields": {
+            "name": "Full Name",
+            "email": "Email address",
+            "company": "Company / Organization (Optional)",
+            "subject": "Reason for contact",
+            "message": "Message / Proposal details",
+            "messagePlaceholder": "Describe in detail the conditions, timeline or your proposal...",
+            "subjectOptions": {
+              "job": "Job Offer",
+              "collab": "Collaboration / Partnership",
+              "gigantic": "Large-Scale Project",
+              "other": "Other Inquiries"
+            }
+          }
+        }
+      }
     },
-    {
-      "id": "mu2",
-      "title": "Paranoia",
-      "year": "2024",
-      "technique": "Técnica mixta",
-      "size": "50 × 70 cm",
-      "price": "€380",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819793/Paranoia_ieurx1.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 1,
-      "featured": true
+    "social": {
+      "instagram": "https://www.instagram.com/snctryjo/",
+      "linkedin": "https://www.linkedin.com/in/nerealucaspajares4815162342/",
+      "behance": "",
+      "tiktok": "",
+      "twitter": ""
     },
-    {
-      "id": "mu3",
-      "title": "Musizieren",
-      "year": "2024",
-      "technique": "Óleo sobre tabla",
-      "size": "60 × 80 cm",
-      "price": "No disponible",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819793/Musizieren_gr_heqycu.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 2,
-      "featured": false
-    },
-    {
-      "id": "mu4",
-      "title": "Cabeza (Estudio)",
-      "year": "2024",
-      "technique": "Carboncillo y acrílico",
-      "size": "60 × 60 cm",
-      "price": "€320",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819795/Cabesa_copia_kak4hg.jpg",
-      "imgPos": "50% 25%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 3,
-      "featured": false
-    },
-    {
-      "id": "mu5",
-      "title": "The Earth",
-      "year": "2023",
-      "technique": "Técnica mixta · Tríptico",
-      "size": "80 × 80 cm",
-      "price": "€450",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819795/The_Earth_oomsjr.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 4,
-      "featured": false
-    },
-    {
-      "id": "mu6",
-      "title": "The Sky",
-      "year": "2023",
-      "technique": "Técnica mixta · Tríptico",
-      "size": "80 × 80 cm",
-      "price": "€450",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819796/The_Sky_jov9qc.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 5,
-      "featured": false
-    },
-    {
-      "id": "mu7",
-      "title": "The Ocean",
-      "year": "2023",
-      "technique": "Técnica mixta · Tríptico",
-      "size": "80 × 80 cm",
-      "price": "€450",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819796/The_Ocean_fpiduo.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 6,
-      "featured": false
-    },
-    {
-      "id": "mu8",
-      "title": "Just Sugar, No Daddy",
-      "year": "2024",
-      "technique": "Acrílico sobre lienzo",
-      "size": "120 × 90 cm",
-      "price": "€890",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819797/Just_Suggar_No_Daddy_f_eljdvl.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-3",
-      "aspect": "16/9",
-      "order": 7,
-      "featured": false
-    },
-    {
-      "id": "mu9",
-      "title": "Kreativität & Schreibkunst",
-      "year": "2023",
-      "technique": "Tinta y acuarela",
-      "size": "50 × 70 cm",
-      "price": "No disponible",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819798/Kreativit%C3%A4t_Schreibkunst_mzvltr.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 8,
-      "featured": false
-    },
-    {
-      "id": "mu10",
-      "title": "La cabeza",
-      "year": "2024",
-      "technique": "Acrílico y pigmento",
-      "size": "70 × 90 cm",
-      "price": "€550",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819801/La_cabeza_copia_grtcrt.jpg",
-      "imgPos": "50% 15%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 9,
-      "featured": false
-    },
-    {
-      "id": "mu11",
-      "title": "Musae",
-      "year": "2024",
-      "technique": "Acrílico sobre lienzo",
-      "size": "80 × 100 cm",
-      "price": "€650",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 10,
-      "featured": false
+    "works": {
+      "ilustracion": null,
+      "diggin": null,
+      "concept-art": null,
+      "diseno-grafico": null,
+      "3d-stands": null,
+      "animas": null,
+      "retratos": null,
+      "pasta-ya": null,
+      "pruebaxd": null
     }
-  ],
-  "miluarte:gallery:diggin": [
-    {
-      "id": "dg1",
-      "title": "Smokin' On EP",
-      "year": "2024",
-      "technique": "Tom Hodges",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811474/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 0,
-      "featured": true
+  },
+  "miluarte:gallery:prueba2": [],
+  "miluarte:snapshot:snap-1786887170848--AB3": {
+    "galleries": [
+      {
+        "slug": "ilustracion",
+        "title": "Ilustración",
+        "label": "Obra personal",
+        "statement": "Obra personal que explora la tensión entre forma y vacío. Series que se construyen desde la intuición y se resuelven en el material. Cada pieza es un estado, no una conclusión.",
+        "accent": "var(--color-brand-blush)",
+        "twoColumns": false,
+        "order": 0,
+        "featured": true
+      },
+      {
+        "slug": "diggin",
+        "title": "Diggin'",
+        "label": "Sello musical · Dirección de arte",
+        "statement": "Portadas, identidad y dirección de arte para el sello independiente Diggin'. Graffiti, psicodelia y hip-hop en formato visual.",
+        "accent": "var(--color-brand-neon)",
+        "twoColumns": true,
+        "order": 1,
+        "featured": true
+      },
+      {
+        "slug": "concept-art",
+        "title": "Concept Art",
+        "label": "Desarrollo visual",
+        "statement": "Concept art e ilustración editorial. Personajes, atmósferas y narrativa visual construidos desde la emoción.",
+        "accent": "var(--color-brand-orange)",
+        "twoColumns": false,
+        "order": 2,
+        "featured": true
+      },
+      {
+        "slug": "diseno-grafico",
+        "title": "Diseño Gráfico",
+        "label": "Identidad visual",
+        "statement": "Sistemas de identidad, publicaciones y diseño editorial. La imagen al servicio del mensaje.",
+        "accent": "var(--color-brand-orange)",
+        "twoColumns": false,
+        "order": 3,
+        "featured": false
+      },
+      {
+        "slug": "3d-stands",
+        "title": "3D & Stands",
+        "label": "Diseño de espacios · Ferias",
+        "statement": "Diseño y visualización 3D de stands y espacios expositivos para ferias y eventos.",
+        "accent": "var(--color-brand-blush)",
+        "twoColumns": false,
+        "order": 4,
+        "featured": false
+      },
+      {
+        "slug": "animas",
+        "title": "Animas",
+        "label": "Concept Art · Universo propio",
+        "statement": "Un mundo construido desde dentro: criaturas que nacen de la naturaleza, personajes con historia propia y un bestiario de formas que nunca termina de revelarse.",
+        "accent": "#C8A96E",
+        "twoColumns": false,
+        "order": 5,
+        "featured": true
+      },
+      {
+        "slug": "retratos",
+        "title": "Retratos y más",
+        "label": "Estudio artístico · Obra de clase",
+        "statement": "El cuaderno de trabajo. Retratos de iconos que se niegan al olvido, anatomía al límite del cartoon y ciudades que Lovecraft hubiera firmado.",
+        "accent": "#9B7FA6",
+        "twoColumns": false,
+        "order": 6,
+        "featured": false
+      },
+      {
+        "slug": "pasta-ya",
+        "title": "Pasta Ya",
+        "label": "Diseño de personajes · Campaña",
+        "statement": "Cuando la pasta italiana cobra vida propia y muy mal carácter. Siete personajes de diseño para campaña: expresivos, únicos e inconfundibles.",
+        "accent": "#E8854A",
+        "twoColumns": false,
+        "order": 7,
+        "featured": false
+      },
+      {
+        "slug": "pruebaxd",
+        "title": "pruebaxd",
+        "label": "prueba",
+        "statement": "esto es una prueba",
+        "accent": "#EAA898",
+        "twoColumns": false,
+        "order": 8,
+        "featured": false
+      },
+      {
+        "slug": "prueba2",
+        "title": "prueba2",
+        "label": "prueba",
+        "statement": "esto es una pruebaaaaaaa",
+        "accent": "#EAA898",
+        "twoColumns": false,
+        "order": 9,
+        "featured": false
+      }
+    ],
+    "renders": [
+      {
+        "id": "stand-feria-milan",
+        "title": "Stand Modular de Feria — Milán",
+        "client": "Fiera Milano S.p.A.",
+        "year": "2025",
+        "badge": "STAND · FERIA",
+        "software": [
+          "Blender",
+          "SketchUp",
+          "AutoCAD"
+        ],
+        "delivery": "Planos técnicos + Renders fotorrealistas",
+        "description": "Propuesta de stand fotorrealista para exhibición de mobiliario de vanguardia. La estructura utiliza materiales ecológicos de alta durabilidad y un sistema modular desmontable de rápida construcción.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg",
+        "videoSrcMp4": "/videos/sample-3d.mp4",
+        "videoSrcWebm": "/videos/sample-3d.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Boceto en papel"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg",
+            "label": "Render final"
+          }
+        ],
+        "makingOfVideoMp4": "/videos/sample-bbb.mp4",
+        "makingOfVideoWebm": "/videos/sample-bbb.mp4",
+        "order": 0
+      },
+      {
+        "id": "altavoz-inteligente",
+        "title": "Altavoz Hi-Fi Inteligente 3D",
+        "client": "Soundwave Technologies",
+        "year": "2024",
+        "badge": "PRODUCTO · 3D",
+        "software": [
+          "Cinema 4D",
+          "Octane Render",
+          "Photoshop"
+        ],
+        "delivery": "Renders promocionales + Animación publicitaria",
+        "description": "Visualización publicitaria para el lanzamiento de un altavoz inteligente. Se modelaron con máxima fidelidad las texturas de aluminio cepillado y tela acústica, usando iluminación de estudio realista.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+        "videoSrcMp4": "/videos/sample-bbb.mp4",
+        "videoSrcWebm": "/videos/sample-bbb.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+            "label": "Referencia"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Render final"
+          }
+        ],
+        "order": 1
+      },
+      {
+        "id": "pabellon-cristal",
+        "title": "Pabellón Botánico de Cristal",
+        "client": "Proyecto de investigación",
+        "year": "2025",
+        "badge": "ARQUITECTURA",
+        "software": [
+          "Blender",
+          "V-Ray",
+          "Photoshop"
+        ],
+        "delivery": "Renders fotorrealistas + Recorrido virtual",
+        "description": "Modelado de un pabellón botánico de cristal integrado en el bosque. Destaca el comportamiento de la luz natural a través de los cristales estructurados y la vegetación circundante.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+        "videoSrcMp4": "/videos/sample-3d.mp4",
+        "videoSrcWebm": "/videos/sample-3d.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Boceto en papel"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Render final"
+          }
+        ],
+        "makingOfVideoMp4": "/videos/sample-bbb.mp4",
+        "makingOfVideoWebm": "/videos/sample-bbb.mp4",
+        "order": 2
+      },
+      {
+        "id": "stand-cosmetica-bio",
+        "title": "Stand de Cosmética Orgánica",
+        "client": "Natura Cosmetics",
+        "year": "2024",
+        "badge": "STAND · FERIA",
+        "software": [
+          "Blender",
+          "SketchUp",
+          "Substance Painter"
+        ],
+        "delivery": "Todos (planos técnicos, renders y animación de recorrido)",
+        "description": "Visualización de un stand expositivo de cosmética bio. Combina iluminación cálida con texturas de madera y vegetación para transmitir pureza y sostenibilidad.",
+        "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+        "videoSrcMp4": "/videos/sample-bbb.mp4",
+        "videoSrcWebm": "/videos/sample-bbb.mp4",
+        "process": [
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png",
+            "label": "Boceto en papel"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+            "label": "Blockout 3D"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+            "label": "Clay render"
+          },
+          {
+            "src": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+            "label": "Render final"
+          }
+        ],
+        "order": 3
+      }
+    ],
+    "texts": {
+      "es": {
+        "nav": {
+          "services": "Servicios",
+          "projects": "Proyectos",
+          "contact": "Contacto",
+          "commission": "ENCARGO",
+          "resume": "Currículum",
+          "closeMenu": "Cerrar menú",
+          "openMenu": "Abrir menú"
+        },
+        "hero": {
+          "tagline": "Naziiii xd",
+          "greetingBefore": "Hola,\nsoy ",
+          "greetingItalic": "XD",
+          "artline": "Transformo ideas en mundos visuales con alma.",
+          "bio1": "Me llamo Nerea Lucas Pajares, artísticamente conocida como Miluartedenara. Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, joyería artesanal hecha a mano y concept art para proyectos musicales. Cada pieza está hecha con dedicación y amor por los detalles.",
+          "bio2": "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
+          "viewWorks": "Ver trabajos",
+          "sendInquiry": "Escribir encargo"
+        },
+        "gallery": {
+          "title": "Galería",
+          "subtitle": "Obras recientes.\nDesplázate para explorar.",
+          "hint": "scroll para explorar",
+          "filters": {
+            "all": "Todos",
+            "ilustracion": "🎨 Ilustración",
+            "concept": "🧠 Concept Art",
+            "musica": "🎵 Diseño musical",
+            "joyeria": "💍 Joyería"
+          },
+          "alts": {
+            "obra1": "Ilustración digital de una flor antropomorfa con tipografía pop, serie Musae",
+            "obra2": "Retrato ilustrado de personaje femenino con cabello azul y elementos marinos",
+            "obra3": "Personaje femenino envuelto en llamas con bocadillo de cómic, ilustración narrativa",
+            "obra4": "Bodegón ilustrado de herramientas creativas y setas psicodélicas para el sello musical Diggin'",
+            "obra5": "Escena de estudio ilustrado con estantería de libros y caballete de pintura",
+            "obra6": "Pieza de joyería artesanal con detalle ilustrado a mano",
+            "obra7": "Concept art de paisaje isométrico con cabaña y vegetación",
+            "obra8": "Detalle de personaje manga a color, estilo característico de Miluarte"
+          }
+        },
+        "process": {
+          "title": "El Proceso Creativo",
+          "subtitle": "Del Boceto al Arte Final",
+          "hint": "Desliza la barra central para comparar el trazo de boceto y el acabado digital final de la ilustración.",
+          "cursorHint": "Deslizar"
+        },
+        "services": {
+          "ctaBeforeAfter": "↔ Desplázate para ver antes & después",
+          "render3D": "Render 3D",
+          "realResult": "Resultado real",
+          "viewWorks": "Ver trabajos",
+          "items": {
+            "diseno-grafico": {
+              "label": "Diseño Gráfico",
+              "title": "Identidad visual\ny comunicación",
+              "description": "Desde el logotipo hasta el catálogo completo. Banners, publicidad, retoque y composición fotográfica con Photoshop, e ilustración técnica para proyectos comerciales.",
+              "bullets": [
+                "Logotipos & identidad visual",
+                "Banners & material publicitario",
+                "Catálogos & diseño editorial",
+                "Composición fotográfica",
+                "Ilustración técnica & planos"
+              ]
+            },
+            "3d-stands": {
+              "label": "3D & Stands",
+              "title": "Del plano\na la realidad",
+              "description": "Diseño y visualización 3D de stands para ferias, productos y espacios. Reconstrucciones arquitectónicas y conversión a planos técnicos listos para fabricación y construcción.",
+              "bullets": [
+                "Diseño de stands para ferias",
+                "Renders de producto fotorrealistas",
+                "Reconstrucciones arquitectónicas",
+                "Planos técnicos para producción",
+                "Visualización de espacios & interiores"
+              ]
+            },
+            "diggin": {
+              "label": "Diggin'",
+              "title": "Diseñadora oficial\ndel sello musical",
+              "description": "Dirección de arte completa para el sello musical independiente Diggin'. Portadas, identidad visual, ilustraciones para campañas y videoclips animados.",
+              "bullets": [
+                "Portadas de álbum & EP",
+                "Identidad visual del sello",
+                "Ilustraciones musicales",
+                "Videoclips animados",
+                "Merchandising musical"
+              ]
+            },
+            "ilustracion": {
+              "label": "Ilustraciones",
+              "title": "Arte personal\nsin filtros",
+              "description": "Obra libre y la serie Musae. Personajes femeninos, naturaleza subvertida y mundos propios en tinta y color. También muñecas personalizadas, arte en arcilla y joyería artesanal.",
+              "bullets": [
+                "Serie Musae — prints firmados",
+                "Retratos & encargos personales",
+                "Muñecas articuladas a medida",
+                "Arte en arcilla & escultura",
+                "Joyería artesanal"
+              ]
+            },
+            "concept-art": {
+              "label": "Concept Art",
+              "title": "Del concepto\nal universo",
+              "description": "No solo el dibujo final: el proceso completo de construir un mundo visual desde cero. Personajes con ficha técnica, escenarios coherentes y props diseñados para funcionar en la narrativa.",
+              "bullets": [
+                "Diseño de personajes & fichas técnicas",
+                "Escenarios & worldbuilding",
+                "Props & objetos narrativos",
+                "Biblias visuales & guías de estilo",
+                "Concept para videojuegos & animación"
+              ]
+            }
+          }
+        },
+        "collection": {
+          "back": "Volver",
+          "interest": "¿Te interesa alguna pieza?",
+          "requestQuote": "Pide presupuesto",
+          "animasBible": {
+            "tagline": "Presentación · Biblia Visual Completa",
+            "title": "El universo Animas",
+            "description": "Una presentación de 31 páginas que documenta el proceso completo: desde los primeros bocetos de personajes hasta el arte final, las fichas técnicas y el elenco completo del universo."
+          },
+          "meta": {
+            "ilustracion": {
+              "title": "Ilustración",
+              "label": "Obra personal",
+              "statement": "Obra personal que explora la tensión entre forma y vacío. Series que se construyen desde la intuición y se resuelven en el material. Cada pieza es un estado, no una conclusión."
+            },
+            "diggin": {
+              "title": "Diggin'",
+              "label": "Sello musical · Dirección de arte",
+              "statement": "Portadas, identidad y dirección de arte para el sello independiente Diggin'. Graffiti, psicodelia y hip-hop en formato visual."
+            },
+            "concept-art": {
+              "title": "Concept Art",
+              "label": "Desarrollo visual",
+              "statement": "Concept art e ilustración editorial. Personajes, atmósferas y narrativa visual construidos desde la emoción."
+            },
+            "diseno-grafico": {
+              "title": "Diseño Gráfico",
+              "label": "Identidad visual",
+              "statement": "Sistemas de identidad, publicaciones y diseño editorial. La imagen al servicio del mensaje."
+            },
+            "3d-stands": {
+              "title": "3D & Stands",
+              "label": "Diseño de espacios · Ferias",
+              "statement": "Diseño y visualización 3D de stands y espacios expositivos para ferias y eventos."
+            },
+            "animas": {
+              "title": "Animas",
+              "label": "Concept Art · Universo propio",
+              "statement": "Un mundo construido desde dentro: criaturas que nacen de la naturaleza, personajes con historia propia y un bestiario de formas que nunca termina de revelarse. Animas es un proyecto de concept art completo —fichas técnicas, turn-arounds, expresiones, armas y mascotas— creado como ejercicio de worldbuilding personal."
+            },
+            "retratos": {
+              "title": "Retratos y más",
+              "label": "Estudio artístico · Obra de clase",
+              "statement": "El cuaderno de trabajo. Retratos de iconos que se niegan al olvido, anatomía llevada al límite del cartoon, criaturas extraídas de pesadillas elegantes y ciudades que Lovecraft hubiera firmado. Un archivo de lo que el lápiz aprende cuando no tiene miedo."
+            },
+            "pasta-ya": {
+              "title": "Pasta Ya",
+              "label": "Diseño de personajes · Campaña",
+              "statement": "Cuando la pasta italiana cobra vida propia y muy mal carácter. Bravioli, Tortastini y sus colegas son personajes de diseño para campaña: expresivos, únicos y con más personalidad por centímetro cuadrado que la mayoría de protagonistas de Hollywood."
+            }
+          },
+          "availability": {
+            "available": "Disponible",
+            "unavailable": "No disponible",
+            "musicalProject": "Proyecto musical"
+          }
+        },
+        "footer": {
+          "studio": "Estudio creativo multidisciplinar.\nIlustración, diseño y dirección de arte.\nMadrid, España.",
+          "work": "Trabajo",
+          "contact": "Contacto",
+          "budget": "Pide presupuesto",
+          "rights": "© 2024 Miluarte. Todos los derechos reservados.",
+          "madeWithCriteria": "Hecho con amor por @snctryjo - Josue."
+        },
+        "notfound": {
+          "title": "Página no encontrada",
+          "back": "Volver al inicio"
+        },
+        "resume": {
+          "title": "Currículum Vitae",
+          "subtitle": "Artista Visual, Diseñadora 3D e Ilustradora",
+          "downloadPDF": "Guardar como PDF / Imprimir",
+          "back": "Volver al inicio",
+          "sections": {
+            "profile": "Sobre Mí",
+            "experience": "Experiencia Profesional",
+            "education": "Educación",
+            "skills": "Habilidades",
+            "languages": "Idiomas"
+          },
+          "profileText": "Artista visual multidisciplinar con un Máster en Arte e Ilustración Digital. Especializada en la dirección de arte para proyectos musicales, diseño tridimensional de stands comerciales y modelado físico de muñecas personalizadas y joyería. Combino técnicas tradicionales con herramientas digitales de última generación para crear narrativas visuales coherentes y espacios físicos impactantes.",
+          "experienceItems": [
+            {
+              "role": "Ilustradora Creativa",
+              "company": "Por cuenta propia / Freelance",
+              "period": "2024 - Actualidad",
+              "description": "Trabajos independientes de ilustración editorial, diseño de personajes y desarrollo de concept art para diversos proyectos comerciales independientes."
+            },
+            {
+              "role": "Diseñadora Gráfica",
+              "company": "Ledme Europa",
+              "period": "2024 - Actualidad",
+              "description": "Creación integral de catálogos (diseño, maquetación, dibujos técnicos, edición fotográfica y subida a web). Diseño y mantenimiento de página web y tienda online, y creación de contenido para redes sociales."
+            },
+            {
+              "role": "Ilustradora Gráfica",
+              "company": "Sello musical Diggin'",
+              "period": "2024 - Actualidad",
+              "description": "Ilustración digital y diseño gráfico para lanzamientos de música, portadas de álbumes y merchandising oficial del sello en remoto."
+            },
+            {
+              "role": "Diseñadora Gráfica Freelance",
+              "company": "Varias Empresas",
+              "period": "2019 - Actualidad",
+              "description": "Diseño gráfico general, identidad de marca, modelado y renderizado 3D de stands para ferias comerciales y espacios expositivos para diversos clientes."
+            }
+          ],
+          "educationItems": [
+            {
+              "degree": "Máster en Arte e Ilustración Digital",
+              "school": "Trazos",
+              "period": "2023 - 2024"
+            },
+            {
+              "degree": "Máster en Arte Digital",
+              "school": "Trazos",
+              "period": "2024"
+            },
+            {
+              "degree": "Máster en Ilustración",
+              "school": "Trazos de Arte",
+              "period": "2024"
+            },
+            {
+              "degree": "Bachillerato",
+              "school": "IES La Arboleda",
+              "period": ""
+            }
+          ],
+          "skillsItems": {
+            "digital": "Digital: Photoshop, Illustrator, Procreate, Blender 3D, CAD (Planos Técnicos).",
+            "traditional": "Tradicional: Pintura al óleo, acuarela, tinta, escultura en arcilla, joyería artesanal.",
+            "creative": "Concepto: Dirección de arte, concept art, diseño de personajes, maquetación editorial."
+          },
+          "languagesItems": [
+            {
+              "language": "Español",
+              "level": "Nativo"
+            },
+            {
+              "language": "Inglés",
+              "level": "Competencia básica profesional"
+            },
+            {
+              "language": "Chino",
+              "level": "Competencia básica profesional"
+            }
+          ]
+        },
+        "booking": {
+          "title": "Cuéntame tu proyecto",
+          "subtitle": "Hablemos de tu idea. Rellena los pasos y te responderé en menos de 48 horas.",
+          "close": "Cerrar",
+          "next": "Siguiente",
+          "prev": "Atrás",
+          "submit": "Enviar solicitud",
+          "steps": {
+            "step": "Paso",
+            "of": "de",
+            "type": "Tipo de proyecto",
+            "details": "Detalles del encargo",
+            "contact": "Datos de contacto"
+          },
+          "types": {
+            "commercial": {
+              "title": "Proyecto Comercial",
+              "desc": "Stands 3D, identidad visual corporativa, branding, concept art para estudios/discográficas."
+            },
+            "personal": {
+              "title": "Proyecto Personal",
+              "desc": "Muñecas de arcilla personalizadas, joyería a medida, prints firmados, retratos digitales."
+            }
+          },
+          "fields": {
+            "description": "Describe tu idea (estilo, referencias, materiales...)",
+            "descriptionPlaceholder": "Ej: Quiero una muñeca personalizada inspirada en la temática del bosque, de unos 20 cm...",
+            "timeline": "¿Cuándo lo necesitas?",
+            "timelinePlaceholder": "Ej: Para antes del 15 de Octubre",
+            "name": "Nombre completo",
+            "email": "Correo electrónico",
+            "budget": "Presupuesto aproximado",
+            "budgetRanges": [
+              "Menos de 300€",
+              "300€ - 1.000€",
+              "1.000€ - 3.000€",
+              "Más de 3.000€"
+            ]
+          },
+          "success": {
+            "title": "¡Solicitud enviada!",
+            "message": "Gracias por contactar. Analizaré tu propuesta de inmediato para darle vida a tu idea.",
+            "close": "Volver a la web"
+          }
+        },
+        "featured": {
+          "eyebrow": "Proyecto destacado",
+          "tag": "Diggin' Records",
+          "title": "Diggin' — identidad visual de un sello musical",
+          "description": "Dirección de arte completa para el sello independiente Diggin': portadas de álbum, identidad visual, ilustraciones para campañas y videoclips animados. Un proyecto largo donde el estilo de Nerea se convirtió en la cara visual del sello.",
+          "tags": [
+            "Dirección de arte",
+            "Portadas de álbum",
+            "Branding musical",
+            "Animación"
+          ],
+          "bullets": [
+            "Concepto visual y moodboard inicial",
+            "Portadas de álbum y EP",
+            "Identidad visual del sello",
+            "Adaptaciones para redes sociales"
+          ],
+          "viewCase": "Ver caso completo →"
+        },
+        "clients": {
+          "eyebrow": "Clientes & colaboraciones",
+          "title": "Marcas, sellos y proyectos con los que he trabajado",
+          "description": "He colaborado con músicos, marcas y proyectos creativos desarrollando identidades visuales e ilustraciones personalizadas."
+        },
+        "seoServices": {
+          "eyebrow": "Servicios",
+          "title": "En qué puedo ayudarte",
+          "description": "Encargos artísticos a medida, desde una pieza personal hasta dirección de arte completa para una marca o un sello musical.",
+          "items": {
+            "editorial": {
+              "title": "Ilustración Editorial",
+              "description": "Creación de ilustraciones para libros, revistas y publicaciones digitales, con un estilo narrativo que refuerza el mensaje de cada página."
+            },
+            "concept": {
+              "title": "Concept Art",
+              "description": "Diseño visual para videojuegos, proyectos audiovisuales y narrativa visual: personajes, escenarios y props pensados para un mundo coherente."
+            },
+            "character": {
+              "title": "Diseño de Personajes",
+              "description": "Creación de personajes originales para proyectos creativos, marcas y campañas, con fichas técnicas y guías de estilo."
+            },
+            "music": {
+              "title": "Portadas Musicales",
+              "description": "Arte para álbumes, singles y material promocional, con dirección de arte completa para sellos y artistas independientes."
+            },
+            "graphic": {
+              "title": "Diseño Gráfico",
+              "description": "Identidad visual, banners, catálogos y diseño editorial para proyectos comerciales y culturales."
+            },
+            "clay": {
+              "title": "Joyería & Arte en Arcilla",
+              "description": "Piezas artesanales únicas: joyería, muñecas personalizadas y esculturas en arcilla hechas a mano."
+            }
+          }
+        },
+        "contactModal": {
+          "title": "Contacto General",
+          "subtitle": "Usa este formulario para ofertas de trabajo, colaboraciones o proyectos de gran envergadura.",
+          "close": "Cerrar",
+          "submit": "Enviar mensaje",
+          "success": {
+            "title": "¡Mensaje enviado!",
+            "message": "Gracias por contactar. Analizaré tu propuesta de inmediato y te responderé lo antes posible.",
+            "close": "Volver a la web"
+          },
+          "fields": {
+            "name": "Nombre completo",
+            "email": "Correo electrónico",
+            "company": "Empresa / Organización (Opcional)",
+            "subject": "Motivo del contacto",
+            "message": "Mensaje / Detalles de la propuesta",
+            "messagePlaceholder": "Describe detalladamente las condiciones, plazos o tu propuesta...",
+            "subjectOptions": {
+              "job": "Oferta Laboral",
+              "collab": "Colaboración / Alianza",
+              "gigantic": "Proyecto de Gran Envergadura",
+              "other": "Otro Asunto"
+            }
+          }
+        }
+      },
+      "en": {
+        "nav": {
+          "services": "Services",
+          "projects": "Projects",
+          "contact": "Contact",
+          "commission": "COMMISSION",
+          "resume": "Resume / CV",
+          "closeMenu": "Close menu",
+          "openMenu": "Open menu"
+        },
+        "hero": {
+          "tagline": "Illustrator & digital artist · Madrid",
+          "greetingBefore": "Hello,\nI'm ",
+          "greetingItalic": "Nerea",
+          "artline": "I transform ideas into visual worlds with soul.",
+          "bio1": "I am Nerea Lucas Pajares, artistically known as Miluartedenara. With a Master's Degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom clay dolls, handmade jewelry, and concept art for music projects. Each piece is crafted with dedication and love for details.",
+          "bio2": "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
+          "viewWorks": "View works",
+          "sendInquiry": "Send inquiry"
+        },
+        "gallery": {
+          "title": "Gallery",
+          "subtitle": "Recent works.\nScroll to explore.",
+          "hint": "scroll to navigate",
+          "filters": {
+            "all": "All",
+            "ilustracion": "🎨 Illustration",
+            "concept": "🧠 Concept Art",
+            "musica": "🎵 Music Design",
+            "joyeria": "💍 Jewelry"
+          },
+          "alts": {
+            "obra1": "Digital illustration of an anthropomorphic flower with pop typography, Musae series",
+            "obra2": "Illustrated portrait of a female character with blue hair and marine elements",
+            "obra3": "Female character enveloped in flames with a comic bubble, narrative illustration",
+            "obra4": "Illustrated still life of creative tools and psychedelic mushrooms for the Diggin' music label",
+            "obra5": "Illustrated studio scene with a book shelf and a painting easel",
+            "obra6": "Handcrafted jewelry piece with hand-illustrated detail",
+            "obra7": "Isometric landscape concept art with a cabin and vegetation",
+            "obra8": "Detail of a colored manga character, characteristic Miluarte style"
+          }
+        },
+        "process": {
+          "title": "The Creative Process",
+          "subtitle": "From Sketch to Final Art",
+          "hint": "Slide the center bar to compare the pencil sketch lines and the final digital render of the artwork.",
+          "cursorHint": "Slide"
+        },
+        "services": {
+          "ctaBeforeAfter": "↔ Scroll to see before & after",
+          "render3D": "3D Render",
+          "realResult": "Real result",
+          "viewWorks": "View works",
+          "items": {
+            "diseno-grafico": {
+              "label": "Graphic Design",
+              "title": "Visual identity\n& communication",
+              "description": "From logos to full catalogs. Banners, advertising, photo editing and composition with Photoshop, and technical illustration for commercial projects.",
+              "bullets": [
+                "Logos & visual identity",
+                "Banners & advertising material",
+                "Catalogs & editorial design",
+                "Photographic composition",
+                "Technical illustration & drafts"
+              ]
+            },
+            "3d-stands": {
+              "label": "3D & Stands",
+              "title": "From blueprint\nto reality",
+              "description": "3D design and visualization of exhibition stands, products, and spaces. Architectural reconstructions and technical blueprints ready for manufacturing and construction.",
+              "bullets": [
+                "Fair stand design",
+                "Photorealistic product renders",
+                "Architectural reconstructions",
+                "Technical blueprints for production",
+                "Space & interior visualization"
+              ]
+            },
+            "diggin": {
+              "label": "Diggin'",
+              "title": "Official designer\nof the music label",
+              "description": "Complete art direction for the independent music label Diggin'. Covers, visual identity, campaign illustrations, and animated music videos.",
+              "bullets": [
+                "Album & EP covers",
+                "Label visual identity",
+                "Musical illustrations",
+                "Animated music videos",
+                "Music merchandising"
+              ]
+            },
+            "ilustracion": {
+              "label": "Illustrations",
+              "title": "Personal art\nwithout filters",
+              "description": "Free work and the Musae series. Female characters, subverted nature, and unique worlds in ink and color. Also custom art-dolls, clay art, and handmade jewelry.",
+              "bullets": [
+                "Musae Series — signed prints",
+                "Portraits & personal commissions",
+                "Custom ball-jointed dolls",
+                "Clay art & sculpture",
+                "Handmade jewelry"
+              ]
+            },
+            "concept-art": {
+              "label": "Concept Art",
+              "title": "From concept\nto universe",
+              "description": "Not just the final drawing: the complete process of building a visual world from scratch. Characters with model sheets, coherent environments, and props designed for narrative function.",
+              "bullets": [
+                "Character design & model sheets",
+                "Environments & worldbuilding",
+                "Props & narrative objects",
+                "Visual bibles & style guides",
+                "Concept for games & animation"
+              ]
+            }
+          }
+        },
+        "collection": {
+          "back": "Back",
+          "interest": "Interested in any piece?",
+          "requestQuote": "Request quote",
+          "animasBible": {
+            "tagline": "Presentation · Complete Visual Bible",
+            "title": "The Animas Universe",
+            "description": "A 31-page presentation documenting the full process: from early character sketches to final art, model sheets, and the complete cast of the universe."
+          },
+          "meta": {
+            "ilustracion": {
+              "title": "Illustration",
+              "label": "Personal work",
+              "statement": "Personal work exploring the tension between form and void. Series built from intuition and resolved in the material. Each piece is a state, not a conclusion."
+            },
+            "diggin": {
+              "title": "Diggin'",
+              "label": "Music label · Art direction",
+              "statement": "Covers, identity, and art direction for the independent label Diggin'. Graffiti, psychedelia, and hip-hop in visual format."
+            },
+            "concept-art": {
+              "title": "Concept Art",
+              "label": "Visual development",
+              "statement": "Concept art and editorial illustration. Characters, atmospheres, and visual storytelling built from emotion."
+            },
+            "diseno-grafico": {
+              "title": "Graphic Design",
+              "label": "Visual identity",
+              "statement": "Identity systems, publications, and editorial design. The image at the service of the message."
+            },
+            "3d-stands": {
+              "title": "3D & Stands",
+              "label": "Space design · Fairs",
+              "statement": "3D design and visualization of stands and exhibition spaces for fairs and events."
+            },
+            "animas": {
+              "title": "Animas",
+              "label": "Concept Art · Personal Universe",
+              "statement": "A world built from within: creatures born of nature, characters with their own story, and a bestiary of forms that never stops revealing itself. Animas is a complete concept art project — model sheets, turn-arounds, expressions, weapons, and companion creatures — created as a personal worldbuilding exercise."
+            },
+            "retratos": {
+              "title": "Portraits & more",
+              "label": "Art studies · Sketchbook",
+              "statement": "The working sketchbook. Portraits of icons who refuse to be forgotten, anatomy pushed to the edge of cartoon, creatures pulled from elegant nightmares, and cities Lovecraft himself would have signed. An archive of what the pencil learns when it has nothing to fear."
+            },
+            "pasta-ya": {
+              "title": "Pasta Ya",
+              "label": "Character design · Campaign",
+              "statement": "When Italian pasta takes on a life of its own — and a very bad attitude. Bravioli, Tortastini, and their crew are campaign-ready character designs: expressive, unique, and packed with more personality per square centimetre than most Hollywood protagonists."
+            }
+          },
+          "availability": {
+            "available": "Available",
+            "unavailable": "Not available",
+            "musicalProject": "Music project"
+          }
+        },
+        "footer": {
+          "studio": "Multidisciplinary creative studio.\nIllustration, design, and art direction.\nBarcelona, Spain.",
+          "work": "Work",
+          "contact": "Contact",
+          "budget": "Request budget",
+          "rights": "© 2024 All rights reserved.",
+          "madeWithCriteria": "Made with criteria."
+        },
+        "notfound": {
+          "title": "Page not found",
+          "back": "Back to home"
+        },
+        "resume": {
+          "title": "Curriculum Vitae",
+          "subtitle": "Visual Artist, 3D Designer & Illustrator",
+          "downloadPDF": "Save as PDF / Print",
+          "back": "Back to home",
+          "sections": {
+            "profile": "Profile",
+            "experience": "Professional Experience",
+            "education": "Education",
+            "skills": "Skills",
+            "languages": "Languages"
+          },
+          "profileText": "Multidisciplinary visual artist with a Master's in Digital Art and Illustration. Specialized in art direction for music projects, 3D stand design for commercial fairs, and custom ball-jointed clay doll and jewelry creation. I combine traditional techniques with cutting-edge digital tools to create cohesive visual stories and impactful physical spaces.",
+          "experienceItems": [
+            {
+              "role": "Creative Illustrator",
+              "company": "Self-employed / Freelance",
+              "period": "2024 - Present",
+              "description": "Freelance work in editorial illustration, character design, and concept art development for independent clients and commercial projects."
+            },
+            {
+              "role": "Graphic Designer",
+              "company": "Ledme Europa",
+              "period": "2024 - Present",
+              "description": "Comprehensive catalog creation (design, layout, technical drawings, photo editing, and web upload). Design and maintenance of website and online store, and content creation for social media."
+            },
+            {
+              "role": "Graphic Illustrator",
+              "company": "Diggin' Records",
+              "period": "2024 - Present",
+              "description": "Digital illustration and graphic design for musical releases, album covers, and official merchandise for the label remotely."
+            },
+            {
+              "role": "Freelance Graphic Designer",
+              "company": "Various Companies",
+              "period": "2019 - Present",
+              "description": "General graphic design, brand identity, 3D modeling and rendering of stands for trade shows and exhibitions for multiple clients."
+            }
+          ],
+          "educationItems": [
+            {
+              "degree": "Master's Degree in Digital Art & Illustration",
+              "school": "Trazos",
+              "period": "2023 - 2024"
+            },
+            {
+              "degree": "Master's Degree in Digital Art",
+              "school": "Trazos",
+              "period": "2024"
+            },
+            {
+              "degree": "Master's Degree in Illustration",
+              "school": "Trazos de Arte",
+              "period": "2024"
+            },
+            {
+              "degree": "High School Diploma",
+              "school": "IES La Arboleda",
+              "period": ""
+            }
+          ],
+          "skillsItems": {
+            "digital": "Digital: Photoshop, Illustrator, Procreate, Blender 3D, CAD (Technical Plans).",
+            "traditional": "Traditional: Oil painting, watercolor, ink, clay sculpting, handmade jewelry.",
+            "creative": "Concept: Art direction, concept art, character design, editorial layout."
+          },
+          "languagesItems": [
+            {
+              "language": "Spanish",
+              "level": "Native"
+            },
+            {
+              "language": "English",
+              "level": "Basic Professional Proficiency"
+            },
+            {
+              "language": "Chinese",
+              "level": "Basic Professional Proficiency"
+            }
+          ]
+        },
+        "booking": {
+          "title": "Tell me about your project",
+          "subtitle": "Let's talk about your idea. Fill in the steps and I will get back to you within 48 hours.",
+          "close": "Close",
+          "next": "Next",
+          "prev": "Back",
+          "submit": "Submit request",
+          "steps": {
+            "step": "Step",
+            "of": "of",
+            "type": "Project Type",
+            "details": "Project Details",
+            "contact": "Contact Information"
+          },
+          "types": {
+            "commercial": {
+              "title": "Commercial Project",
+              "desc": "3D stands, corporate visual identity, branding, concept art for studios/labels."
+            },
+            "personal": {
+              "title": "Personal Project",
+              "desc": "Custom clay dolls, bespoke jewelry, signed prints, digital portraits."
+            }
+          },
+          "fields": {
+            "description": "Describe your idea (style, references, materials...)",
+            "descriptionPlaceholder": "E.g. I would like a custom clay doll inspired by forest themes, about 20 cm...",
+            "timeline": "When do you need it?",
+            "timelinePlaceholder": "E.g. Before October 15th",
+            "name": "Full Name",
+            "email": "Email address",
+            "budget": "Approximate budget",
+            "budgetRanges": [
+              "Under €300",
+              "€300 - €1,000",
+              "€1,000 - €3,000",
+              "Over €3,000"
+            ]
+          },
+          "success": {
+            "title": "Request sent!",
+            "message": "Thank you for reaching out. I will analyze your proposal immediately to bring your idea to life.",
+            "close": "Back to website"
+          }
+        },
+        "featured": {
+          "eyebrow": "Featured Project",
+          "tag": "Diggin' Records",
+          "title": "Diggin' — visual identity of a music label",
+          "description": "Complete art direction for the independent label Diggin': album covers, visual identity, campaign illustrations, and animated music videos. A long-term project where Nerea's style became the visual face of the label.",
+          "tags": [
+            "Art Direction",
+            "Album Covers",
+            "Music Branding",
+            "Animation"
+          ],
+          "bullets": [
+            "Visual concept and initial moodboard",
+            "Album and EP covers",
+            "Visual identity of the label",
+            "Social media adaptations"
+          ],
+          "viewCase": "View full case →"
+        },
+        "clients": {
+          "eyebrow": "Clients & collaborations",
+          "title": "Brands, labels and projects I've worked with",
+          "description": "I've collaborated with musicians, brands and creative projects, developing visual identities and custom illustrations."
+        },
+        "seoServices": {
+          "eyebrow": "Services",
+          "title": "How I can help you",
+          "description": "Bespoke artistic commissions, from a personal piece to full art direction for a brand or a music label.",
+          "items": {
+            "editorial": {
+              "title": "Editorial Illustration",
+              "description": "Creating illustrations for books, magazines and digital publications, with a storytelling style that reinforces the message of each page."
+            },
+            "concept": {
+              "title": "Concept Art",
+              "description": "Visual design for video games, audiovisual projects and visual storytelling: characters, environments and props designed for a coherent world."
+            },
+            "character": {
+              "title": "Character Design",
+              "description": "Creation of original characters for creative projects, brands and campaigns, with model sheets and style guides."
+            },
+            "music": {
+              "title": "Music Covers",
+              "description": "Artwork for albums, singles and promotional material, with full art direction for labels and independent artists."
+            },
+            "graphic": {
+              "title": "Graphic Design",
+              "description": "Visual identity, banners, catalogs and editorial design for commercial and cultural projects."
+            },
+            "clay": {
+              "title": "Jewelry & Clay Art",
+              "description": "Unique handcrafted pieces: jewelry, custom art-dolls and hand-sculpted clay figures."
+            }
+          }
+        },
+        "contactModal": {
+          "title": "General Contact",
+          "subtitle": "Use this form for job offers, collaborations, or large-scale projects.",
+          "close": "Close",
+          "submit": "Send message",
+          "success": {
+            "title": "Message sent!",
+            "message": "Thank you for reaching out. I will review your proposal and get back to you as soon as possible.",
+            "close": "Back to website"
+          },
+          "fields": {
+            "name": "Full Name",
+            "email": "Email address",
+            "company": "Company / Organization (Optional)",
+            "subject": "Reason for contact",
+            "message": "Message / Proposal details",
+            "messagePlaceholder": "Describe in detail the conditions, timeline or your proposal...",
+            "subjectOptions": {
+              "job": "Job Offer",
+              "collab": "Collaboration / Partnership",
+              "gigantic": "Large-Scale Project",
+              "other": "Other Inquiries"
+            }
+          }
+        }
+      }
     },
-    {
-      "id": "dg3",
-      "title": "Shimmy Shake EP",
-      "year": "2024",
-      "technique": "Castelho",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811472/Castelho_nqzizi.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 1,
-      "featured": true
+    "social": {
+      "instagram": "https://www.instagram.com/snctryjo/",
+      "linkedin": "https://www.linkedin.com/in/nerealucaspajares4815162342/",
+      "behance": "",
+      "tiktok": "",
+      "twitter": ""
     },
-    {
-      "id": "dg12",
-      "title": "Art No Logia",
-      "year": "2024",
-      "technique": "Art No Logia",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811475/Art_No_Logia_zhqeqm.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 2,
-      "featured": false
-    },
-    {
-      "id": "dg13",
-      "title": "Vibin' EP",
-      "year": "2023",
-      "technique": "Eros",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811478/Eros_-_Vibin_ft2row.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 3,
-      "featured": false
-    },
-    {
-      "id": "dg16",
-      "title": "Red Flag",
-      "year": "2023",
-      "technique": "Doke",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 4,
-      "featured": false
-    },
-    {
-      "id": "dg7",
-      "title": "Cyava Vol. 1",
-      "year": "2024",
-      "technique": "Cyava",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811473/Cyava.1_sja6iz.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 5,
-      "featured": false
-    },
-    {
-      "id": "dg8",
-      "title": "Super Looper EP",
-      "year": "2023",
-      "technique": "Red Effects",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811473/Red_Effects_-_Super_Looper_EP_awueze.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 6,
-      "featured": false
-    },
-    {
-      "id": "dg23",
-      "title": "Worxxx Out EP",
-      "year": "2024",
-      "technique": "Varios artistas",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811484/Worxxx_Out_EP_swxqgn.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 7,
-      "featured": false
-    },
-    {
-      "id": "dg9",
-      "title": "Remixes EP",
-      "year": "2024",
-      "technique": "Daniel Orpi",
-      "size": "12″ Vinyl",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811477/Daniel_Orpi_Chapa_Castelo_Remixes_njsyv9.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 8,
-      "featured": false
-    },
-    {
-      "id": "dg2",
-      "title": "Telling You",
-      "year": "2023",
-      "technique": "Daniel Orpi",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811474/Telling_You_d1hffh.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 9,
-      "featured": false
-    },
-    {
-      "id": "dg11",
-      "title": "Beamer EP",
-      "year": "2024",
-      "technique": "Beamer",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811476/Beamer_EP_qg8wyv.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 10,
-      "featured": false
-    },
-    {
-      "id": "dg14",
-      "title": "Bingham EP",
-      "year": "2023",
-      "technique": "Fabio Neural",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811477/FABIO_NEURAL_BINGHAM_EP_coyy1p.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 11,
-      "featured": false
-    },
-    {
-      "id": "dg19",
-      "title": "Shimmy Shake EP",
-      "year": "2024",
-      "technique": "Castilho",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811481/CASTILHO_-_SHIMMY_SHAKE_EP_m5pfg5.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 12,
-      "featured": false
-    },
-    {
-      "id": "dg5",
-      "title": "You4me EP",
-      "year": "2022",
-      "technique": "Cribb",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811472/Cribb_-_You4me_EP_fgbk8l.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 13,
-      "featured": false
-    },
-    {
-      "id": "dg24",
-      "title": "Trapped in Bassline EP",
-      "year": "2023",
-      "technique": "Tyron Amory",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811483/Tyron_Amory_-_Trapped_in_Bassline_EP_1_1_ywn0zu.png",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 14,
-      "featured": false
-    },
-    {
-      "id": "dg4",
-      "title": "Guetto Unk EP",
-      "year": "2023",
-      "technique": "DIGGS",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811472/DIGGS_-_GUETTO_UNK_EP_xjt6zc.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 15,
-      "featured": false
-    },
-    {
-      "id": "dg6",
-      "title": "Kriol EP",
-      "year": "2023",
-      "technique": "Kriol",
-      "size": "12″ Vinyl",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811472/Kriol_znr4cu.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 16,
-      "featured": false
-    },
-    {
-      "id": "dg10",
-      "title": "Change",
-      "year": "2023",
-      "technique": "Daniel Orpi",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811476/Daniel_Orpi_-_Change_tk64hl.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 17,
-      "featured": false
-    },
-    {
-      "id": "dg15",
-      "title": "Watchu Doin'",
-      "year": "2023",
-      "technique": "Hights",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Hights_-_Watchu_Doin_ulrwve.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 18,
-      "featured": false
-    },
-    {
-      "id": "dg17",
-      "title": "The Groove Quest Vol. 45",
-      "year": "2024",
-      "technique": "Varios artistas",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811481/The_Groove_Quest_Vol._45_wcqeta.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 19,
-      "featured": false
-    },
-    {
-      "id": "dg18",
-      "title": "House Jam EP",
-      "year": "2023",
-      "technique": "Rhoowax",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811480/Rhoowax_-_House_Jam_EP_bt9yyq.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 20,
-      "featured": false
-    },
-    {
-      "id": "dg20",
-      "title": "Night Heroes",
-      "year": "2024",
-      "technique": "Rokke",
-      "size": "Digital Release",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811481/Rokke_-_Night_Heroes_c6ekoz.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 21,
-      "featured": false
-    },
-    {
-      "id": "dg21",
-      "title": "La puesta de Sol",
-      "year": "2023",
-      "technique": "Magnuss",
-      "size": "12″ Vinyl / Digital",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811483/Magnuss_-_La_puesta_de_Sol_s7hkab.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 22,
-      "featured": false
-    },
-    {
-      "id": "dg22",
-      "title": "Heyyo! EP",
-      "year": "2024",
-      "technique": "Lonely and Friends",
-      "size": "12″ Vinyl",
-      "price": "Proyecto musical",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811482/LONELY_AND_FRIENDS_HEYYO_EP_xcllie.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 23,
-      "featured": false
+    "works": {
+      "ilustracion": null,
+      "diggin": null,
+      "concept-art": null,
+      "diseno-grafico": null,
+      "3d-stands": null,
+      "animas": null,
+      "retratos": null,
+      "pasta-ya": null,
+      "pruebaxd": null,
+      "prueba2": []
     }
-  ],
-  "miluarte:gallery:animas": [
-    {
-      "id": "an1",
-      "title": "Melisa — Arte Final",
-      "year": "2024",
-      "technique": "Concept Art · Personaje principal",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820062/1_Melisa_Completo_nwlyro.jpg",
-      "imgPos": "50% 15%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 0,
-      "featured": true
-    },
-    {
-      "id": "an2",
-      "title": "Veive — Arte Final",
-      "year": "2024",
-      "technique": "Concept Art · Personaje principal",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819996/1_Veive_Completo_xb7mrs.jpg",
-      "imgPos": "50% 12%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 1,
-      "featured": true
-    },
-    {
-      "id": "an3",
-      "title": "Osceola — Arte Final",
-      "year": "2024",
-      "technique": "Concept Art · Personaje principal",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820000/1_Osceola_Completo_pka4as.jpg",
-      "imgPos": "50% 12%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 2,
-      "featured": false
-    },
-    {
-      "id": "an4",
-      "title": "Melisa — Turn Around",
-      "year": "2024",
-      "technique": "Model sheet · Vistas 360°",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820053/Melisa_Turn_Around_larkd4.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 3,
-      "featured": false
-    },
-    {
-      "id": "an5",
-      "title": "Melisa — Poses & Movimiento",
-      "year": "2024",
-      "technique": "Model sheet · Dinamismo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820050/Melisa_Poses_snx3wc.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 4,
-      "featured": false
-    },
-    {
-      "id": "an6",
-      "title": "Veive — Turn Around",
-      "year": "2024",
-      "technique": "Model sheet · Vistas 360°",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820008/Veive_Turn_Around_wkispd.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 5,
-      "featured": false
-    },
-    {
-      "id": "an7",
-      "title": "Veive — Expresiones",
-      "year": "2024",
-      "technique": "Model sheet · Emociones",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820060/Veive_Expresiones_op3l2s.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 6,
-      "featured": false
-    },
-    {
-      "id": "an25",
-      "title": "Veive — Poses & Movimiento",
-      "year": "2024",
-      "technique": "Model sheet · Dinamismo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820061/Veive_Poses_ypg3zc.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-3",
-      "aspect": "16/9",
-      "order": 7,
-      "featured": false
-    },
-    {
-      "id": "an8",
-      "title": "Osceola — Turn Around",
-      "year": "2024",
-      "technique": "Model sheet · Vistas 360°",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820055/Osceola_Turn_Around_kwqkgb.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 8,
-      "featured": false
-    },
-    {
-      "id": "an9",
-      "title": "Osceola — Expresiones",
-      "year": "2024",
-      "technique": "Model sheet · Emociones",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820054/Osceola_Expresiones_udygm7.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 9,
-      "featured": false
-    },
-    {
-      "id": "an27",
-      "title": "Osceola — Poses & Movimiento",
-      "year": "2024",
-      "technique": "Model sheet · Dinamismo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820004/Osceola_Poses_lifvbu.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-3",
-      "aspect": "16/9",
-      "order": 10,
-      "featured": false
-    },
-    {
-      "id": "an10",
-      "title": "Atum — Arte Final",
-      "year": "2024",
-      "technique": "Concept Art · Jefe del universo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820052/Arte_Final_Atum_ma3k9g.jpg",
-      "imgPos": "50% 15%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 11,
-      "featured": false
-    },
-    {
-      "id": "an11",
-      "title": "Atum & Satres — Juntos",
-      "year": "2024",
-      "technique": "Concept Art · Dúo de jefes",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819998/Atum_y_Satres_Color_arz8wx.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 12,
-      "featured": false
-    },
-    {
-      "id": "an12",
-      "title": "Feronia — La Diosa Árbol",
-      "year": "2024",
-      "technique": "Concept Art · Jefe del universo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820057/Arte_final_Feronia_copia_y9cyel.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 13,
-      "featured": false
-    },
-    {
-      "id": "an13",
-      "title": "Mania — La Oscura",
-      "year": "2024",
-      "technique": "Concept Art · Antagonista",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820030/16_Mania_zbpatm.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 14,
-      "featured": false
-    },
-    {
-      "id": "an14",
-      "title": "Personajes — Reunión General",
-      "year": "2024",
-      "technique": "Concept Art · Elenco completo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820056/Personajes_Juntos_Color_wzpovc.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-3",
-      "aspect": "16/9",
-      "order": 15,
-      "featured": false
-    },
-    {
-      "id": "an15",
-      "title": "Personajes Principales",
-      "year": "2024",
-      "technique": "Concept Art · Trío protagonista",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820002/3_Principales_Juntos_wexhim.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 16,
-      "featured": false
-    },
-    {
-      "id": "an16",
-      "title": "Arsenal — Todas las Armas",
-      "year": "2024",
-      "technique": "Props · Diseño de armas",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819996/3_Todas_las_Armas_Juntas_a8i5m5.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 17,
-      "featured": false
-    },
-    {
-      "id": "an17",
-      "title": "Props del Universo",
-      "year": "2024",
-      "technique": "Props · Objetos narrativos",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820059/Props_copia_heccxh.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 18,
-      "featured": false
-    },
-    {
-      "id": "an18",
-      "title": "El Reloj de Satres",
-      "year": "2024",
-      "technique": "Props · Objeto clave del lore",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820007/Reloj_Satres_Color_kbnewg.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 19,
-      "featured": false
-    },
-    {
-      "id": "an19",
-      "title": "Mascotas — Metamorfosis",
-      "year": "2024",
-      "technique": "Concept Art · Criaturas del mundo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820001/Mascotas_cmetamorfosis_Linea_z0abnh.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 20,
-      "featured": false
-    },
-    {
-      "id": "an20",
-      "title": "Melisa — Forma Larval",
-      "year": "2024",
-      "technique": "Concept Art · Evolución",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820049/Melisa_Larva_lyhbea.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 21,
-      "featured": false
-    },
-    {
-      "id": "an21",
-      "title": "Personajes Secundarios — Usil & Losna",
-      "year": "2024",
-      "technique": "Concept Art · Elenco secundario",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820004/Personajes_secundarios_extra_-_Usil_y_Losna_y_el_Gan_Espiritu_cjig3w.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 22,
-      "featured": false
-    },
-    {
-      "id": "an22",
-      "title": "Abuela Araña",
-      "year": "2024",
-      "technique": "Concept Art · Personaje icónico",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820058/Personajes_secundarios_extra_-_Abuela_Ara%C3%B1a_ydxazq.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 23,
-      "featured": false
-    },
-    {
-      "id": "an26",
-      "title": "Personajes Secundarios — Vesta & Nethuns",
-      "year": "2024",
-      "technique": "Concept Art · Elenco secundario",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820006/Personajes_secundarios_extra_-_Vesta_y_Nethuns_fctcwr.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 24,
-      "featured": false
-    },
-    {
-      "id": "an23",
-      "title": "Animas — Logotipo del Universo",
-      "year": "2024",
-      "technique": "Diseño de marca · Mundo propio",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819999/Logo_copia_re9s1a.png",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "1/1",
-      "order": 25,
-      "featured": false
-    },
-    {
-      "id": "an24",
-      "title": "Lindenii — La Orquídea",
-      "year": "2024",
-      "technique": "Diseño · Símbolo del universo",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819998/Lindenii_copia_nttkpw.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "2/1",
-      "order": 26,
-      "featured": false
-    }
-  ],
-  "miluarte:gallery:retratos": [
-    {
-      "id": "rt1",
-      "title": "Anna Karina",
-      "year": "2024",
-      "technique": "Retrato digital · Icono del cine",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820993/2-Retrato-Anna-Karina_cb505e.jpg",
-      "imgPos": "50% 15%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 0,
-      "featured": true
-    },
-    {
-      "id": "rt2",
-      "title": "Charles Bukowski",
-      "year": "2024",
-      "technique": "Retrato digital · Icono literario",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820994/2-Rostro-Bukowski_qa3xcl.jpg",
-      "imgPos": "50% 15%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 1,
-      "featured": true
-    },
-    {
-      "id": "rt3",
-      "title": "Mia Goth",
-      "year": "2024",
-      "technique": "Retrato digital · Icono del terror",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820896/7-Retrato-Mia-Goth_nplucz.jpg",
-      "imgPos": "50% 15%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 2,
-      "featured": false
-    },
-    {
-      "id": "rt4",
-      "title": "El Gran Lebowski — Cartoon",
-      "year": "2024",
-      "technique": "Cartoon · Caricatura de personaje",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820894/3-Cartoon-Gran-Lebowski_unikym.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 3,
-      "featured": false
-    },
-    {
-      "id": "rt24",
-      "title": "Cartoon — Elenco Completo",
-      "year": "2024",
-      "technique": "Cartoon · Galería de personajes",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820986/CARTOON-JUNTOS-copia_phdvqq.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-3",
-      "aspect": "16/9",
-      "order": 4,
-      "featured": false
-    },
-    {
-      "id": "rt15",
-      "title": "Diferentes Edades — Pelirroja",
-      "year": "2024",
-      "technique": "Anatomía · Estudio de edades",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820991/Diferentes-edades-Pelirroja_re9ynt.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 5,
-      "featured": false
-    },
-    {
-      "id": "rt16",
-      "title": "Diferentes Edades — Japonesa",
-      "year": "2024",
-      "technique": "Anatomía · Estudio de edades",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820990/Diferentes-edades-Japonesa_pzylyx.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 6,
-      "featured": false
-    },
-    {
-      "id": "rt25",
-      "title": "Diferentes Edades — Africano",
-      "year": "2024",
-      "technique": "Anatomía · Estudio de edades",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820988/Diferentes-edades-Africano_uypvhf.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 7,
-      "featured": false
-    },
-    {
-      "id": "rt17",
-      "title": "Poses Dinámicas",
-      "year": "2024",
-      "technique": "Anatomía · Movimiento y acción",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820892/10-Poses-Dinamicas-copia_yly0nn.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 8,
-      "featured": false
-    },
-    {
-      "id": "rt14",
-      "title": "Cuerpos Cartoon",
-      "year": "2024",
-      "technique": "Anatomía · Proporciones cartoon",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821003/8-Cuerpos-Cartoon-copia_tcgads.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 9,
-      "featured": false
-    },
-    {
-      "id": "rt13",
-      "title": "Expresiones — Estudio",
-      "year": "2024",
-      "technique": "Anatomía · Model sheet facial",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820996/6-Expresiones-nuevo-copia_lpojlm.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-3",
-      "aspect": "16/9",
-      "order": 10,
-      "featured": false
-    },
-    {
-      "id": "rt5",
-      "title": "Ciudad Lovecraft",
-      "year": "2024",
-      "technique": "Escenario · Concept art urbano",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821002/Ciudad-Lovecraft-color_cmwxry.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 11,
-      "featured": false
-    },
-    {
-      "id": "rt6",
-      "title": "Ciudad Lovecraft — Línea",
-      "year": "2024",
-      "technique": "Escenario · Line art final",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820999/Ciudad-Lovecraft-Linea-y-Luces_y1saq3.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 12,
-      "featured": false
-    },
-    {
-      "id": "rt8",
-      "title": "Fachada Isométrica",
-      "year": "2024",
-      "technique": "Escenario · Vista isométrica",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820898/17-Fachada-Isometrica-1_pkmnvg.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 13,
-      "featured": false
-    },
-    {
-      "id": "rt7",
-      "title": "Fachadas — Mundo propio",
-      "year": "2024",
-      "technique": "Escenario · Arquitectura fantástica",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820998/16-Fachadas-juntas_sahsg6.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 14,
-      "featured": false
-    },
-    {
-      "id": "rt26",
-      "title": "Espacios Abiertos",
-      "year": "2024",
-      "technique": "Escenario · Entorno natural",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820899/18-Espacios-Abiertos-copia_laqrr1.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 15,
-      "featured": false
-    },
-    {
-      "id": "rt23",
-      "title": "Espacios Acuáticos",
-      "year": "2024",
-      "technique": "Escenario · Entorno submarino",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820900/19-Espacios-Acuaticos-copia_y2puti.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 16,
-      "featured": false
-    },
-    {
-      "id": "rt12",
-      "title": "Mantis Jade — Detalle",
-      "year": "2024",
-      "technique": "Naturaleza · Insecto a detalle",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820893/Animal-a-detalle-Mantis-Jade_nmmvi3.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 17,
-      "featured": false
-    },
-    {
-      "id": "rt11",
-      "title": "Animales Marinos",
-      "year": "2024",
-      "technique": "Naturaleza · Ilustración científica",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820906/Animales-Marinos_ahzqeu.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 18,
-      "featured": false
-    },
-    {
-      "id": "rt22",
-      "title": "Aves juntas",
-      "year": "2024",
-      "technique": "Naturaleza · Ilustración de aves",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820908/Aves-juntas_inckhn.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 19,
-      "featured": false
-    },
-    {
-      "id": "rt20",
-      "title": "Plantigrados — Color",
-      "year": "2024",
-      "technique": "Animales · Estudio de anatomía",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820902/21-Plantigrados-Color_yxhtya.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 20,
-      "featured": false
-    },
-    {
-      "id": "rt21",
-      "title": "Digitígrados — Color",
-      "year": "2024",
-      "technique": "Animales · Estudio de anatomía",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820903/22-Digitigrados-copia-color_gyf2u9.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 21,
-      "featured": false
-    },
-    {
-      "id": "rt27",
-      "title": "Ungulados — Color",
-      "year": "2024",
-      "technique": "Animales · Estudio de anatomía",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820905/23-Ungulados-color_cnxoy8.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 22,
-      "featured": false
-    },
-    {
-      "id": "rt28",
-      "title": "Animal Cartoon",
-      "year": "2024",
-      "technique": "Cartoon · Diseño de criatura",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820890/24-Animal-Cartoon-copia_nu6la8.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 23,
-      "featured": false
-    },
-    {
-      "id": "rt10",
-      "title": "Criatura Grotesca",
-      "year": "2024",
-      "technique": "Criatura · Diseño de horror",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820987/Criatura-Grotesca-copia_oyzfyh.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 24,
-      "featured": false
-    },
-    {
-      "id": "rt9",
-      "title": "Dragón — Caja Musical",
-      "year": "2024",
-      "technique": "Criatura · Diseño de fantasía",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821004/Dragon-caja-musical_a8vthw.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 25,
-      "featured": false
-    },
-    {
-      "id": "rt18",
-      "title": "Cyberpunk — Fusión de eras",
-      "year": "2024",
-      "technique": "Estilo · Cyberpunk concept",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820888/13-Cyberpunk-Fondo_xtd7ko.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 26,
-      "featured": false
-    },
-    {
-      "id": "rt19",
-      "title": "Futuro y Pasado",
-      "year": "2024",
-      "technique": "Estilo · Dualidad temporal",
-      "size": "Digital",
-      "price": "Encargo",
-      "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820889/13-Futuro-y-Pasado-copia_gywxic.jpg",
-      "imgPos": "50% 20%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 27,
-      "featured": false
-    }
-  ],
-  "miluarte:gallery:pasta-ya": [
-    {
-      "id": "py1",
-      "title": "Bravioli 'El Bravo' & Tortastini",
-      "year": "2024",
-      "technique": "Diseño de personajes · Dúo protagonista",
-      "size": "Digital",
-      "price": "Campaña",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821171/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 0,
-      "featured": true
-    },
-    {
-      "id": "py2",
-      "title": "Sofría Caldina",
-      "year": "2024",
-      "technique": "Diseño de personajes · La jefa de cocina",
-      "size": "Digital",
-      "price": "Campaña",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821173/Sofria-Caldina_cjiqkz.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 1,
-      "featured": true
-    },
-    {
-      "id": "py3",
-      "title": "Macarrón & Wiener",
-      "year": "2024",
-      "technique": "Diseño de personajes · Dúo secundario",
-      "size": "Digital",
-      "price": "Campaña",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821168/Macarron-y-Wiener_nrhspf.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 2,
-      "featured": false
-    },
-    {
-      "id": "py4",
-      "title": "Spaguetti Western & Croqueta",
-      "year": "2024",
-      "technique": "Diseño de personajes · El forajido y su sidekick",
-      "size": "Digital",
-      "price": "Campaña",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821175/Spaguetti-Western-y-Croqueta_swuwzm.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-2",
-      "aspect": "3/2",
-      "order": 3,
-      "featured": false
-    },
-    {
-      "id": "py6",
-      "title": "Vito Canelone & Taco Carbonara",
-      "year": "2024",
-      "technique": "Diseño de personajes · Los pesos pesados",
-      "size": "Digital",
-      "price": "Campaña",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821167/Vito-Canelone-y-Taco-Carbonara_fh9xth.jpg",
-      "imgPos": "50% 50%",
-      "gridCol": "md:col-span-3",
-      "aspect": "16/9",
-      "order": 4,
-      "featured": false
-    },
-    {
-      "id": "py5",
-      "title": "Tallarinja",
-      "year": "2024",
-      "technique": "Diseño de personajes · El veloz",
-      "size": "Digital",
-      "price": "Campaña",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821176/Tallarinja_kdopfz.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-1",
-      "aspect": "3/4",
-      "order": 5,
-      "featured": false
-    },
-    {
-      "id": "py7",
-      "title": "Pasta — El Topo Filtrado",
-      "year": "2024",
-      "technique": "Arte conceptual · El espía del grupo",
-      "size": "Digital",
-      "price": "Campaña",
-      "available": false,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821170/Pasta---Topos-Filtrados_xd0tm1.jpg",
-      "imgPos": "50% 30%",
-      "gridCol": "md:col-span-2",
-      "aspect": "16/9",
-      "order": 6,
-      "featured": false
-    }
-  ]
+  }
 }

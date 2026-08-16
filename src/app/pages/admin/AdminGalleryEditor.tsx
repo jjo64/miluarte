@@ -20,6 +20,7 @@ import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
 import { Toast } from "../../components/admin/Toast";
 import { GalleryMeta, Work } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
+import { useUpload } from "../../hooks/useUpload";
 
 export function AdminGalleryEditor() {
   const { slug } = useParams<{ slug: string }>();

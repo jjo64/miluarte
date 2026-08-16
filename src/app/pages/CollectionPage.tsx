@@ -880,24 +880,33 @@ export function CollectionPage() {
       </div>
 
       {/* Editorial works grid */}
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} md:grid-cols-3 gap-2 md:gap-0.5 mb-1`}
-      >
-        {localizedWorks.map((w, idx) => (
-          <WorkCard 
-            key={w.id} 
-            work={w} 
-            accent={localizedMeta.accent} 
-            onClick={() => handleWorkClick(w)}
-            imgRef={(el) => { gridRefs.current[w.id] = el; }}
-            isTwoColumns={isTwoColumns}
-            index={idx}
-          />
-        ))}
-      </motion.div>
+      {localizedWorks.length === 0 ? (
+        <div className="py-24 px-6 md:px-10 text-center flex flex-col items-center justify-center">
+          <p className="font-serif italic text-brand-wall text-base md:text-lg mb-2">
+            {language === "es" ? "Próximamente nuevas obras en esta colección." : "New artworks coming soon in this collection."}
+          </p>
+          <div className="w-8 h-0.5 mt-2" style={{ backgroundColor: localizedMeta.accent, opacity: 0.4 }} />
+        </div>
+      ) : (
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} md:grid-cols-3 gap-2 md:gap-0.5 mb-1`}
+        >
+          {localizedWorks.map((w, idx) => (
+            <WorkCard 
+              key={w.id} 
+              work={w} 
+              accent={localizedMeta.accent} 
+              onClick={() => handleWorkClick(w)}
+              imgRef={(el) => { gridRefs.current[w.id] = el; }}
+              isTwoColumns={isTwoColumns}
+              index={idx}
+            />
+          ))}
+        </motion.div>
+      )}
 
       {/* ─── Animas: Biblia Visual ───────────────────────────────────────── */}
       {slug === "animas" && (
