@@ -12,11 +12,15 @@ const NotFoundPage   = lazy(() => import("./pages/NotFoundPage").then(m => ({ de
 const EncargoPage    = lazy(() => import("./pages/EncargoPage").then(m => ({ default: m.EncargoPage })));
 
 // Admin pages
-const AdminLogin     = lazy(() => import("./pages/admin/AdminLogin").then(m => ({ default: m.AdminLogin })));
-const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard").then(m => ({ default: m.AdminDashboard })));
+const AdminLogin         = lazy(() => import("./pages/admin/AdminLogin").then(m => ({ default: m.AdminLogin })));
+const AdminDashboard     = lazy(() => import("./pages/admin/AdminDashboard").then(m => ({ default: m.AdminDashboard })));
+const AdminGalleries     = lazy(() => import("./pages/admin/AdminGalleries").then(m => ({ default: m.AdminGalleries })));
+const AdminGalleryEditor = lazy(() => import("./pages/admin/AdminGalleryEditor").then(m => ({ default: m.AdminGalleryEditor })));
 
-function AdminProtectedDashboard() {
-  return createElement(AdminGuard, null, createElement(AdminDashboard));
+function withAdminGuard(Component: React.ComponentType) {
+  return function ProtectedRoute() {
+    return createElement(AdminGuard, null, createElement(Component));
+  };
 }
 
 export const router = createBrowserRouter([
@@ -39,6 +43,14 @@ export const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    Component: AdminProtectedDashboard,
+    Component: withAdminGuard(AdminDashboard),
+  },
+  {
+    path: "/admin/galerias",
+    Component: withAdminGuard(AdminGalleries),
+  },
+  {
+    path: "/admin/galerias/:slug",
+    Component: withAdminGuard(AdminGalleryEditor),
   },
 ]);

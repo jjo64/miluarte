@@ -565,7 +565,60 @@ export function CollectionPage() {
   const { slug = "ilustracion" } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const meta = META[slug] ?? META["ilustracion"];
+  
+  const [dynamicMeta, setDynamicMeta] = useState<CollectionMeta>(() => META[slug] ?? META["ilustracion"]);
+  const [dynamicWorks, setDynamicWorks] = useState<Work[]>(() => WORKS_BY_SLUG[slug] ?? WORKS_BY_SLUG["ilustracion"]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    // Resetear a estáticos iniciales
+    if (META[slug]) setDynamicMeta(META[slug]);
+    if (WORKS_BY_SLUG[slug]) setDynamicWorks(WORKS_BY_SLUG[slug]);
+
+    async function loadDynamicContent() {
+      try {
+        setIsLoading(true);
+        // 1. Cargar metadatos de la galería
+        const gallRes = await fetch("/api/admin/galleries");
+        if (gallRes.ok) {
+          const galleries = await gallRes.json();
+          const found = galleries.find((g: any) => g.slug === slug);
+          if (found && isMounted) {
+            setDynamicMeta({
+              title: found.title,
+              label: found.label,
+              statement: found.statement,
+              accent: found.accent,
+              twoColumns: found.twoColumns,
+            });
+          }
+        }
+
+        // 2. Cargar obras de la galería
+        const worksRes = await fetch(`/api/admin/works?slug=${slug}`);
+        if (worksRes.ok) {
+          const worksData = await worksRes.json();
+          if (Array.isArray(worksData) && worksData.length > 0 && isMounted) {
+            setDynamicWorks(worksData);
+          }
+        }
+      } catch (err) {
+        // Fallback silencioso a los datos estáticos ya cargados
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    loadDynamicContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
+
+  const meta = dynamicMeta;
   const isTwoColumns = meta.twoColumns ?? false;
   
   // Localize metadata dynamically
@@ -577,7 +630,7 @@ export function CollectionPage() {
   };
 
   const [ctaH, setCtaH] = useState(false);
-  const works = WORKS_BY_SLUG[slug] ?? WORKS_BY_SLUG["ilustracion"];
+  const works = dynamicWorks;
 
   useEffect(() => {
     const pageTitle = `${localizedMeta.title} | Portafolio Miluartedenara`;
