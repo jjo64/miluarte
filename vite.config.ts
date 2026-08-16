@@ -98,6 +98,10 @@ function localApiDevServer() {
             const { default: handler } = await server.ssrLoadModule('/api/admin/messages.ts');
             return handler(req, res);
           }
+          if (pathname === '/api/admin/changelog') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/changelog.ts');
+            return handler(req, res);
+          }
 
           return next();
         } catch (err: any) {

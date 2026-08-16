@@ -20,6 +20,7 @@ const AdminRendersEditor = lazy(() => import("./pages/admin/AdminRendersEditor")
 const AdminTextEditor    = lazy(() => import("./pages/admin/AdminTextEditor").then(m => ({ default: m.AdminTextEditor })));
 const AdminMessages      = lazy(() => import("./pages/admin/AdminMessages").then(m => ({ default: m.AdminMessages })));
 const AdminSocial        = lazy(() => import("./pages/admin/AdminSocial").then(m => ({ default: m.AdminSocial })));
+const AdminChangelog     = lazy(() => import("./pages/admin/AdminChangelog").then(m => ({ default: m.AdminChangelog })));
 
 function withAdminGuard(Component: React.ComponentType) {
   return function ProtectedRoute() {
@@ -72,5 +73,9 @@ export const router = createBrowserRouter([
   {
     path: "/admin/redes",
     Component: withAdminGuard(AdminSocial),
+  },
+  {
+    path: "/admin/historial",
+    Component: withAdminGuard(AdminChangelog),
   },
 ]);
