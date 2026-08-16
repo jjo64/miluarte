@@ -44,6 +44,33 @@ export function useUpload() {
         // 3. Obtener firma segura desde backend
         const signatureData = await request(`/api/admin/upload?folder=${encodeURIComponent(folder)}`);
 
+        // Si aún no se configuró la API Key en .env.local, usamos fallback para pruebas locales
+        if (!signatureData.apiKey || !signatureData.isConfigured) {
+          console.info("ℹ️ Cloudinary API Key no detectada en .env.local. Usando modo de prueba local.");
+          return new Promise<UploadResult>((resolve) => {
+            const reader = new FileReader();
+            let p = 0;
+            const interval = setInterval(() => {
+              p += 25;
+              setProgress(Math.min(p, 100));
+              if (p >= 100) {
+                clearInterval(interval);
+                reader.onload = () => {
+                  resolve({
+                    secureUrl: reader.result as string,
+                    publicId: `local-dev-${Date.now()}`,
+                    width: 800,
+                    height: 800,
+                    format: file.type.split("/")[1] || "jpg",
+                    bytes: file.size,
+                  });
+                };
+                reader.readAsDataURL(file);
+              }
+            }, 100);
+          });
+        }
+
         // 4. Preparar FormData para Cloudinary
         const formData = new FormData();
         formData.append("file", file);

@@ -7,6 +7,7 @@ export interface CloudinarySignatureResult {
   cloudName: string;
   folder: string;
   eager: string;
+  isConfigured: boolean;
 }
 
 export function generateUploadSignature(folder: string = "miluarte"): CloudinarySignatureResult {
@@ -17,13 +18,17 @@ export function generateUploadSignature(folder: string = "miluarte"): Cloudinary
   const timestamp = Math.round(Date.now() / 1000);
   const eager = "q_auto:good,f_auto";
 
+  const isConfigured = Boolean(apiKey && apiSecret);
+
   // Cloudinary requiere ordenar alfabéticamente los parámetros antes de hashear
   // eager, folder, timestamp
   const paramsToSign = `eager=${eager}&folder=${folder}&timestamp=${timestamp}`;
-  const signature = crypto
-    .createHash("sha1")
-    .update(paramsToSign + apiSecret)
-    .digest("hex");
+  const signature = isConfigured
+    ? crypto
+        .createHash("sha1")
+        .update(paramsToSign + apiSecret)
+        .digest("hex")
+    : "dev_signature_placeholder";
 
   return {
     signature,
@@ -32,5 +37,6 @@ export function generateUploadSignature(folder: string = "miluarte"): Cloudinary
     cloudName,
     folder,
     eager,
+    isConfigured,
   };
 }

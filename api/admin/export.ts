@@ -1,6 +1,16 @@
-import { kv, isKvConfigured } from "./_lib/kv";
+import { kv } from "./_lib/kv";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
 import { GalleryMeta, Work, CmsBackup } from "../../src/app/types/cms";
+
+function parseJsonSafe<T = any>(val: any, fallback: T): T {
+  if (!val) return fallback;
+  if (typeof val === "object") return val;
+  try {
+    return JSON.parse(val);
+  } catch {
+    return fallback;
+  }
+}
 
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -26,51 +36,42 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    let galleries: GalleryMeta[] = [];
+    const [
+      galleriesRaw,
+      rendersRaw,
+      textsRaw,
+      socialRaw,
+      changelogRaw,
+      contactRaw,
+      bookingRaw,
+    ] = await Promise.all([
+      kv.get("miluarte:galleries"),
+      kv.get("miluarte:renders"),
+      kv.get("miluarte:texts"),
+      kv.get("miluarte:social"),
+      kv.get("miluarte:changelog"),
+      kv.get("miluarte:messages:contact"),
+      kv.get("miluarte:messages:booking"),
+    ]);
+
+    const galleries: GalleryMeta[] = parseJsonSafe(galleriesRaw, []);
+    const renders: any[] = parseJsonSafe(rendersRaw, []);
+    const texts: any = parseJsonSafe(textsRaw, { es: {}, en: {} });
+    const social: any = parseJsonSafe(socialRaw, {});
+    const changelog: any[] = parseJsonSafe(changelogRaw, []);
+    const contactMsgs: any[] = parseJsonSafe(contactRaw, []);
+    const bookingMsgs: any[] = parseJsonSafe(bookingRaw, []);
+
     const works: Record<string, Work[]> = {};
-    let renders: any[] = [];
-    let texts: any = { es: {}, en: {} };
-    let social: any = {};
-    let changelog: any[] = [];
-    let contactMsgs: any[] = [];
-    let bookingMsgs: any[] = [];
 
-    if (isKvConfigured()) {
-      const [
-        galleriesRaw,
-        rendersRaw,
-        textsRaw,
-        socialRaw,
-        changelogRaw,
-        contactRaw,
-        bookingRaw,
-      ] = await Promise.all([
-        kv.get("miluarte:galleries"),
-        kv.get("miluarte:renders"),
-        kv.get("miluarte:texts"),
-        kv.get("miluarte:social"),
-        kv.get("miluarte:changelog"),
-        kv.get("miluarte:messages:contact"),
-        kv.get("miluarte:messages:booking"),
-      ]);
-
-      galleries = typeof galleriesRaw === "string" ? JSON.parse(galleriesRaw || "[]") : (galleriesRaw as any) || [];
-      renders = typeof rendersRaw === "string" ? JSON.parse(rendersRaw || "[]") : (rendersRaw as any) || [];
-      texts = typeof textsRaw === "string" ? JSON.parse(textsRaw || "{}") : (textsRaw as any) || {};
-      social = typeof socialRaw === "string" ? JSON.parse(socialRaw || "{}") : (socialRaw as any) || {};
-      changelog = typeof changelogRaw === "string" ? JSON.parse(changelogRaw || "[]") : (changelogRaw as any) || [];
-      contactMsgs = typeof contactRaw === "string" ? JSON.parse(contactRaw || "[]") : (contactRaw as any) || [];
-      bookingMsgs = typeof bookingRaw === "string" ? JSON.parse(bookingRaw || "[]") : (bookingRaw as any) || [];
-
-      // Cargar obras de cada galería
-      if (Array.isArray(galleries)) {
-        await Promise.all(
-          galleries.map(async (g) => {
-            const rawWorks = await kv.get(`miluarte:gallery:${g.slug}`);
-            works[g.slug] = typeof rawWorks === "string" ? JSON.parse(rawWorks || "[]") : (rawWorks as any) || [];
-          })
-        );
-      }
+    // Cargar obras de cada galería
+    if (Array.isArray(galleries)) {
+      await Promise.all(
+        galleries.map(async (g) => {
+          const rawWorks = await kv.get(`miluarte:gallery:${g.slug}`);
+          works[g.slug] = parseJsonSafe(rawWorks, []);
+        })
+      );
     }
 
     const backup: CmsBackup = {
