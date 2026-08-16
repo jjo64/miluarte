@@ -487,6 +487,12 @@ export function RendersPage() {
   const [active, setActive] = useState<RenderItem | null>(null);
   const [isTouch, setIsTouch] = useState(false);
 
+  useEffect(() => {
+    document.title = "Diseño 3D y Renders de Stands | Miluartedenara";
+    const desc = "Diseño tridimensional, modelado de stands comerciales para ferias y renders fotorrealistas de producto y arquitectura por Nerea Lucas Pajares.";
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+  }, []);
+
   const heroVideoRef = useRef<HTMLDivElement>(null);
   const heroVideoContainerRef = useRef<HTMLDivElement>(null);
 

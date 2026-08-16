@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { C, SERIF, SANS, ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
@@ -360,6 +360,13 @@ function SeoServices() {
 
 export function HomePage() {
   const { t } = useLanguage();
+
+  useEffect(() => {
+    document.title = "Miluartedenara | Portafolio de Nerea Lucas Pajares";
+    const desc = "Estudio creativo y portafolio artístico de Nerea Lucas Pajares (Miluartedenara). Ilustración, diseño, modelado en arcilla, joyería artesanal y concept art en Madrid y Barcelona.";
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+  }, []);
+
   return (
     <div style={{ backgroundColor: C.bg, color: C.cream }}>
       <Hero />

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { SharedFooter } from "../components/SharedFooter";
 import { motion } from "motion/react";
@@ -8,6 +9,12 @@ import { ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
 export function ResumePage() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
+
+  useEffect(() => {
+    document.title = "Currículum Vitae (CV) | Nerea Lucas Pajares";
+    const desc = "Currículum académico y trayectoria profesional de Nerea Lucas Pajares (Miluartedenara). Artista visual, diseñadora 3D e ilustradora.";
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+  }, []);
 
   const handlePrint = () => {
     window.print();

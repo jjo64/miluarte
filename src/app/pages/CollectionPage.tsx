@@ -579,6 +579,14 @@ export function CollectionPage() {
   const [ctaH, setCtaH] = useState(false);
   const works = WORKS_BY_SLUG[slug] ?? WORKS_BY_SLUG["ilustracion"];
 
+  useEffect(() => {
+    const pageTitle = `${localizedMeta.title} | Portafolio Miluartedenara`;
+    document.title = pageTitle;
+    if (localizedMeta.statement) {
+      document.querySelector('meta[name="description"]')?.setAttribute('content', localizedMeta.statement);
+    }
+  }, [slug, localizedMeta.title, localizedMeta.statement]);
+
   // Localize work titles on the fly if needed
   const getLocalizedWorkTitle = (title: string) => {
     if (title === "Sin título (Serie verde)") return language === "es" ? "Sin título (Serie verde)" : "Untitled (Green Series)";

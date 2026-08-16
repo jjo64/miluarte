@@ -16,7 +16,7 @@ export const translations = {
       greetingBefore: "Hola,\nsoy ",
       greetingItalic: "Nerea",
       artline: "Transformo ideas en mundos visuales con alma.",
-      bio1: "Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas, joyería y concept art para proyectos musicales. Cada pieza hecha con dedicación y amor por los detalles.",
+      bio1: "Me llamo Nerea Lucas Pajares, artísticamente conocida como Miluartedenara. Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, joyería artesanal hecha a mano y concept art para proyectos musicales. Cada pieza está hecha con dedicación y amor por los detalles.",
       bio2: "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
       viewWorks: "Ver trabajos",
       sendInquiry: "Escribir encargo"
@@ -359,7 +359,7 @@ export const translations = {
       greetingBefore: "Hello,\nI'm ",
       greetingItalic: "Nerea",
       artline: "I transform ideas into visual worlds with soul.",
-      bio1: "With a Master's Degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom dolls, jewelry, and concept art for music projects. Each piece crafted with dedication and love for details.",
+      bio1: "I am Nerea Lucas Pajares, artistically known as Miluartedenara. With a Master's Degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom clay dolls, handmade jewelry, and concept art for music projects. Each piece is crafted with dedication and love for details.",
       bio2: "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
       viewWorks: "View works",
       sendInquiry: "Send inquiry"
