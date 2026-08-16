@@ -2,7 +2,7 @@ import { kv, isKvConfigured } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
 import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
 import { SiteTexts } from "../../src/app/types/cms";
-import { translations } from "../../src/app/locales/translations";
+import { translations } from "./_lib/initialData.js";
 
 function deepMerge(target: any, source: any): any {
   if (typeof target !== "object" || target === null) return source;

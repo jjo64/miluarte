@@ -1,9 +1,7 @@
 import { kv } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
 import { GalleryMeta, Work, CmsBackup } from "../../src/app/types/cms";
-import { META, WORKS_BY_SLUG } from "../../src/app/data/portfolioData";
-import { RENDERS } from "../../src/app/data/rendersData";
-import { translations } from "../../src/app/locales/translations";
+import { META, WORKS_BY_SLUG, RENDERS, translations, getBaseGalleries } from "./_lib/initialData.js";
 
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -36,16 +34,7 @@ export default async function handler(req: any, res: any) {
       galleries = typeof rawGalleries === "string" ? JSON.parse(rawGalleries) : (rawGalleries as any);
     }
     if (!galleries || galleries.length === 0) {
-      galleries = Object.entries(META).map(([slug, meta], index) => ({
-        slug,
-        title: meta.title,
-        label: meta.label,
-        statement: meta.statement,
-        accent: meta.accent,
-        twoColumns: meta.twoColumns || false,
-        order: index,
-        featured: ["ilustracion", "concept-art", "diggin", "animas"].includes(slug),
-      }));
+      galleries = getBaseGalleries();
     }
 
     // 2. Obtener obras de cada galería (KV con fallback estático)

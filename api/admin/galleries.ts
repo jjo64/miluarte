@@ -1,22 +1,8 @@
 import { kv, isKvConfigured } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
-import { createPreSnapshot, recordChangelog, BASE_GALLERY_SLUGS } from "./_lib/changelog.js";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
 import { GalleryMeta } from "../../src/app/types/cms";
-import { META } from "../../src/app/data/portfolioData";
-
-// Helper para obtener las galerías base del portfolio
-function getBaseGalleries(): GalleryMeta[] {
-  return Object.entries(META).map(([slug, meta], index) => ({
-    slug,
-    title: meta.title,
-    label: meta.label,
-    statement: meta.statement,
-    accent: meta.accent,
-    twoColumns: meta.twoColumns || false,
-    order: index,
-    featured: ["ilustracion", "concept-art", "diggin", "animas"].includes(slug),
-  }));
-}
+import { getBaseGalleries, BASE_GALLERY_SLUGS } from "./_lib/initialData.js";
 
 // Helper para obtener las galerías actuales
 async function getGalleries(): Promise<GalleryMeta[]> {
@@ -67,7 +53,8 @@ export default async function handler(req: any, res: any) {
       galleries.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       return res.status(200).json(galleries);
     } catch (error: any) {
-      return res.status(500).json({ error: "Error al obtener galerías" });
+      console.warn("Fallback to static galleries on GET /api/admin/galleries:", error);
+      return res.status(200).json(getBaseGalleries());
     }
   }
 

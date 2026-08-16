@@ -2,7 +2,7 @@ import { kv, isKvConfigured } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
 import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
 import { Work } from "../../src/app/types/cms";
-import { WORKS_BY_SLUG } from "../../src/app/data/portfolioData";
+import { WORKS_BY_SLUG } from "./_lib/initialData.js";
 import { nanoid } from "nanoid";
 
 // Helper para obtener las obras actuales de una galería
@@ -52,7 +52,9 @@ export default async function handler(req: any, res: any) {
       works.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       return res.status(200).json(works);
     } catch (error: any) {
-      return res.status(500).json({ error: "Error al obtener obras de la galería" });
+      console.warn(`Fallback on GET /api/admin/works for ${slug}:`, error);
+      const fallbackWorks = (WORKS_BY_SLUG[slug.toString()] || []).map((w, i) => ({ ...w, order: i }));
+      return res.status(200).json(fallbackWorks);
     }
   }
 

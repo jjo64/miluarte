@@ -1,32 +1,9 @@
 import { kv, isKvConfigured } from "./kv.js";
 import { ChangelogEntry, GalleryMeta } from "../../../src/app/types/cms";
 import { nanoid } from "nanoid";
-import { META } from "../../../src/app/data/portfolioData";
+import { META, BASE_GALLERY_SLUGS, getBaseGalleries } from "./initialData.js";
 
-// Slugs de las galerías base de Nerea que NUNCA deben borrarse ni desaparecer
-export const BASE_GALLERY_SLUGS = new Set([
-  "ilustracion",
-  "diggin",
-  "concept-art",
-  "diseno-grafico",
-  "3d-stands",
-  "animas",
-  "retratos",
-  "pasta-ya",
-]);
-
-export function getBaseGalleries(): GalleryMeta[] {
-  return Object.entries(META).map(([slug, meta], index) => ({
-    slug,
-    title: meta.title,
-    label: meta.label,
-    statement: meta.statement,
-    accent: meta.accent,
-    twoColumns: meta.twoColumns || false,
-    order: index,
-    featured: ["ilustracion", "concept-art", "diggin", "animas"].includes(slug),
-  }));
-}
+export { BASE_GALLERY_SLUGS, getBaseGalleries };
 
 /**
  * Crea un snapshot del estado actual EXACTO del sistema antes de aplicar cualquier mutación.

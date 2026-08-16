@@ -2,7 +2,7 @@ import { kv, isKvConfigured } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
 import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
 import { RenderItem } from "../../src/app/types/cms";
-import { RENDERS } from "../../src/app/data/rendersData";
+import { RENDERS } from "./_lib/initialData.js";
 import { nanoid } from "nanoid";
 
 async function getRenders(): Promise<RenderItem[]> {
@@ -44,7 +44,9 @@ export default async function handler(req: any, res: any) {
       renders.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       return res.status(200).json(renders);
     } catch (error: any) {
-      return res.status(500).json({ error: "Error al obtener proyectos 3D" });
+      console.warn("Fallback on GET /api/admin/renders:", error);
+      const fallback = RENDERS.map((r, index) => ({ ...r, order: index }));
+      return res.status(200).json(fallback);
     }
   }
 
