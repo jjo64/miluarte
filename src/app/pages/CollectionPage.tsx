@@ -24,7 +24,7 @@ interface CollectionMeta {
   twoColumns?: boolean;
 }
 
-const META: Record<string, CollectionMeta> = {
+export const META: Record<string, CollectionMeta> = {
   ilustracion: {
     title: "Ilustración",
     label: "Obra personal",
@@ -83,7 +83,7 @@ interface Work {
   img: string; imgPos: string; gridCol: string; aspect: string;
 }
 
-const WORKS_BY_SLUG: Record<string, Work[]> = {
+export const WORKS_BY_SLUG: Record<string, Work[]> = {
   ilustracion: [
     { id: "mu1",  title: "Tell Me a Joke",               year: "2024", technique: "Acrílico sobre lienzo",     size: "100 × 80 cm",  price: "€650",            available: true,  img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819794/TELL_ME_A_JOKE_mq8n1l.jpg",         imgPos: "50% 30%", gridCol: "md:col-span-2", aspect: "3/2"   },
     { id: "mu2",  title: "Paranoia",                     year: "2024", technique: "Técnica mixta",              size: "50 × 70 cm",   price: "€380",            available: true,  img: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819793/Paranoia_ieurx1.jpg",                 imgPos: "50% 20%", gridCol: "md:col-span-1", aspect: "3/4"   },

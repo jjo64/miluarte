@@ -35,7 +35,7 @@ interface RenderItem {
 }
 
 // ─── Datos de Proyectos 3D (Mixkit Abstract loops + Cloudinary Images) ─────────
-const RENDERS: RenderItem[] = [
+export const RENDERS: RenderItem[] = [
   {
     id: "stand-feria-milan",
     title: "Stand Modular de Feria — Milán",
