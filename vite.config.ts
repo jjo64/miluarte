@@ -16,11 +16,89 @@ function figmaAssetResolver() {
   }
 }
 
+function localApiDevServer() {
+  return {
+    name: 'local-api-dev-server',
+    configureServer(server: any) {
+      server.middlewares.use(async (req: any, res: any, next: any) => {
+        if (!req.url?.startsWith('/api/')) {
+          return next();
+        }
+
+        try {
+          const urlObj = new URL(req.url, 'http://localhost');
+          const pathname = urlObj.pathname;
+
+          // Parse query params into req.query
+          const query: Record<string, string> = {};
+          urlObj.searchParams.forEach((v, k) => {
+            query[k] = v;
+          });
+          req.query = query;
+
+          // Parse JSON body if present
+          if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method || '')) {
+            const buffers: Buffer[] = [];
+            for await (const chunk of req) {
+              buffers.push(chunk);
+            }
+            const data = Buffer.concat(buffers).toString();
+            try {
+              req.body = data ? JSON.parse(data) : {};
+            } catch {
+              req.body = {};
+            }
+          }
+
+          // Polyfill res.status and res.json for Express/Vercel compatibility
+          res.status = (statusCode: number) => {
+            res.statusCode = statusCode;
+            return res;
+          };
+          res.json = (data: any) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(data));
+            return res;
+          };
+
+          // Route handlers
+          if (pathname === '/api/admin/auth') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/auth.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/admin/galleries') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/galleries.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/admin/works') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/works.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/admin/upload') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/upload.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/admin/export') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/export.ts');
+            return handler(req, res);
+          }
+
+          return next();
+        } catch (err: any) {
+          console.error('[API Dev Error]', err);
+          res.statusCode = 500;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: err.message || 'API Dev Server Error' }));
+        }
+      });
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     figmaAssetResolver(),
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
+    localApiDevServer(),
     react(),
     tailwindcss(),
   ],
