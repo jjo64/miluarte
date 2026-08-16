@@ -308,7 +308,7 @@ export function AdminGalleryEditor() {
                     {/* Uploader de imagen */}
                     <ImageUploader
                       currentImageUrl={workForm.img}
-                      folder={slug || "miluarte"}
+                      folder={`miluarte/${slug || "general"}`}
                       label="Imagen de la Obra *"
                       onUploadSuccess={(res) => {
                         setWorkForm((prev) => ({

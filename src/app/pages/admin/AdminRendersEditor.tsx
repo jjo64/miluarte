@@ -362,7 +362,7 @@ export function AdminRendersEditor() {
                 {/* 2. Imagen Principal */}
                 <ImageUploader
                   currentImageUrl={renderForm.img}
-                  folder="renders"
+                  folder="miluarte/renders"
                   label="Imagen Principal (Render Final) *"
                   onUploadSuccess={(res) => {
                     setRenderForm((prev) => ({
@@ -443,7 +443,7 @@ export function AdminRendersEditor() {
                         <ImageUploader
                           compact
                           currentImageUrl={step.src}
-                          folder="renders/process"
+                          folder="miluarte/renders/process"
                           label=""
                           onUploadSuccess={(res) => {
                             const newProcess = [...(renderForm.process || [])];
