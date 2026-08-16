@@ -1,8 +1,7 @@
 import { kv, isKvConfigured } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
 import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
-import { GalleryMeta } from "../../src/app/types/cms";
-import { getBaseGalleries, BASE_GALLERY_SLUGS } from "./_lib/initialData.js";
+import { GalleryMeta, getBaseGalleries, BASE_GALLERY_SLUGS } from "./_lib/initialData.js";
 
 // Helper para obtener las galerías actuales
 async function getGalleries(): Promise<GalleryMeta[]> {

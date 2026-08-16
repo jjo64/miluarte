@@ -1,7 +1,6 @@
 import { kv, isKvConfigured } from "./kv.js";
-import { ChangelogEntry, GalleryMeta } from "../../../src/app/types/cms";
+import { ChangelogEntry, GalleryMeta, META, BASE_GALLERY_SLUGS, getBaseGalleries } from "./initialData.js";
 import { nanoid } from "nanoid";
-import { META, BASE_GALLERY_SLUGS, getBaseGalleries } from "./initialData.js";
 
 export { BASE_GALLERY_SLUGS, getBaseGalleries };
 

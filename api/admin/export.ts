@@ -1,7 +1,6 @@
 import { kv } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
-import { GalleryMeta, Work, CmsBackup } from "../../src/app/types/cms";
-import { META, WORKS_BY_SLUG, RENDERS, translations, getBaseGalleries } from "./_lib/initialData.js";
+import { GalleryMeta, Work, CmsBackup, META, WORKS_BY_SLUG, RENDERS, translations, getBaseGalleries } from "./_lib/initialData.js";
 
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
