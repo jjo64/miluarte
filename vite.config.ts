@@ -1,8 +1,11 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
+// Cargar variables de .env y .env.local en process.env para los handlers locales
+const env = loadEnv('', process.cwd(), '');
+Object.assign(process.env, env);
 
 function figmaAssetResolver() {
   return {
