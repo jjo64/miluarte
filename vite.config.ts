@@ -82,6 +82,22 @@ function localApiDevServer() {
             const { default: handler } = await server.ssrLoadModule('/api/admin/export.ts');
             return handler(req, res);
           }
+          if (pathname === '/api/admin/renders') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/renders.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/admin/texts') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/texts.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/admin/social') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/social.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/admin/messages') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/messages.ts');
+            return handler(req, res);
+          }
 
           return next();
         } catch (err: any) {

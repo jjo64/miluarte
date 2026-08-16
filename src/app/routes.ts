@@ -16,6 +16,10 @@ const AdminLogin         = lazy(() => import("./pages/admin/AdminLogin").then(m 
 const AdminDashboard     = lazy(() => import("./pages/admin/AdminDashboard").then(m => ({ default: m.AdminDashboard })));
 const AdminGalleries     = lazy(() => import("./pages/admin/AdminGalleries").then(m => ({ default: m.AdminGalleries })));
 const AdminGalleryEditor = lazy(() => import("./pages/admin/AdminGalleryEditor").then(m => ({ default: m.AdminGalleryEditor })));
+const AdminRendersEditor = lazy(() => import("./pages/admin/AdminRendersEditor").then(m => ({ default: m.AdminRendersEditor })));
+const AdminTextEditor    = lazy(() => import("./pages/admin/AdminTextEditor").then(m => ({ default: m.AdminTextEditor })));
+const AdminMessages      = lazy(() => import("./pages/admin/AdminMessages").then(m => ({ default: m.AdminMessages })));
+const AdminSocial        = lazy(() => import("./pages/admin/AdminSocial").then(m => ({ default: m.AdminSocial })));
 
 function withAdminGuard(Component: React.ComponentType) {
   return function ProtectedRoute() {
@@ -52,5 +56,21 @@ export const router = createBrowserRouter([
   {
     path: "/admin/galerias/:slug",
     Component: withAdminGuard(AdminGalleryEditor),
+  },
+  {
+    path: "/admin/renders",
+    Component: withAdminGuard(AdminRendersEditor),
+  },
+  {
+    path: "/admin/textos",
+    Component: withAdminGuard(AdminTextEditor),
+  },
+  {
+    path: "/admin/mensajes",
+    Component: withAdminGuard(AdminMessages),
+  },
+  {
+    path: "/admin/redes",
+    Component: withAdminGuard(AdminSocial),
   },
 ]);

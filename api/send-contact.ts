@@ -152,13 +152,28 @@ export default async function handler(req: any, res: any) {
       })
     });
 
-    const resendData = await resendResponse.json();
-
-    if (!resendResponse.ok) {
-      console.error("Resend API error:", resendData);
-      return res.status(500).json({
-        error: "Hubo un problema al procesar el envío con Resend. Inténtalo de nuevo."
-      });
+    // 6. Guardar copia en Vercel KV para la bandeja del panel de administración
+    try {
+      const { kv, isKvConfigured } = await import("./admin/_lib/kv");
+      if (isKvConfigured()) {
+        const raw = await kv.get("miluarte:messages:contact");
+        let messages = typeof raw === "string" ? JSON.parse(raw || "[]") : (raw as any) || [];
+        messages.unshift({
+          id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          timestamp: new Date().toISOString(),
+          name,
+          email,
+          company: company || "",
+          subject: subjectText,
+          message,
+          read: false,
+          type: "contact",
+        });
+        if (messages.length > 200) messages = messages.slice(0, 200);
+        await kv.set("miluarte:messages:contact", JSON.stringify(messages));
+      }
+    } catch (kvErr) {
+      console.warn("KV contact message save warning:", kvErr);
     }
 
     return res.status(200).json({ success: true, id: resendData.id });

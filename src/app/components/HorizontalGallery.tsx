@@ -129,6 +129,7 @@ export function HorizontalGallery() {
   const stripRef   = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [category, setCategory] = useState<string>("all");
+  const [galleryImages, setGalleryImages] = useState(IMAGES);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -138,9 +139,49 @@ export function HorizontalGallery() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+    async function loadFeatured() {
+      try {
+        const res = await fetch("/api/admin/galleries");
+        if (!res.ok) return;
+        const galleries = await res.json();
+        if (!Array.isArray(galleries)) return;
+
+        const allFeatured: typeof IMAGES = [];
+        for (const g of galleries.slice(0, 4)) {
+          const worksRes = await fetch(`/api/admin/works?slug=${g.slug}`);
+          if (worksRes.ok) {
+            const works = await worksRes.json();
+            if (Array.isArray(works)) {
+              const featured = works.filter((w: any) => w.featured);
+              featured.forEach((w: any, idx: number) => {
+                allFeatured.push({
+                  src: w.img,
+                  category: g.slug === "diggin" ? "musica" : g.slug.includes("concept") ? "concept" : "ilustracion",
+                  altKey: `obra${(idx % 8) + 1}`,
+                });
+              });
+            }
+          }
+        }
+
+        if (allFeatured.length >= 4 && isMounted) {
+          setGalleryImages(allFeatured);
+        }
+      } catch {
+        // fallback
+      }
+    }
+    loadFeatured();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const filteredImages = category === "all"
-    ? IMAGES
-    : IMAGES.filter((img) => img.category === category);
+    ? galleryImages
+    : galleryImages.filter((img) => img.category === category);
 
   useEffect(() => {
     if (isMobile) return;

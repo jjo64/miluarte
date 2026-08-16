@@ -486,6 +486,29 @@ export function RendersPage() {
   const navigate = useNavigate();
   const [active, setActive] = useState<RenderItem | null>(null);
   const [isTouch, setIsTouch] = useState(false);
+  const [dynamicRenders, setDynamicRenders] = useState<RenderItem[]>(() => RENDERS);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadRenders() {
+      try {
+        const res = await fetch("/api/admin/renders");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0 && isMounted) {
+            setDynamicRenders(data);
+          }
+        }
+      } catch {
+        // fallback
+      }
+    }
+    loadRenders();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     document.title = "Diseño 3D y Renders de Stands | Miluartedenara";
@@ -628,7 +651,7 @@ export function RendersPage() {
             viewport={{ once: true, margin: "-100px" }}
             className="grid grid-cols-1 md:grid-cols-5 gap-6"
           >
-            {RENDERS.map((item, i) => (
+            {dynamicRenders.map((item, i) => (
               <RenderCard
                 key={item.id}
                 item={item}

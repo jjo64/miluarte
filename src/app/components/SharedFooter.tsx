@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
@@ -5,6 +6,38 @@ import { useLanguage } from "../context/LanguageContext";
 export function SharedFooter() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
+
+  const [socialLinks, setSocialLinks] = useState<{
+    instagram?: string;
+    linkedin?: string;
+    behance?: string;
+    tiktok?: string;
+    twitter?: string;
+  }>({
+    instagram: "https://www.instagram.com/naraneko13/",
+    linkedin: "https://www.linkedin.com/in/nerealucaspajares4815162342/",
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadSocial() {
+      try {
+        const res = await fetch("/api/admin/social");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && isMounted) {
+            setSocialLinks(data);
+          }
+        }
+      } catch {
+        // fallback silencioso
+      }
+    }
+    loadSocial();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleOpenBooking = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -59,22 +92,56 @@ export function SharedFooter() {
             
             {/* Social Links */}
             <div className="flex flex-wrap gap-5">
-              <a
-                href="https://www.instagram.com/naraneko13/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
-              >
-                Instagram
-              </a>
-              <a
-                href="https://www.linkedin.com/in/nerealucaspajares4815162342/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
-              >
-                LinkedIn
-              </a>
+              {socialLinks.instagram && (
+                <a
+                  href={socialLinks.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
+                >
+                  Instagram
+                </a>
+              )}
+              {socialLinks.linkedin && (
+                <a
+                  href={socialLinks.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
+                >
+                  LinkedIn
+                </a>
+              )}
+              {socialLinks.behance && (
+                <a
+                  href={socialLinks.behance}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
+                >
+                  Behance
+                </a>
+              )}
+              {socialLinks.tiktok && (
+                <a
+                  href={socialLinks.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
+                >
+                  TikTok
+                </a>
+              )}
+              {socialLinks.twitter && (
+                <a
+                  href={socialLinks.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-sans text-brand-cream/60 hover:text-brand-orange text-xs no-underline transition-colors duration-250 hover:underline"
+                >
+                  X (Twitter)
+                </a>
+              )}
             </div>
           </div>
 
