@@ -19,7 +19,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { name, email, company, subject, message } = req.body;
+    const { name, email, company, subject, message } = req.body || {};
 
     // 1. Basic validation
     if (!name || !email || !subject || !message) {
@@ -67,7 +67,7 @@ export default async function handler(req: any, res: any) {
 
     // 4. Guardar SIEMPRE en la base de datos para la bandeja del panel de administración
     try {
-      const { kv, isKvConfigured } = await import("./admin/_lib/kv");
+      const { kv, isKvConfigured } = await import("./admin/_lib/kv.js");
       if (isKvConfigured()) {
         const raw = await kv.get("miluarte:messages:contact");
         let messages = typeof raw === "string" ? JSON.parse(raw || "[]") : (raw as any) || [];

@@ -1,8 +1,8 @@
-import { kv, isKvConfigured } from "./_lib/kv";
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { createPreSnapshot, recordChangelog, BASE_GALLERY_SLUGS } from "./_lib/changelog";
+import { kv, isKvConfigured } from "./_lib/kv.js";
+import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
+import { createPreSnapshot, recordChangelog, BASE_GALLERY_SLUGS } from "./_lib/changelog.js";
 import { GalleryMeta } from "../../src/app/types/cms";
-import { META } from "../../src/app/pages/CollectionPage";
+import { META } from "../../src/app/data/portfolioData";
 
 // Helper para obtener las galerías base del portfolio
 function getBaseGalleries(): GalleryMeta[] {

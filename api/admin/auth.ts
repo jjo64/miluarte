@@ -1,5 +1,5 @@
-import { kv, isKvConfigured } from "./_lib/kv";
-import { signToken, verifyToken, extractTokenFromHeader, verifyPassword } from "./_lib/auth";
+import { kv, isKvConfigured } from "./_lib/kv.js";
+import { signToken, verifyToken, extractTokenFromHeader, verifyPassword } from "./_lib/auth.js";
 
 export default async function handler(req: any, res: any) {
   // Configurar headers CORS básicos

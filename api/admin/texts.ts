@@ -1,6 +1,6 @@
-import { kv, isKvConfigured } from "./_lib/kv";
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
+import { kv, isKvConfigured } from "./_lib/kv.js";
+import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
 import { SiteTexts } from "../../src/app/types/cms";
 import { translations } from "../../src/app/locales/translations";
 

@@ -1,8 +1,8 @@
-import { kv, isKvConfigured } from "./_lib/kv";
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
+import { kv, isKvConfigured } from "./_lib/kv.js";
+import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
 import { RenderItem } from "../../src/app/types/cms";
-import { RENDERS } from "../../src/app/pages/RendersPage";
+import { RENDERS } from "../../src/app/data/rendersData";
 import { nanoid } from "nanoid";
 
 async function getRenders(): Promise<RenderItem[]> {

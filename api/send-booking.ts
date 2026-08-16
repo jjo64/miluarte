@@ -19,7 +19,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { name, email, projectType, budget, deadline, description } = req.body;
+    const { name, email, projectType, budget, deadline, description } = req.body || {};
 
     // 1. Basic validation
     if (!name || !email || !projectType || !description) {
@@ -51,7 +51,7 @@ export default async function handler(req: any, res: any) {
 
     // 4. Guardar SIEMPRE en la base de datos para la bandeja de encargos del CMS
     try {
-      const { kv, isKvConfigured } = await import("./admin/_lib/kv");
+      const { kv, isKvConfigured } = await import("./admin/_lib/kv.js");
       if (isKvConfigured()) {
         const raw = await kv.get("miluarte:messages:booking");
         let messages = typeof raw === "string" ? JSON.parse(raw || "[]") : (raw as any) || [];

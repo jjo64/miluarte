@@ -1,8 +1,8 @@
-import { kv, isKvConfigured } from "./_lib/kv";
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
+import { kv, isKvConfigured } from "./_lib/kv.js";
+import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
 import { Work } from "../../src/app/types/cms";
-import { WORKS_BY_SLUG } from "../../src/app/pages/CollectionPage";
+import { WORKS_BY_SLUG } from "../../src/app/data/portfolioData";
 import { nanoid } from "nanoid";
 
 // Helper para obtener las obras actuales de una galería

@@ -1,6 +1,6 @@
-import { kv, isKvConfigured } from "./_lib/kv";
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { rollbackToSnapshot, addChangelogEntry } from "./_lib/changelog";
+import { kv, isKvConfigured } from "./_lib/kv.js";
+import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
+import { rollbackToSnapshot, addChangelogEntry } from "./_lib/changelog.js";
 import { ChangelogEntry } from "../../src/app/types/cms";
 
 async function getChangelog(): Promise<ChangelogEntry[]> {

@@ -1,7 +1,7 @@
-import { kv, isKvConfigured } from "./kv";
+import { kv, isKvConfigured } from "./kv.js";
 import { ChangelogEntry, GalleryMeta } from "../../../src/app/types/cms";
 import { nanoid } from "nanoid";
-import { META } from "../../../src/app/pages/CollectionPage";
+import { META } from "../../../src/app/data/portfolioData";
 
 // Slugs de las galerías base de Nerea que NUNCA deben borrarse ni desaparecer
 export const BASE_GALLERY_SLUGS = new Set([
