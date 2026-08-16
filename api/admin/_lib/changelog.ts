@@ -1,6 +1,32 @@
 import { kv, isKvConfigured } from "./kv";
-import { ChangelogEntry } from "../../../src/app/types/cms";
+import { ChangelogEntry, GalleryMeta } from "../../../src/app/types/cms";
 import { nanoid } from "nanoid";
+import { META } from "../../../src/app/pages/CollectionPage";
+
+// Slugs de las galerías base de Nerea que NUNCA deben borrarse ni desaparecer
+export const BASE_GALLERY_SLUGS = new Set([
+  "ilustracion",
+  "diggin",
+  "concept-art",
+  "diseno-grafico",
+  "3d-stands",
+  "animas",
+  "retratos",
+  "pasta-ya",
+]);
+
+export function getBaseGalleries(): GalleryMeta[] {
+  return Object.entries(META).map(([slug, meta], index) => ({
+    slug,
+    title: meta.title,
+    label: meta.label,
+    statement: meta.statement,
+    accent: meta.accent,
+    twoColumns: meta.twoColumns || false,
+    order: index,
+    featured: ["ilustracion", "concept-art", "diggin", "animas"].includes(slug),
+  }));
+}
 
 /**
  * Crea un snapshot del estado actual EXACTO del sistema antes de aplicar cualquier mutación.
@@ -18,23 +44,26 @@ export async function createPreSnapshot(): Promise<string | null> {
       kv.get("miluarte:social"),
     ]);
 
+    let galleries = galleriesRaw;
+    if (!galleries || (Array.isArray(galleries) && galleries.length === 0)) {
+      galleries = getBaseGalleries();
+    }
+
     const snapshotData: Record<string, any> = {
-      galleries: galleriesRaw,
+      galleries,
       renders: rendersRaw,
       texts: textsRaw,
       social: socialRaw,
       works: {},
     };
 
-    if (galleriesRaw) {
-      const galleriesArr = typeof galleriesRaw === "string" ? JSON.parse(galleriesRaw) : galleriesRaw;
-      if (Array.isArray(galleriesArr)) {
-        await Promise.all(
-          galleriesArr.map(async (g: any) => {
-            snapshotData.works[g.slug] = await kv.get(`miluarte:gallery:${g.slug}`);
-          })
-        );
-      }
+    const galleriesArr = typeof galleries === "string" ? JSON.parse(galleries) : galleries;
+    if (Array.isArray(galleriesArr)) {
+      await Promise.all(
+        galleriesArr.map(async (g: any) => {
+          snapshotData.works[g.slug] = await kv.get(`miluarte:gallery:${g.slug}`);
+        })
+      );
     }
 
     // Guardar snapshot en KV
@@ -96,7 +125,8 @@ export async function addChangelogEntry(
 }
 
 /**
- * Revierte el estado del sitio completo exactamente a como estaba en el snapshotId.
+ * Revierte el estado del sitio completo exactamente a como estaba en el snapshotId,
+ * protegiendo SIEMPRE las galerías base y eliminando solo las galerías personalizadas creadas después.
  */
 export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
   if (!isKvConfigured()) return false;
@@ -107,7 +137,7 @@ export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
 
     const snapshot = typeof rawSnapshot === "string" ? JSON.parse(rawSnapshot) : rawSnapshot;
 
-    // 1. Obtener galerías actuales para eliminar las creadas después
+    // 1. Obtener galerías actuales
     const currentGalleriesRaw = await kv.get("miluarte:galleries");
     const currentGalleries: any[] = Array.isArray(currentGalleriesRaw)
       ? currentGalleriesRaw
@@ -115,37 +145,55 @@ export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
       ? JSON.parse(currentGalleriesRaw || "[]")
       : [];
 
-    const snapshotGalleries: any[] = Array.isArray(snapshot.galleries)
+    // 2. Parsear galerías del snapshot y asegurar que las base SIEMPRE estén presentes
+    let snapshotGalleries: any[] = Array.isArray(snapshot.galleries)
       ? snapshot.galleries
       : typeof snapshot.galleries === "string"
       ? JSON.parse(snapshot.galleries || "[]")
       : [];
 
+    if (snapshotGalleries.length === 0) {
+      snapshotGalleries = getBaseGalleries();
+    } else {
+      // Asegurar que las galerías base que existan no se pierdan
+      const baseGalleries = getBaseGalleries();
+      const existingSlugs = new Set(snapshotGalleries.map((g: any) => g.slug));
+      for (const bg of baseGalleries) {
+        if (!existingSlugs.has(bg.slug)) {
+          snapshotGalleries.push(bg);
+        }
+      }
+    }
+
     const snapshotSlugs = new Set(snapshotGalleries.map((g: any) => g.slug));
 
-    // 2. Borrar claves de obras de galerías que no existían en este snapshot
+    // 3. Borrar solo las claves de galerías creadas después que NO sean galerías base
     for (const g of currentGalleries) {
-      if (!snapshotSlugs.has(g.slug)) {
+      if (!snapshotSlugs.has(g.slug) && !BASE_GALLERY_SLUGS.has(g.slug)) {
         await kv.del(`miluarte:gallery:${g.slug}`);
       }
     }
 
-    // 3. Restaurar galerías
+    // 4. Restaurar galerías en KV
     await kv.set("miluarte:galleries", JSON.stringify(snapshotGalleries));
 
-    // 4. Restaurar obras por galería
-    if (snapshot.works) {
+    // 5. Restaurar obras por galería
+    if (snapshot.works && typeof snapshot.works === "object") {
       for (const [slug, worksData] of Object.entries(snapshot.works)) {
-        const worksArr = Array.isArray(worksData)
-          ? worksData
-          : typeof worksData === "string"
-          ? JSON.parse(worksData || "[]")
-          : [];
-        await kv.set(`miluarte:gallery:${slug}`, JSON.stringify(worksArr));
+        if (worksData) {
+          const worksArr = Array.isArray(worksData)
+            ? worksData
+            : typeof worksData === "string"
+            ? JSON.parse(worksData || "[]")
+            : [];
+          if (worksArr.length > 0) {
+            await kv.set(`miluarte:gallery:${slug}`, JSON.stringify(worksArr));
+          }
+        }
       }
     }
 
-    // 5. Restaurar renders 3D
+    // 6. Restaurar renders 3D
     if (snapshot.renders) {
       const rendersArr = Array.isArray(snapshot.renders)
         ? snapshot.renders
@@ -155,13 +203,13 @@ export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
       await kv.set("miluarte:renders", JSON.stringify(rendersArr));
     }
 
-    // 6. Restaurar textos
+    // 7. Restaurar textos
     if (snapshot.texts) {
       const textsObj = typeof snapshot.texts === "string" ? JSON.parse(snapshot.texts) : snapshot.texts;
       await kv.set("miluarte:texts", JSON.stringify(textsObj));
     }
 
-    // 7. Restaurar redes sociales
+    // 8. Restaurar redes sociales
     if (snapshot.social) {
       const socialObj = typeof snapshot.social === "string" ? JSON.parse(snapshot.social) : snapshot.social;
       await kv.set("miluarte:social", JSON.stringify(socialObj));

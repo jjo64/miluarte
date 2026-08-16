@@ -72,7 +72,7 @@ export function GalleryCard({
                 onClick={onOpen}
                 className="flex-1 py-2 px-3 rounded-xl bg-brand-blush/15 hover:bg-brand-blush text-brand-blush hover:text-brand-ink text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <span>Ver Obras</span>
+                <span>Gestionar Obras</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
 
@@ -84,13 +84,15 @@ export function GalleryCard({
                 <Edit3 className="w-4 h-4" />
               </button>
 
-              <button
-                onClick={onDelete}
-                title="Eliminar galería"
-                className="p-2 rounded-xl border border-brand-orange/20 text-brand-orange hover:bg-brand-orange/10 transition-colors cursor-pointer"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              {!["ilustracion", "diggin", "animas", "retratos", "pasta-ya", "concept-art", "diseno-grafico", "3d-stands"].includes(gallery.slug) && (
+                <button
+                  onClick={onDelete}
+                  title="Eliminar galería"
+                  className="p-2 rounded-xl border border-brand-orange/20 text-brand-orange hover:bg-brand-orange/10 transition-colors cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
             </div>
           )}
         </div>

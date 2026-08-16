@@ -1,23 +1,11 @@
 import { kv, isKvConfigured } from "./_lib/kv";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
+import { createPreSnapshot, recordChangelog, BASE_GALLERY_SLUGS } from "./_lib/changelog";
 import { GalleryMeta } from "../../src/app/types/cms";
 import { META } from "../../src/app/pages/CollectionPage";
 
-// Helper para obtener las galerías actuales
-async function getGalleries(): Promise<GalleryMeta[]> {
-  if (isKvConfigured()) {
-    try {
-      const raw = await kv.get("miluarte:galleries");
-      if (raw) {
-        return typeof raw === "string" ? JSON.parse(raw) : (raw as any);
-      }
-    } catch (e) {
-      console.warn("KV get galleries error, using fallback:", e);
-    }
-  }
-
-  // Fallback a los datos estáticos si KV aún no tiene datos
+// Helper para obtener las galerías base del portfolio
+function getBaseGalleries(): GalleryMeta[] {
   return Object.entries(META).map(([slug, meta], index) => ({
     slug,
     title: meta.title,
@@ -28,6 +16,35 @@ async function getGalleries(): Promise<GalleryMeta[]> {
     order: index,
     featured: ["ilustracion", "concept-art", "diggin", "animas"].includes(slug),
   }));
+}
+
+// Helper para obtener las galerías actuales
+async function getGalleries(): Promise<GalleryMeta[]> {
+  const baseGalleries = getBaseGalleries();
+
+  if (isKvConfigured()) {
+    try {
+      const raw = await kv.get("miluarte:galleries");
+      if (raw) {
+        const parsed: GalleryMeta[] = typeof raw === "string" ? JSON.parse(raw) : (raw as any);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Asegurar que las galerías base NUNCA desaparezcan
+          const existingSlugs = new Set(parsed.map((g) => g.slug));
+          for (const bg of baseGalleries) {
+            if (!existingSlugs.has(bg.slug)) {
+              parsed.push(bg);
+            }
+          }
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn("KV get galleries error, using fallback:", e);
+    }
+  }
+
+  // Fallback a los datos estáticos si KV aún no tiene datos o está vacío
+  return baseGalleries;
 }
 
 export default async function handler(req: any, res: any) {
@@ -178,12 +195,16 @@ export default async function handler(req: any, res: any) {
     }
   }
 
-  // 4. DELETE: Eliminar galería y sus obras
+  // 4. DELETE: Eliminar galería y sus obras (solo galerías personalizadas)
   if (req.method === "DELETE") {
     try {
       const slug = req.query?.slug || req.body?.slug;
       if (!slug) {
         return res.status(400).json({ error: "Slug de galería requerido" });
+      }
+
+      if (BASE_GALLERY_SLUGS.has(slug)) {
+        return res.status(400).json({ error: "Las colecciones originales del portafolio no pueden eliminarse del sistema." });
       }
 
       let galleries = await getGalleries();
