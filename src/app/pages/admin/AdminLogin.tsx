@@ -6,7 +6,7 @@ import { C, SERIF, SANS, ease, fadeUp } from "../../tokens";
 import { useAdminApi } from "../../hooks/useAdminApi";
 
 export function AdminLogin() {
-  const [email, setEmail] = useState("miluartedenara@gmail.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -112,7 +112,7 @@ export function AdminLogin() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="nerea@miluarte.com"
+                placeholder="tu@correo.com"
                 required
                 className="w-full bg-brand-bg/80 border border-brand-cream/15 rounded-xl pl-10 pr-4 py-3 text-brand-cream text-sm placeholder:text-brand-cream/30 focus:border-brand-blush focus:ring-1 focus:ring-brand-blush/30 outline-none transition-all"
               />
