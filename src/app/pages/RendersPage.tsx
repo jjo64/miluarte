@@ -267,36 +267,102 @@ function RenderCard({
   );
 }
 
-// ─── Lightbox ─────────────────────────────────────────────────────────────────
-function Lightbox({
+// Helper para renderizar cualquier tipo de video (YouTube, Vimeo, Drive o MP4)
+function renderUniversalVideo(url?: string, poster?: string, className: string = "w-full max-h-[60vh] object-contain bg-black") {
+  if (!url) return null;
+
+  // 1. YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+  if (ytMatch && ytMatch[1]) {
+    return (
+      <div className="w-full aspect-video max-h-[60vh] bg-black flex items-center justify-center">
+        <iframe
+          src={`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0`}
+          title="Video Player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full border-0"
+        />
+      </div>
+    );
+  }
+
+  // 2. Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)/i);
+  if (vimeoMatch && vimeoMatch[1]) {
+    return (
+      <div className="w-full aspect-video max-h-[60vh] bg-black flex items-center justify-center">
+        <iframe
+          src={`https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`}
+          title="Vimeo Player"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full border-0"
+        />
+      </div>
+    );
+  }
+
+  // 3. Google Drive preview
+  if (url.includes("drive.google.com")) {
+    const driveEmbed = url.replace(/\/view(\?.*)?$/, "/preview");
+    return (
+      <div className="w-full aspect-video max-h-[60vh] bg-black flex items-center justify-center">
+        <iframe
+          src={driveEmbed}
+          title="Google Drive Player"
+          allow="autoplay"
+          className="w-full h-full border-0"
+        />
+      </div>
+    );
+  }
+
+  // 4. Video directo MP4/WebM
+  return (
+    <video
+      controls
+      autoPlay
+      className={className}
+      poster={poster}
+    >
+      <source src={url} type="video/mp4" />
+      <source src={url} type="video/webm" />
+    </video>
+  );
+}
+
+// ─── RenderLightbox ───────────────────────────────────────────────────────────
+function RenderLightbox({
   item,
   onClose,
-  language,
+  isTouch,
 }: {
-  item: RenderItem;
+  item: RenderItem | null;
   onClose: () => void;
-  language: "es" | "en";
+  isTouch: boolean;
 }) {
+  const { language } = useLanguage();
   const [isZoomed, setIsZoomed] = useState(false);
 
-  // Cerrar al pulsar tecla ESC
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", handleKeyDown);
+    if (item) window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
+  }, [item, onClose]);
+
+  if (!item) return null;
 
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 md:p-6 no-print">
-      
-      {/* Backdrop (Fade-in) */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-6 overflow-hidden">
+      {/* Backdrop oscuro */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.92 }}
+        animate={{ opacity: 0.8 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.25 }}
         onClick={onClose}
         className="absolute inset-0 bg-black cursor-pointer"
       />
@@ -306,7 +372,7 @@ function Lightbox({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.3, ease }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="relative w-full h-full md:h-auto md:max-h-[92vh] md:max-w-[860px] bg-brand-dark border-0 md:border border-brand-cream/10 md:rounded-2xl shadow-2xl flex flex-col overflow-y-auto"
         style={{
           backgroundColor: "var(--brand-dark, #0D0908)",
@@ -325,18 +391,10 @@ function Lightbox({
           </button>
         </div>
 
-        {/* Bloque 1 - El render */}
+        {/* Bloque 1 - El render o Video */}
         <div className="w-full bg-black flex items-center justify-center relative overflow-hidden">
           {item.videoSrcMp4 ? (
-            <video
-              controls
-              autoPlay
-              className="w-full max-h-[60vh] object-contain bg-black"
-              poster={getOptimizedImageUrl(item.img, 1200)}
-            >
-              <source src={item.videoSrcWebm} type="video/webm" />
-              <source src={item.videoSrcMp4} type="video/mp4" />
-            </video>
+            renderUniversalVideo(item.videoSrcMp4, getOptimizedImageUrl(item.img, 1200))
           ) : (
             <div 
               className="w-full overflow-hidden cursor-zoom-in flex items-center justify-center"
@@ -354,58 +412,48 @@ function Lightbox({
           )}
         </div>
 
-        {/* Bloque 2 - El proceso (making of) */}
-        <div className="p-6 md:p-8 flex flex-col gap-6">
-          <div>
-            <p className="font-sans text-[9px] tracking-[0.3em] font-bold text-brand-orange uppercase mb-4" style={{ fontFamily: DMSANS, color: C.orange }}>
-              {language === "es" ? "EL PROCESO" : "THE PROCESS"}
-            </p>
+        {/* Bloque 2 - El Proceso de Trabajo */}
+        <div className="p-6 md:p-8 bg-brand-dark" style={{ backgroundColor: "var(--brand-dark, #0D0908)" }}>
+          <div className="max-w-[720px] mx-auto">
             
-            {/* Subsección: Software usado */}
-            <div className="mb-6">
-              <h4 className="font-sans text-[10px] font-bold tracking-wider text-brand-secondary uppercase mb-2" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
-                {language === "es" ? "Software usado" : "Software used"}
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {item.software.map((sw) => (
-                  <span key={sw} className="font-sans text-xs px-3.5 py-1.5 rounded-full bg-brand-cream/5 border border-brand-cream/10 text-brand-cream" style={{ fontFamily: DMSANS }}>
-                    {sw}
-                  </span>
-                ))}
-              </div>
+            {/* Descripción del Proyecto */}
+            <div className="mb-8">
+              <h3 className="font-serif text-[#F5EDE0] text-lg mb-2 font-normal" style={{ fontFamily: PLAYFAIR }}>
+                {language === "es" ? "Concepto del Proyecto" : "Project Concept"}
+              </h3>
+              <p className="font-sans text-xs md:text-sm text-brand-cream/70 leading-relaxed" style={{ fontFamily: DMSANS }}>
+                {item.description}
+              </p>
             </div>
 
-            {/* Subsección: Del boceto al render */}
-            <div className="mb-6">
-              <h4 className="font-sans text-[10px] font-bold tracking-wider text-brand-secondary uppercase mb-3" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
-                {language === "es" ? "Del boceto al render" : "From sketch to render"}
-              </h4>
-              
-              {/* Carrusel horizontal con snap */}
-              <div 
-                className="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none"
-                style={{
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none"
-                }}
-              >
-                {item.process.map((step, i) => (
-                  <div key={i} className="flex-shrink-0 snap-start flex flex-col gap-2" style={{ width: "200px" }}>
-                    <div className="w-[200px] h-[150px] overflow-hidden rounded-lg border border-brand-cream/10 bg-brand-dark/30">
-                      <img
-                        src={getOptimizedImageUrl(step.src, 400)}
-                        alt={step.label}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
+            {/* Subsección: Proceso (4 pasos) */}
+            {item.process && item.process.length > 0 && (
+              <div className="mb-8">
+                <h4 className="font-sans text-[10px] font-bold tracking-wider text-brand-secondary uppercase mb-4" style={{ fontFamily: DMSANS, color: "var(--brand-secondary, #8A8070)" }}>
+                  {language === "es" ? "Fases del desarrollo" : "Development stages"}
+                </h4>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {item.process.map((step, i) => (
+                    <div key={i} className="flex flex-col gap-2">
+                      <div className="aspect-[4/3] rounded-lg overflow-hidden bg-black/40 border border-brand-cream/10 relative group">
+                        <img 
+                          src={getOptimizedImageUrl(step.src, 400)} 
+                          alt={step.label}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <span className="absolute top-1.5 left-1.5 font-sans text-[8px] font-bold px-1.5 py-0.5 rounded bg-black/70 text-brand-cream/90" style={{ fontFamily: DMSANS }}>
+                          0{i + 1}
+                        </span>
+                      </div>
+                      <p className="font-sans text-[11px] text-brand-cream/80 font-medium truncate" style={{ fontFamily: DMSANS }}>
+                        {step.label}
+                      </p>
                     </div>
-                    <p className="font-sans text-[11px] text-center text-brand-cream/60" style={{ fontFamily: DMSANS }}>
-                      {step.label}
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Subsección: Vídeo making of (Opcional) */}
             {item.makingOfVideoMp4 && (
@@ -414,10 +462,7 @@ function Lightbox({
                   {language === "es" ? "Vídeo making of" : "Making of video"}
                 </h4>
                 <div className="w-full rounded-lg overflow-hidden border border-brand-cream/10 bg-black">
-                  <video controls className="w-full max-h-[30vh] object-cover">
-                    <source src={item.makingOfVideoWebm} type="video/webm" />
-                    <source src={item.makingOfVideoMp4} type="video/mp4" />
-                  </video>
+                  {renderUniversalVideo(item.makingOfVideoMp4, undefined, "w-full max-h-[30vh] object-cover")}
                 </div>
               </div>
             )}
@@ -673,10 +718,10 @@ export function RendersPage() {
       {/* Lightbox con AnimatePresence */}
       <AnimatePresence>
         {active && (
-          <Lightbox 
+          <RenderLightbox 
             item={active} 
             onClose={() => setActive(null)} 
-            language={language}
+            isTouch={isTouch}
           />
         )}
       </AnimatePresence>

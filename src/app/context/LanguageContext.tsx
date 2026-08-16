@@ -9,6 +9,25 @@ interface LanguageContextType {
   t: (key: string) => any;
 }
 
+function deepMerge(target: any, source: any): any {
+  if (typeof target !== "object" || target === null) return source;
+  if (typeof source !== "object" || source === null) return target;
+
+  const output = { ...target };
+  for (const key of Object.keys(source)) {
+    if (source[key] instanceof Object && !Array.isArray(source[key])) {
+      if (!(key in target)) {
+        Object.assign(output, { [key]: source[key] });
+      } else {
+        output[key] = deepMerge(target[key], source[key]);
+      }
+    } else {
+      Object.assign(output, { [key]: source[key] });
+    }
+  }
+  return output;
+}
+
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
@@ -19,6 +38,36 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const browserLang = navigator.language.split("-")[0];
     return browserLang === "en" ? "en" : "es";
   });
+
+  const [activeTranslations, setActiveTranslations] = useState<typeof translations>(() => translations);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDynamicTexts() {
+      try {
+        const res = await fetch("/api/admin/texts");
+        if (res.ok) {
+          const remoteTexts = await res.json();
+          if (remoteTexts && isMounted) {
+            const merged = {
+              es: deepMerge(translations.es, remoteTexts.es || {}),
+              en: deepMerge(translations.en, remoteTexts.en || {}),
+            };
+            setActiveTranslations(merged as typeof translations);
+          }
+        }
+      } catch (e) {
+        // Fallback a traducciones estáticas
+      }
+    }
+
+    loadDynamicTexts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("language", language);
@@ -32,7 +81,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const t = (path: string): any => {
     const parts = path.split(".");
-    let current: any = translations[language];
+    let current: any = activeTranslations[language];
     for (const part of parts) {
       if (current && typeof current === "object" && part in current) {
         current = current[part];

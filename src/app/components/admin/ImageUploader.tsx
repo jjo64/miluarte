@@ -1,12 +1,13 @@
-import { useState, useRef } from "react";
-import { UploadCloud, Image as ImageIcon, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { UploadCloud, Image as ImageIcon, AlertCircle, RefreshCw } from "lucide-react";
 import { motion } from "motion/react";
 import { useUpload, UploadResult } from "../../hooks/useUpload";
 import { getOptimizedImageUrl } from "../../utils/cloudinary";
 
 interface ImageUploaderProps {
   currentImageUrl?: string;
-  onUploadSuccess: (result: UploadResult) => void;
+  onUploadSuccess?: (result: UploadResult) => void;
+  onFileSelect?: (file: File) => void;
   folder?: string;
   label?: string;
   aspectHint?: string;
@@ -16,27 +17,57 @@ interface ImageUploaderProps {
 export function ImageUploader({
   currentImageUrl,
   onUploadSuccess,
+  onFileSelect,
   folder = "miluarte",
   label = "Subir Imagen",
-  aspectHint = "Recomendado: JPG, PNG o WebP hasta 20MB",
+  aspectHint = "Recomendado: JPG, PNG o WebP hasta 10MB",
   compact = false,
 }: ImageUploaderProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [localError, setLocalError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadImage, uploading, progress, error } = useUpload();
 
+  // Limpiar previewUrl si currentImageUrl cambia externamente
+  useEffect(() => {
+    if (!currentImageUrl) {
+      setPreviewUrl(null);
+    }
+  }, [currentImageUrl]);
+
   const handleFile = async (file: File) => {
+    setLocalError(null);
+
+    // 1. Validar tamaño (máx 10MB)
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setLocalError("La imagen supera el límite de 10MB");
+      return;
+    }
+
+    // 2. Validar formato
+    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!validTypes.includes(file.type)) {
+      setLocalError("Formato no válido. Usa JPG, PNG, WebP o GIF");
+      return;
+    }
+
     // Generar preview local instantánea
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
 
-    try {
-      const res = await uploadImage(file, folder);
-      onUploadSuccess(res);
-    } catch (e) {
-      // Revertir preview si falla
-      setPreviewUrl(null);
+    if (onFileSelect) {
+      // Modo diferido: solo entregamos el archivo al padre para subir al hacer click en Guardar
+      onFileSelect(file);
+    } else if (onUploadSuccess) {
+      // Modo directo: sube inmediatamente
+      try {
+        const res = await uploadImage(file, folder);
+        onUploadSuccess(res);
+      } catch (e) {
+        setPreviewUrl(null);
+      }
     }
   };
 
@@ -56,6 +87,7 @@ export function ImageUploader({
   };
 
   const displayImage = previewUrl || currentImageUrl;
+  const activeError = localError || error;
 
   return (
     <div className="flex flex-col gap-2 w-full select-none">
@@ -94,7 +126,7 @@ export function ImageUploader({
         {displayImage && !uploading ? (
           <div className="relative w-full h-full min-h-[140px] flex items-center justify-center group">
             <img
-              src={getOptimizedImageUrl(displayImage, 600)}
+              src={displayImage.startsWith("blob:") || displayImage.startsWith("data:") ? displayImage : getOptimizedImageUrl(displayImage, 600)}
               alt="Preview"
               className="max-h-48 rounded-xl object-contain shadow-md"
             />
@@ -137,10 +169,10 @@ export function ImageUploader({
         )}
       </div>
 
-      {error && (
+      {activeError && (
         <div className="flex items-center gap-1.5 text-brand-orange text-[11px] mt-1">
           <AlertCircle className="w-3.5 h-3.5" />
-          <span>{error}</span>
+          <span>{activeError}</span>
         </div>
       )}
     </div>

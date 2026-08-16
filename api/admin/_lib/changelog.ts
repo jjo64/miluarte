@@ -39,7 +39,7 @@ export async function addChangelogEntry(
         }
       }
 
-      // Guardar snapshot en KV con TTL de 30 días
+      // Guardar snapshot en KV
       await kv.set(`miluarte:snapshot:${snapshotId}`, JSON.stringify(snapshotData));
     } catch (snapErr) {
       console.warn("No se pudo capturar snapshot de seguridad:", snapErr);
@@ -85,6 +85,29 @@ export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
 
     const snapshot = typeof rawSnapshot === "string" ? JSON.parse(rawSnapshot) : rawSnapshot;
 
+    // Obtener galerías actuales para limpiar las que se hayan creado con posterioridad
+    const currentGalleriesRaw = await kv.get("miluarte:galleries");
+    const currentGalleries = Array.isArray(currentGalleriesRaw)
+      ? currentGalleriesRaw
+      : typeof currentGalleriesRaw === "string"
+      ? JSON.parse(currentGalleriesRaw || "[]")
+      : [];
+
+    const snapshotGalleries = Array.isArray(snapshot.galleries)
+      ? snapshot.galleries
+      : typeof snapshot.galleries === "string"
+      ? JSON.parse(snapshot.galleries || "[]")
+      : [];
+
+    const snapshotSlugs = new Set(snapshotGalleries.map((g: any) => g.slug));
+
+    // Eliminar claves de galerías creadas después
+    for (const g of currentGalleries) {
+      if (!snapshotSlugs.has(g.slug)) {
+        await kv.del(`miluarte:gallery:${g.slug}`);
+      }
+    }
+
     // Restaurar colecciones principales
     if (snapshot.galleries) {
       await kv.set("miluarte:galleries", typeof snapshot.galleries === "string" ? snapshot.galleries : JSON.stringify(snapshot.galleries));
@@ -99,7 +122,7 @@ export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
       await kv.set("miluarte:social", typeof snapshot.social === "string" ? snapshot.social : JSON.stringify(snapshot.social));
     }
 
-    // Restaurar obras por galería
+    // Restaurar obras por galería del snapshot
     if (snapshot.works) {
       for (const [slug, worksData] of Object.entries(snapshot.works)) {
         if (worksData) {

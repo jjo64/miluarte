@@ -22,11 +22,11 @@ export function useUpload() {
       setProgress(0);
       setError(null);
 
-      // 1. Validación de tamaño en cliente (máx 20MB)
-      const MAX_SIZE = 20 * 1024 * 1024;
+      // 1. Validación de tamaño en cliente (máx 10MB según plan de Cloudinary)
+      const MAX_SIZE = 10 * 1024 * 1024;
       if (file.size > MAX_SIZE) {
         setUploading(false);
-        const err = "La imagen supera el límite máximo permitido de 20MB";
+        const err = "La imagen supera el límite máximo permitido de 10MB";
         setError(err);
         throw new Error(err);
       }

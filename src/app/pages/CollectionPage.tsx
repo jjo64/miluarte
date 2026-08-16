@@ -201,14 +201,17 @@ function WorkCard({
   accent, 
   onClick, 
   imgRef,
-  isTwoColumns = false
+  isTwoColumns = false,
+  index = 0,
 }: { 
   work: Work; 
   accent: string; 
   onClick: () => void; 
   imgRef: (el: HTMLImageElement | null) => void;
   isTwoColumns?: boolean;
+  index?: number;
 }) {
+  const layout = getEditorialLayout(index, isTwoColumns, work.gridCol, work.aspect);
   const [hovered, setHovered] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
@@ -308,7 +311,7 @@ function WorkCard({
     <motion.div
       ref={cardRef}
       variants={staggerItem}
-      className={`relative overflow-hidden cursor-pointer group col-span-1 ${work.gridCol}`}
+      className={`relative overflow-hidden cursor-pointer group col-span-1 ${layout.gridCol}`}
       onMouseEnter={() => setHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -320,7 +323,7 @@ function WorkCard({
       }}
       data-cursor={language === "es" ? "Ampliar" : "Zoom"}
     >
-      <div className="relative overflow-hidden w-full h-full" style={{ aspectRatio: work.aspect }}>
+      <div className="relative overflow-hidden w-full h-full" style={{ aspectRatio: layout.aspect }}>
         <img
           ref={imgRef}
           src={getOptimizedImageUrl(work.img, 800)}
@@ -559,6 +562,31 @@ function AnimasBibleSection() {
   );
 }
 
+// Helper para calcular diseño editorial armónico que nunca se rompe al reordenar
+export function getEditorialLayout(index: number, isTwoColumns: boolean = false, customGridCol?: string, customAspect?: string) {
+  if (isTwoColumns) {
+    return {
+      gridCol: "col-span-1",
+      aspect: "1/1",
+    };
+  }
+
+  // Si tiene custom y no queremos forzar patrón:
+  // Patrón editorial armónico cíclico de 8 piezas que siempre completa filas de 3 columnas
+  const pattern = [
+    { gridCol: "md:col-span-2", aspect: "3/2" }, // 0: Ancha
+    { gridCol: "md:col-span-1", aspect: "3/4" }, // 1: Vertical (Fila 1 completa)
+    { gridCol: "md:col-span-1", aspect: "3/4" }, // 2: Vertical
+    { gridCol: "md:col-span-2", aspect: "3/2" }, // 3: Ancha (Fila 2 completa)
+    { gridCol: "md:col-span-1", aspect: "1/1" }, // 4: Cuadrada
+    { gridCol: "md:col-span-1", aspect: "1/1" }, // 5: Cuadrada
+    { gridCol: "md:col-span-1", aspect: "1/1" }, // 6: Cuadrada (Fila 3 completa)
+    { gridCol: "md:col-span-3", aspect: "16/9" }, // 7: Panorámica completa (Fila 4 completa)
+  ];
+
+  return pattern[index % pattern.length];
+}
+
 // ─── Collection Page ──────────────────────────────────────────────────────────
 
 export function CollectionPage() {
@@ -566,16 +594,39 @@ export function CollectionPage() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   
-  const [dynamicMeta, setDynamicMeta] = useState<CollectionMeta>(() => META[slug] ?? META["ilustracion"]);
-  const [dynamicWorks, setDynamicWorks] = useState<Work[]>(() => WORKS_BY_SLUG[slug] ?? WORKS_BY_SLUG["ilustracion"]);
+  const [dynamicMeta, setDynamicMeta] = useState<CollectionMeta>(() => 
+    META[slug] ?? {
+      title: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " "),
+      label: "Colección artística",
+      statement: "",
+      accent: "var(--color-brand-blush)",
+      twoColumns: false,
+    }
+  );
+  const [dynamicWorks, setDynamicWorks] = useState<Work[]>(() => WORKS_BY_SLUG[slug] ?? []);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
 
-    // Resetear a estáticos iniciales
-    if (META[slug]) setDynamicMeta(META[slug]);
-    if (WORKS_BY_SLUG[slug]) setDynamicWorks(WORKS_BY_SLUG[slug]);
+    // Resetear a estáticos si existen
+    if (META[slug]) {
+      setDynamicMeta(META[slug]);
+    } else {
+      setDynamicMeta({
+        title: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " "),
+        label: "Colección artística",
+        statement: "",
+        accent: "var(--color-brand-blush)",
+        twoColumns: false,
+      });
+    }
+
+    if (WORKS_BY_SLUG[slug]) {
+      setDynamicWorks(WORKS_BY_SLUG[slug]);
+    } else {
+      setDynamicWorks([]);
+    }
 
     async function loadDynamicContent() {
       try {
@@ -584,15 +635,17 @@ export function CollectionPage() {
         const gallRes = await fetch("/api/admin/galleries");
         if (gallRes.ok) {
           const galleries = await gallRes.json();
-          const found = galleries.find((g: any) => g.slug === slug);
-          if (found && isMounted) {
-            setDynamicMeta({
-              title: found.title,
-              label: found.label,
-              statement: found.statement,
-              accent: found.accent,
-              twoColumns: found.twoColumns,
-            });
+          if (Array.isArray(galleries)) {
+            const found = galleries.find((g: any) => g.slug === slug);
+            if (found && isMounted) {
+              setDynamicMeta({
+                title: found.title,
+                label: found.label,
+                statement: found.statement,
+                accent: found.accent || "var(--color-brand-blush)",
+                twoColumns: Boolean(found.twoColumns),
+              });
+            }
           }
         }
 
@@ -600,12 +653,12 @@ export function CollectionPage() {
         const worksRes = await fetch(`/api/admin/works?slug=${slug}`);
         if (worksRes.ok) {
           const worksData = await worksRes.json();
-          if (Array.isArray(worksData) && worksData.length > 0 && isMounted) {
+          if (Array.isArray(worksData) && isMounted) {
             setDynamicWorks(worksData);
           }
         }
       } catch (err) {
-        // Fallback silencioso a los datos estáticos ya cargados
+        // Fallback silencioso a los datos cargados
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -833,7 +886,7 @@ export function CollectionPage() {
         animate="visible"
         className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} md:grid-cols-3 gap-2 md:gap-0.5 mb-1`}
       >
-        {localizedWorks.map((w) => (
+        {localizedWorks.map((w, idx) => (
           <WorkCard 
             key={w.id} 
             work={w} 
@@ -841,6 +894,7 @@ export function CollectionPage() {
             onClick={() => handleWorkClick(w)}
             imgRef={(el) => { gridRefs.current[w.id] = el; }}
             isTwoColumns={isTwoColumns}
+            index={idx}
           />
         ))}
       </motion.div>

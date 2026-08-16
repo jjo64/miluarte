@@ -1027,7 +1027,7 @@
   "miluarte:changelog": [
     {
       "id": "init-1",
-      "timestamp": "2026-08-16T12:58:08.887Z",
+      "timestamp": "2026-08-16T13:30:24.878Z",
       "action": "Sistema CMS inicializado y datos migrados correctamente",
       "section": "system"
     }

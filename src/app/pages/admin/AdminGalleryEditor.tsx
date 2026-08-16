@@ -86,8 +86,13 @@ export function AdminGalleryEditor() {
     fetchGalleryAndWorks();
   }, [slug]);
 
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const { uploadImage } = useUpload();
+
   const handleOpenAdd = () => {
     setEditingWork(null);
+    setPendingFile(null);
     setWorkForm({
       title: "",
       year: new Date().getFullYear().toString(),
@@ -107,25 +112,45 @@ export function AdminGalleryEditor() {
 
   const handleOpenEdit = (work: Work) => {
     setEditingWork(work);
+    setPendingFile(null);
     setWorkForm({ ...work });
     setIsDrawerOpen(true);
   };
 
   const handleSaveWork = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!slug || !workForm.img) {
-      setToast({ message: "Debes subir o asignar una imagen a la obra", type: "error", open: true });
+    if (!slug) return;
+
+    if (!workForm.img && !pendingFile) {
+      setToast({ message: "Debes seleccionar o asignar una imagen a la obra", type: "error", open: true });
       return;
     }
 
     try {
+      setIsSaving(true);
+      let finalImg = workForm.img;
+      let finalPublicId = workForm.publicId;
+
+      // Si hay un archivo pendiente seleccionado por el usuario, subirlo AHORA al guardar
+      if (pendingFile) {
+        const uploadRes = await uploadImage(pendingFile, `miluarte/${slug || "general"}`);
+        finalImg = uploadRes.secureUrl;
+        finalPublicId = uploadRes.publicId;
+      }
+
+      const payload = {
+        ...workForm,
+        img: finalImg,
+        publicId: finalPublicId,
+      };
+
       if (editingWork) {
         // Actualizar obra existente
         await request(`/api/admin/works?slug=${slug}`, {
           method: "PUT",
           body: JSON.stringify({
             id: editingWork.id,
-            ...workForm,
+            ...payload,
           }),
         });
         setToast({ message: "Obra actualizada correctamente", type: "success", open: true });
@@ -133,15 +158,18 @@ export function AdminGalleryEditor() {
         // Crear nueva obra
         await request(`/api/admin/works?slug=${slug}`, {
           method: "POST",
-          body: JSON.stringify(workForm),
+          body: JSON.stringify(payload),
         });
-        setToast({ message: "Nueva obra subida y añadida a la galería", type: "success", open: true });
+        setToast({ message: "Nueva obra guardada y añadida a la galería", type: "success", open: true });
       }
 
+      setPendingFile(null);
       setIsDrawerOpen(false);
       fetchGalleryAndWorks();
     } catch (err: any) {
       setToast({ message: err.message || "Error al guardar obra", type: "error", open: true });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -305,11 +333,14 @@ export function AdminGalleryEditor() {
 
                   {/* Formulario */}
                   <form id="work-form" onSubmit={handleSaveWork} className="flex flex-col gap-4">
-                    {/* Uploader de imagen */}
+                    {/* Uploader de imagen con selección diferida */}
                     <ImageUploader
                       currentImageUrl={workForm.img}
                       folder={`miluarte/${slug || "general"}`}
                       label="Imagen de la Obra *"
+                      onFileSelect={(file) => {
+                        setPendingFile(file);
+                      }}
                       onUploadSuccess={(res) => {
                         setWorkForm((prev) => ({
                           ...prev,
@@ -471,9 +502,17 @@ export function AdminGalleryEditor() {
                   <button
                     type="submit"
                     form="work-form"
-                    className="px-6 py-2.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                    disabled={isSaving}
+                    className="px-6 py-2.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    {editingWork ? "Guardar Cambios" : "Guardar y Publicar"}
+                    {isSaving ? (
+                      <>
+                        <div className="w-3.5 h-3.5 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
+                        <span>Subiendo y Guardando...</span>
+                      </>
+                    ) : (
+                      <span>{editingWork ? "Guardar Cambios" : "Guardar y Publicar"}</span>
+                    )}
                   </button>
                 </div>
               </motion.div>

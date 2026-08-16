@@ -2,9 +2,6 @@ import { createClient } from "@vercel/kv";
 import * as fs from "fs";
 import * as path from "path";
 
-const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-
 // Local JSON storage for development without remote KV credentials
 const localDbPath = path.resolve(process.cwd(), "cms-local-db.json");
 const seedPath = path.resolve(process.cwd(), "cms-seed-backup.json");
@@ -51,15 +48,43 @@ function saveLocalStore(store: Record<string, any>) {
   }
 }
 
-// Vercel KV remote client (cuando estén las variables en producción o .env.local)
-const remoteClient = url && token ? createClient({ url, token }) : null;
+let cachedRemoteClient: any = null;
+let lastUrl: string | undefined = undefined;
+let lastToken: string | undefined = undefined;
+
+function getRemoteClient() {
+  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    return null;
+  }
+
+  if (cachedRemoteClient && lastUrl === url && lastToken === token) {
+    return cachedRemoteClient;
+  }
+
+  try {
+    cachedRemoteClient = createClient({ url, token });
+    lastUrl = url;
+    lastToken = token;
+    return cachedRemoteClient;
+  } catch (e) {
+    console.warn("Error initializing remote KV client:", e);
+    return null;
+  }
+}
 
 // Proxy compatible con la API de Vercel KV
 export const kv = {
   async get<T = any>(key: string): Promise<T | null> {
+    const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
-        return await remoteClient.get<T>(key);
+        const res = await remoteClient.get<T>(key);
+        if (res !== null && res !== undefined) {
+          return typeof res === "string" ? JSON.parse(res) : res;
+        }
       } catch (e) {
         console.warn(`Remote KV error on get(${key}), falling back to local:`, e);
       }
@@ -70,15 +95,16 @@ export const kv = {
   },
 
   async set(key: string, value: any): Promise<any> {
+    const stringified = typeof value === "string" ? value : JSON.stringify(value);
+    const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
-        return await remoteClient.set(key, value);
+        await remoteClient.set(key, stringified);
       } catch (e) {
         console.warn(`Remote KV error on set(${key}), falling back to local:`, e);
       }
     }
     const store = getLocalStore();
-    // Guardar objetos o strings
     try {
       store[key] = typeof value === "string" ? JSON.parse(value) : value;
     } catch {
@@ -89,9 +115,10 @@ export const kv = {
   },
 
   async del(key: string): Promise<number> {
+    const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
-        return await remoteClient.del(key);
+        await remoteClient.del(key);
       } catch (e) {
         console.warn(`Remote KV error on del(${key}), falling back to local:`, e);
       }
@@ -106,6 +133,7 @@ export const kv = {
   },
 
   async incr(key: string): Promise<number> {
+    const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
         return await remoteClient.incr(key);
@@ -121,6 +149,7 @@ export const kv = {
   },
 
   async expire(key: string, seconds: number): Promise<number> {
+    const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
         return await remoteClient.expire(key, seconds);
@@ -133,5 +162,5 @@ export const kv = {
 };
 
 export function isKvConfigured(): boolean {
-  return true; // Siempre activo gracias al fallback local persistente
+  return true; // Siempre activo gracias al fallback local persistente y KV remoto dinámico
 }

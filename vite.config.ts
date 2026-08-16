@@ -105,6 +105,14 @@ function localApiDevServer() {
             const { default: handler } = await server.ssrLoadModule('/api/admin/changelog.ts');
             return handler(req, res);
           }
+          if (pathname === '/api/send-contact') {
+            const { default: handler } = await server.ssrLoadModule('/api/send-contact.ts');
+            return handler(req, res);
+          }
+          if (pathname === '/api/send-booking') {
+            const { default: handler } = await server.ssrLoadModule('/api/send-booking.ts');
+            return handler(req, res);
+          }
 
           return next();
         } catch (err: any) {

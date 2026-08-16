@@ -462,13 +462,13 @@ export function AdminRendersEditor() {
                   <div className="flex flex-col gap-1.5">
                     <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
                       <Video className="w-3.5 h-3.5 text-brand-cream/50" />
-                      <span>URL Video Render Loop (MP4)</span>
+                      <span>URL Video Render Loop</span>
                     </label>
                     <input
                       type="text"
                       value={renderForm.videoSrcMp4}
                       onChange={(e) => setRenderForm({ ...renderForm, videoSrcMp4: e.target.value })}
-                      placeholder="/videos/sample-3d.mp4"
+                      placeholder="YouTube, Vimeo, Drive o archivo .mp4"
                       className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-3.5 py-2 text-brand-cream text-xs focus:border-brand-orange outline-none font-mono"
                     />
                   </div>
@@ -476,13 +476,13 @@ export function AdminRendersEditor() {
                   <div className="flex flex-col gap-1.5">
                     <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
                       <Video className="w-3.5 h-3.5 text-brand-orange" />
-                      <span>URL Video Making Of (MP4)</span>
+                      <span>URL Video Making Of</span>
                     </label>
                     <input
                       type="text"
                       value={renderForm.makingOfVideoMp4}
                       onChange={(e) => setRenderForm({ ...renderForm, makingOfVideoMp4: e.target.value })}
-                      placeholder="/videos/sample-bbb.mp4"
+                      placeholder="YouTube, Vimeo, Drive o archivo .mp4"
                       className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-3.5 py-2 text-brand-cream text-xs focus:border-brand-orange outline-none font-mono"
                     />
                   </div>
