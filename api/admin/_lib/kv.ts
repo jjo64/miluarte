@@ -81,7 +81,7 @@ export const kv = {
     const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
-        const res = await remoteClient.get<T>(key);
+        const res: any = await remoteClient.get(key);
         if (res !== null && res !== undefined) {
           return typeof res === "string" ? JSON.parse(res) : res;
         }
