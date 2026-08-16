@@ -22,7 +22,7 @@ export interface Work {
   imgPos: string;        // CSS object-position, ej: "50% 30%"
   gridCol: string;       // Tailwind class, ej: "md:col-span-2"
   aspect: string;        // ratio, ej: "3/2"
-  order: number;
+  order?: number;
   featured?: boolean;    // ¿aparece en galería destacada de home?
 }
 

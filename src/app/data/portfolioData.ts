@@ -7,7 +7,7 @@ export interface CollectionMeta {
 }
 
 export interface Work {
-  id: number | string;
+  id: string;
   title: string;
   year: string;
   technique: string;

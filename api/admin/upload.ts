@@ -25,12 +25,10 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { folder = "miluarte", tags = "cms" } = req.body || {};
+    const { folder = "miluarte" } = req.body || {};
+    const folderStr = typeof folder === "string" ? folder : "miluarte";
 
-    const signatureData = generateUploadSignature({
-      folder,
-      tags: typeof tags === "string" ? tags : tags.join(","),
-    });
+    const signatureData = generateUploadSignature(folderStr);
 
     return res.status(200).json(signatureData);
   } catch (error: any) {
