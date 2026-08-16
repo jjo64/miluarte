@@ -252,11 +252,11 @@ export function CollectionsPage() {
                       )}
                     </div>
 
-                    <div className="pt-3 border-t border-brand-cream/5 flex items-center justify-between text-xs text-brand-cream/40 group-hover:text-brand-blush transition-colors">
+                    <div className="pt-3 border-t border-brand-cream/5 flex items-center justify-between text-xs text-brand-cream/50 group-hover:text-brand-blush transition-colors">
                       <span className="font-sans text-[11px] tracking-wider uppercase font-medium">
-                        {language === "es" ? "Explorar galería" : "Explore gallery"}
+                        {language === "es" ? "Explorar colección" : "Explore collection"}
                       </span>
-                      <span className="font-mono text-xs">/coleccion/{gallery.slug}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
                   </div>
                 </motion.div>
