@@ -601,6 +601,17 @@ export function CollectionPage() {
   const [isLoading, setIsLoading] = useState<boolean>(!isBase);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
 
+  // GSAP Flip states and refs
+  const [activeWork, setActiveWork] = useState<Work | null>(null);
+  const gridRefs = useRef<Record<string | number, HTMLImageElement | null>>({});
+  const modalImgRef = useRef<HTMLImageElement | null>(null);
+  const modalOverlayRef = useRef<HTMLDivElement | null>(null);
+
+  // Magnifying glass detail zoom state
+  const [zoomState, setZoomState] = useState({ show: false, x: 0, y: 0, bgX: 0, bgY: 0 });
+  const modalRectRef = useRef<DOMRect | null>(null);
+  const [ctaH, setCtaH] = useState(false);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -669,21 +680,6 @@ export function CollectionPage() {
     };
   }, [slug]);
 
-  if (isNotFound) {
-    return <NotFoundPage />;
-  }
-
-  if (isLoading || !dynamicMeta) {
-    return (
-      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-brand-orange border-t-transparent animate-spin" />
-      </div>
-    );
-  }
-
-  const meta = dynamicMeta;
-  const isTwoColumns = meta.twoColumns ?? false;
-  
   // Helper para traducir solo si la clave realmente existe en el diccionario
   const getSafeTranslation = (key: string, fallback: string) => {
     const res = t(key);
@@ -691,7 +687,14 @@ export function CollectionPage() {
     return res;
   };
 
-  // Localize metadata dynamically
+  const meta = dynamicMeta || {
+    title: slug,
+    label: "Colección",
+    statement: "",
+    accent: "var(--color-brand-blush)",
+    twoColumns: false,
+  };
+
   const localizedMeta = {
     ...meta,
     title: getSafeTranslation(`collection.meta.${slug}.title`, meta.title),
@@ -699,107 +702,15 @@ export function CollectionPage() {
     statement: getSafeTranslation(`collection.meta.${slug}.statement`, meta.statement),
   };
 
-  const [ctaH, setCtaH] = useState(false);
-  const works = dynamicWorks;
-
   useEffect(() => {
-    const pageTitle = `${localizedMeta.title} | Portafolio Miluartedenara`;
-    document.title = pageTitle;
-    if (localizedMeta.statement) {
-      document.querySelector('meta[name="description"]')?.setAttribute('content', localizedMeta.statement);
+    if (dynamicMeta) {
+      const pageTitle = `${localizedMeta.title} | Portafolio Miluartedenara`;
+      document.title = pageTitle;
+      if (localizedMeta.statement) {
+        document.querySelector('meta[name="description"]')?.setAttribute('content', localizedMeta.statement);
+      }
     }
-  }, [slug, localizedMeta.title, localizedMeta.statement]);
-
-  // Localize work titles on the fly if needed
-  const getLocalizedWorkTitle = (title: string) => {
-    if (title === "Sin título (Serie verde)") return language === "es" ? "Sin título (Serie verde)" : "Untitled (Green Series)";
-    if (title === "Estructura invisible") return language === "es" ? "Estructura invisible" : "Invisible Structure";
-    if (title === "Cabeza (Estudio)") return language === "es" ? "Cabeza (Estudio)" : "Head (Study)";
-    if (title === "La cabeza") return language === "es" ? "La cabeza" : "The Head";
-    if (title === "Kreativität & Schreibkunst") return language === "es" ? "Kreativität & Schreibkunst" : "Creativity & Writing";
-    if (title === "The Earth") return language === "es" ? "La Tierra" : "The Earth";
-    if (title === "The Sky") return language === "es" ? "El Cielo" : "The Sky";
-    if (title === "The Ocean") return language === "es" ? "El Océano" : "The Ocean";
-
-    // Retratos titles localization
-    if (title === "Diferentes Edades — Pelirroja") return language === "es" ? "Diferentes Edades — Pelirroja" : "Different Ages — Redhead";
-    if (title === "Diferentes Edades — Japonesa") return language === "es" ? "Diferentes Edades — Japonesa" : "Different Ages — Japanese";
-    if (title === "Diferentes Edades — Africano") return language === "es" ? "Diferentes Edades — Africano" : "Different Ages — African";
-    if (title === "Poses Dinámicas") return language === "es" ? "Poses Dinámicas" : "Dynamic Poses";
-    if (title === "Cuerpos Cartoon") return language === "es" ? "Cuerpos Cartoon" : "Cartoon Bodies";
-    if (title === "Expresiones — Estudio") return language === "es" ? "Expresiones — Estudio" : "Expressions — Study";
-    if (title === "Ciudad Lovecraft") return language === "es" ? "Ciudad Lovecraft" : "Lovecraft City";
-    if (title === "Ciudad Lovecraft — Línea") return language === "es" ? "Ciudad Lovecraft — Línea" : "Lovecraft City — Line";
-    if (title === "Fachadas — Mundo propio") return language === "es" ? "Fachadas — Mundo propio" : "Facades — Personal World";
-    if (title === "Fachada Isométrica") return language === "es" ? "Fachada Isométrica" : "Isometric Facade";
-    if (title === "Espacios Abiertos") return language === "es" ? "Espacios Abiertos" : "Open Spaces";
-    if (title === "Espacios Acuáticos") return language === "es" ? "Espacios Acuáticos" : "Aquatic Spaces";
-    if (title === "Dragón — Caja Musical") return language === "es" ? "Dragón — Caja Musical" : "Dragon — Music Box";
-    if (title === "Criatura Grotesca") return language === "es" ? "Criatura Grotesca" : "Grotesque Creature";
-    if (title === "Animales Marinos") return language === "es" ? "Animales Marinos" : "Marine Animals";
-    if (title === "Mantis Jade — Detalle") return language === "es" ? "Mantis Jade — Detalle" : "Jade Mantis — Detail";
-    if (title === "Aves juntas") return language === "es" ? "Aves juntas" : "Birds Together";
-    if (title === "Plantigrados — Color") return language === "es" ? "Plantígrados — Color" : "Plantigrades — Color";
-    if (title === "Digitígrados — Color") return language === "es" ? "Digitígrados — Color" : "Digitigrades — Color";
-    if (title === "Ungulados — Color") return language === "es" ? "Ungulados — Color" : "Ungulates — Color";
-    if (title === "Animal Cartoon") return language === "es" ? "Animal Cartoon" : "Cartoon Animal";
-    if (title === "Cartoon — Elenco Completo") return language === "es" ? "Cartoon — Elenco Completo" : "Cartoon — Full Cast";
-    if (title === "Cyberpunk — Fusión de eras") return language === "es" ? "Cyberpunk — Fusión de eras" : "Cyberpunk — Fusion of Eras";
-    if (title === "Futuro y Pasado") return language === "es" ? "Futuro y Pasado" : "Future and Past";
-    return title;
-  };
-
-  const localizedWorks = works.map((w) => ({
-    ...w,
-    title: getLocalizedWorkTitle(w.title),
-  }));
-
-  // GSAP Flip states and refs
-  const [activeWork, setActiveWork] = useState<Work | null>(null);
-  const gridRefs = useRef<Record<string | number, HTMLImageElement | null>>({});
-  const modalImgRef = useRef<HTMLImageElement | null>(null);
-  const modalOverlayRef = useRef<HTMLDivElement | null>(null);
-
-  // Magnifying glass detail zoom state
-  const [zoomState, setZoomState] = useState({ show: false, x: 0, y: 0, bgX: 0, bgY: 0 });
-  const modalRectRef = useRef<DOMRect | null>(null);
-
-  const handleModalMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    let rect = modalRectRef.current;
-    if (!rect) {
-      rect = e.currentTarget.getBoundingClientRect();
-      modalRectRef.current = rect;
-    }
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Calculate background position percentages
-    const bgX = (x / rect.width) * 100;
-    const bgY = (y / rect.height) * 100;
-
-    setZoomState({
-      show: true,
-      x: x - 80, // Center of a 160px magnifier
-      y: y - 80,
-      bgX,
-      bgY
-    });
-  };
-
-  const handleModalMouseLeave = () => {
-    modalRectRef.current = null;
-    setZoomState((prev) => ({ ...prev, show: false }));
-  };
-
-  const handleWorkClick = (work: Work) => {
-    const gridImg = gridRefs.current[work.id];
-    if (gridImg) {
-      const state = Flip.getState(gridImg);
-      (gridImg as any)._flipState = state;
-      gsap.set(gridImg, { opacity: 0 });
-    }
-    setActiveWork(work);
-  };
+  }, [slug, localizedMeta.title, localizedMeta.statement, dynamicMeta]);
 
   useLayoutEffect(() => {
     if (activeWork) {
@@ -855,6 +766,103 @@ export function CollectionPage() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeWork]);
+
+  // Conditional early returns AFTER all hooks have executed
+  if (isNotFound) {
+    return <NotFoundPage />;
+  }
+
+  if (isLoading || !dynamicMeta) {
+    return (
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-brand-orange border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  const isTwoColumns = meta.twoColumns ?? false;
+
+  // Localize work titles on the fly if needed
+  const getLocalizedWorkTitle = (title: string) => {
+    if (title === "Sin título (Serie verde)") return language === "es" ? "Sin título (Serie verde)" : "Untitled (Green Series)";
+    if (title === "Estructura invisible") return language === "es" ? "Estructura invisible" : "Invisible Structure";
+    if (title === "Cabeza (Estudio)") return language === "es" ? "Cabeza (Estudio)" : "Head (Study)";
+    if (title === "La cabeza") return language === "es" ? "La cabeza" : "The Head";
+    if (title === "Kreativität & Schreibkunst") return language === "es" ? "Kreativität & Schreibkunst" : "Creativity & Writing";
+    if (title === "The Earth") return language === "es" ? "La Tierra" : "The Earth";
+    if (title === "The Sky") return language === "es" ? "El Cielo" : "The Sky";
+    if (title === "The Ocean") return language === "es" ? "El Océano" : "The Ocean";
+
+    // Retratos titles localization
+    if (title === "Diferentes Edades — Pelirroja") return language === "es" ? "Diferentes Edades — Pelirroja" : "Different Ages — Redhead";
+    if (title === "Diferentes Edades — Japonesa") return language === "es" ? "Diferentes Edades — Japonesa" : "Different Ages — Japanese";
+    if (title === "Diferentes Edades — Africano") return language === "es" ? "Diferentes Edades — Africano" : "Different Ages — African";
+    if (title === "Poses Dinámicas") return language === "es" ? "Poses Dinámicas" : "Dynamic Poses";
+    if (title === "Cuerpos Cartoon") return language === "es" ? "Cuerpos Cartoon" : "Cartoon Bodies";
+    if (title === "Expresiones — Estudio") return language === "es" ? "Expresiones — Estudio" : "Expressions — Study";
+    if (title === "Ciudad Lovecraft") return language === "es" ? "Ciudad Lovecraft" : "Lovecraft City";
+    if (title === "Ciudad Lovecraft — Línea") return language === "es" ? "Ciudad Lovecraft — Línea" : "Lovecraft City — Line";
+    if (title === "Fachadas — Mundo propio") return language === "es" ? "Fachadas — Mundo propio" : "Facades — Personal World";
+    if (title === "Fachada Isométrica") return language === "es" ? "Fachada Isométrica" : "Isometric Facade";
+    if (title === "Espacios Abiertos") return language === "es" ? "Espacios Abiertos" : "Open Spaces";
+    if (title === "Espacios Acuáticos") return language === "es" ? "Espacios Acuáticos" : "Aquatic Spaces";
+    if (title === "Dragón — Caja Musical") return language === "es" ? "Dragón — Caja Musical" : "Dragon — Music Box";
+    if (title === "Criatura Grotesca") return language === "es" ? "Criatura Grotesca" : "Grotesque Creature";
+    if (title === "Animales Marinos") return language === "es" ? "Animales Marinos" : "Marine Animals";
+    if (title === "Mantis Jade — Detalle") return language === "es" ? "Mantis Jade — Detalle" : "Jade Mantis — Detail";
+    if (title === "Aves juntas") return language === "es" ? "Aves juntas" : "Birds Together";
+    if (title === "Plantigrados — Color") return language === "es" ? "Plantígrados — Color" : "Plantigrades — Color";
+    if (title === "Digitígrados — Color") return language === "es" ? "Digitígrados — Color" : "Digitigrades — Color";
+    if (title === "Ungulados — Color") return language === "es" ? "Ungulados — Color" : "Ungulates — Color";
+    if (title === "Animal Cartoon") return language === "es" ? "Animal Cartoon" : "Cartoon Animal";
+    if (title === "Cartoon — Elenco Completo") return language === "es" ? "Cartoon — Elenco Completo" : "Cartoon — Full Cast";
+    if (title === "Cyberpunk — Fusión de eras") return language === "es" ? "Cyberpunk — Fusión de eras" : "Cyberpunk — Fusion of Eras";
+    if (title === "Futuro y Pasado") return language === "es" ? "Futuro y Pasado" : "Future and Past";
+    return title;
+  };
+
+  const works = dynamicWorks;
+  const localizedWorks = works.map((w) => ({
+    ...w,
+    title: getLocalizedWorkTitle(w.title),
+  }));
+
+  const handleModalMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    let rect = modalRectRef.current;
+    if (!rect) {
+      rect = e.currentTarget.getBoundingClientRect();
+      modalRectRef.current = rect;
+    }
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Calculate background position percentages
+    const bgX = (x / rect.width) * 100;
+    const bgY = (y / rect.height) * 100;
+
+    setZoomState({
+      show: true,
+      x: x - 80, // Center of a 160px magnifier
+      y: y - 80,
+      bgX,
+      bgY
+    });
+  };
+
+  const handleModalMouseLeave = () => {
+    modalRectRef.current = null;
+    setZoomState((prev) => ({ ...prev, show: false }));
+  };
+
+  const handleWorkClick = (work: Work) => {
+    const gridImg = gridRefs.current[work.id];
+    if (gridImg) {
+      const state = Flip.getState(gridImg);
+      (gridImg as any)._flipState = state;
+      gsap.set(gridImg, { opacity: 0 });
+    }
+    setActiveWork(work);
+  };
 
   return (
     <div className="bg-brand-bg text-brand-cream min-h-screen">
