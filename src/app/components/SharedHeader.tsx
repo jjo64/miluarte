@@ -120,6 +120,51 @@ export function SharedHeader() {
 
   expandedRef.current = expanded;
 
+  const [socialLinks, setSocialLinks] = useState<{
+    instagram?: string;
+    linkedin?: string;
+    behance?: string;
+    tiktok?: string;
+    twitter?: string;
+  }>({
+    instagram: "https://www.instagram.com/naraneko13/",
+    linkedin: "https://www.linkedin.com/in/nerealucaspajares4815162342/",
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadSocial() {
+      try {
+        const res = await fetch("/api/admin/social");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && isMounted) {
+            setSocialLinks(data);
+          }
+        }
+      } catch {
+        // Fallback silencioso
+      }
+    }
+    loadSocial();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const contactLinks: NavLink[] = [
+    { 
+      label: "Miluartedenara@gmail.com", 
+      onClick: () => window.dispatchEvent(new CustomEvent("open-contact-modal")) 
+    },
+    ...(socialLinks.instagram ? [{ label: "Instagram", href: socialLinks.instagram, external: true as const }] : []),
+    ...(socialLinks.linkedin ? [{ label: "LinkedIn", href: socialLinks.linkedin, external: true as const }] : []),
+    ...(socialLinks.behance ? [{ label: "Behance", href: socialLinks.behance, external: true as const }] : []),
+    ...(socialLinks.tiktok ? [{ label: "TikTok", href: socialLinks.tiktok, external: true as const }] : []),
+    ...(socialLinks.twitter ? [{ label: "X (Twitter)", href: socialLinks.twitter, external: true as const }] : []),
+    { label: t("nav.resume"), path: "/resume" },
+  ];
+
   const navCards: NavCard[] = [
     {
       label: t("nav.services"),
@@ -171,15 +216,7 @@ export function SharedHeader() {
     {
       label: t("nav.contact"),
       bgColor: theme === "dark" ? "#0D0908" : "#E5D9C8",
-      links: [
-        { 
-          label: "Miluartedenara@gmail.com", 
-          onClick: () => window.dispatchEvent(new CustomEvent("open-contact-modal")) 
-        },
-        { label: "Instagram",       href: "https://www.instagram.com/naraneko13/", external: true },
-        { label: "LinkedIn",        href: "https://www.linkedin.com/in/nerealucaspajares4815162342/", external: true },
-        { label: t("nav.resume"),   path: "/resume" },
-      ],
+      links: contactLinks,
     },
   ];
 

@@ -1,6 +1,6 @@
 import { kv, isKvConfigured } from "./_lib/kv";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { addChangelogEntry } from "./_lib/changelog";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
 import { SocialLinks } from "../../src/app/types/cms";
 
 async function getSocialLinks(): Promise<SocialLinks> {
@@ -57,6 +57,8 @@ export default async function handler(req: any, res: any) {
 
     try {
       const current = await getSocialLinks();
+      const preSnapId = await createPreSnapshot();
+
       const updated: SocialLinks = {
         ...current,
         ...(req.body || {}),
@@ -66,7 +68,7 @@ export default async function handler(req: any, res: any) {
         await kv.set("miluarte:social", JSON.stringify(updated));
       }
 
-      await addChangelogEntry("Actualizó los enlaces de redes sociales", "social");
+      await recordChangelog("Actualizó los enlaces de redes sociales", "social", preSnapId);
 
       return res.status(200).json(updated);
     } catch (error: any) {

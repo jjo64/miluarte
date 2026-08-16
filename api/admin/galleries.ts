@@ -1,6 +1,6 @@
 import { kv, isKvConfigured } from "./_lib/kv";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { addChangelogEntry } from "./_lib/changelog";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
 import { GalleryMeta } from "../../src/app/types/cms";
 import { META } from "../../src/app/pages/CollectionPage";
 
@@ -91,6 +91,9 @@ export default async function handler(req: any, res: any) {
         featured: Boolean(featured),
       };
 
+      // Capturar pre-snapshot ANTES de modificar la base de datos
+      const preSnapId = await createPreSnapshot();
+
       galleries.push(newGallery);
 
       if (isKvConfigured()) {
@@ -99,7 +102,7 @@ export default async function handler(req: any, res: any) {
         await kv.set(`miluarte:gallery:${slug}`, JSON.stringify([]));
       }
 
-      await addChangelogEntry(`Creó la galería "${newGallery.title}"`, "galleries");
+      await recordChangelog(`Creó la galería "${newGallery.title}"`, "galleries", preSnapId);
 
       return res.status(201).json(newGallery);
     } catch (error: any) {
@@ -117,6 +120,7 @@ export default async function handler(req: any, res: any) {
 
       // Modo Reordenar
       if (reorder && Array.isArray(slugs)) {
+        const preSnapId = await createPreSnapshot();
         const slugMap = new Map(galleries.map((g) => [g.slug, g]));
         const reordered: GalleryMeta[] = [];
 
@@ -139,7 +143,7 @@ export default async function handler(req: any, res: any) {
           await kv.set("miluarte:galleries", JSON.stringify(reordered));
         }
 
-        await addChangelogEntry("Reordenó la posición de las galerías", "galleries");
+        await recordChangelog("Reordenó la posición de las galerías", "galleries", preSnapId);
         return res.status(200).json(reordered);
       }
 
@@ -154,6 +158,8 @@ export default async function handler(req: any, res: any) {
         return res.status(404).json({ error: "Galería no encontrada" });
       }
 
+      const preSnapId = await createPreSnapshot();
+
       galleries[index] = {
         ...galleries[index],
         ...updates,
@@ -163,7 +169,7 @@ export default async function handler(req: any, res: any) {
         await kv.set("miluarte:galleries", JSON.stringify(galleries));
       }
 
-      await addChangelogEntry(`Editó los detalles de la galería "${galleries[index].title}"`, "galleries");
+      await recordChangelog(`Editó los detalles de la galería "${galleries[index].title}"`, "galleries", preSnapId);
 
       return res.status(200).json(galleries[index]);
     } catch (error: any) {
@@ -186,6 +192,8 @@ export default async function handler(req: any, res: any) {
         return res.status(404).json({ error: "Galería no encontrada" });
       }
 
+      const preSnapId = await createPreSnapshot();
+
       galleries = galleries.filter((g) => g.slug !== slug);
       galleries.forEach((g, i) => {
         g.order = i;
@@ -196,7 +204,7 @@ export default async function handler(req: any, res: any) {
         await kv.del(`miluarte:gallery:${slug}`);
       }
 
-      await addChangelogEntry(`Eliminó la galería "${target.title}"`, "galleries");
+      await recordChangelog(`Eliminó la galería "${target.title}"`, "galleries", preSnapId);
 
       return res.status(200).json({ success: true, deletedSlug: slug });
     } catch (error: any) {

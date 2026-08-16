@@ -1,10 +1,11 @@
 import { kv, isKvConfigured } from "./_lib/kv";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { addChangelogEntry } from "./_lib/changelog";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
 import { Work } from "../../src/app/types/cms";
 import { WORKS_BY_SLUG } from "../../src/app/pages/CollectionPage";
 import { nanoid } from "nanoid";
 
+// Helper para obtener las obras actuales de una galería
 async function getWorksForGallery(slug: string): Promise<Work[]> {
   if (isKvConfigured()) {
     try {
@@ -13,26 +14,15 @@ async function getWorksForGallery(slug: string): Promise<Work[]> {
         return typeof raw === "string" ? JSON.parse(raw) : (raw as any);
       }
     } catch (e) {
-      console.warn(`KV get works error for ${slug}, using fallback:`, e);
+      console.warn(`KV get works for ${slug} error, using fallback:`, e);
     }
   }
 
   // Fallback estático
-  const staticWorks = (WORKS_BY_SLUG as any)[slug] || [];
-  return staticWorks.map((w: any, idx: number) => ({
-    id: String(w.id),
-    title: w.title,
-    year: w.year,
-    technique: w.technique,
-    size: w.size,
-    price: w.price,
-    available: w.available,
-    img: w.img,
-    imgPos: w.imgPos || "50% 50%",
-    gridCol: w.gridCol || "md:col-span-1",
-    aspect: w.aspect || "1/1",
-    order: idx,
-    featured: idx < 2,
+  const staticWorks = WORKS_BY_SLUG[slug] || [];
+  return staticWorks.map((w, index) => ({
+    ...w,
+    order: index,
   }));
 }
 
@@ -119,13 +109,15 @@ export default async function handler(req: any, res: any) {
         featured: Boolean(featured),
       };
 
+      const preSnapId = await createPreSnapshot();
+
       works.push(newWork);
 
       if (isKvConfigured()) {
         await kv.set(`miluarte:gallery:${gallerySlug}`, JSON.stringify(works));
       }
 
-      await addChangelogEntry(`Subió la obra "${newWork.title}" en la galería "${gallerySlug}"`, "works");
+      await recordChangelog(`Subió la obra "${newWork.title}" en la galería "${gallerySlug}"`, "works", preSnapId);
 
       return res.status(201).json(newWork);
     } catch (error: any) {
@@ -142,6 +134,7 @@ export default async function handler(req: any, res: any) {
 
       // Modo Reordenar
       if (reorder && Array.isArray(ids)) {
+        const preSnapId = await createPreSnapshot();
         const workMap = new Map(works.map((w) => [w.id, w]));
         const reordered: Work[] = [];
 
@@ -163,7 +156,7 @@ export default async function handler(req: any, res: any) {
           await kv.set(`miluarte:gallery:${gallerySlug}`, JSON.stringify(reordered));
         }
 
-        await addChangelogEntry(`Reordenó las obras de la galería "${gallerySlug}"`, "works");
+        await recordChangelog(`Reordenó las obras de la galería "${gallerySlug}"`, "works", preSnapId);
         return res.status(200).json(reordered);
       }
 
@@ -178,6 +171,8 @@ export default async function handler(req: any, res: any) {
         return res.status(404).json({ error: "Obra no encontrada" });
       }
 
+      const preSnapId = await createPreSnapshot();
+
       works[index] = {
         ...works[index],
         ...updates,
@@ -187,7 +182,7 @@ export default async function handler(req: any, res: any) {
         await kv.set(`miluarte:gallery:${gallerySlug}`, JSON.stringify(works));
       }
 
-      await addChangelogEntry(`Editó la obra "${works[index].title}" en "${gallerySlug}"`, "works");
+      await recordChangelog(`Editó la obra "${works[index].title}" en "${gallerySlug}"`, "works", preSnapId);
 
       return res.status(200).json(works[index]);
     } catch (error: any) {
@@ -211,6 +206,8 @@ export default async function handler(req: any, res: any) {
         return res.status(404).json({ error: "Obra no encontrada" });
       }
 
+      const preSnapId = await createPreSnapshot();
+
       works = works.filter((w) => String(w.id) !== String(workId));
       works.forEach((w, idx) => {
         w.order = idx;
@@ -220,7 +217,7 @@ export default async function handler(req: any, res: any) {
         await kv.set(`miluarte:gallery:${gallerySlug}`, JSON.stringify(works));
       }
 
-      await addChangelogEntry(`Eliminó la obra "${target.title}" de "${gallerySlug}"`, "works");
+      await recordChangelog(`Eliminó la obra "${target.title}" de "${gallerySlug}"`, "works", preSnapId);
 
       return res.status(200).json({ success: true, deletedId: workId });
     } catch (error: any) {

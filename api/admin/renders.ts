@@ -1,6 +1,6 @@
 import { kv, isKvConfigured } from "./_lib/kv";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { addChangelogEntry } from "./_lib/changelog";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
 import { RenderItem } from "../../src/app/types/cms";
 import { RENDERS } from "../../src/app/pages/RendersPage";
 import { nanoid } from "nanoid";
@@ -18,22 +18,9 @@ async function getRenders(): Promise<RenderItem[]> {
   }
 
   // Fallback estático
-  return RENDERS.map((r, idx) => ({
-    id: r.id,
-    title: r.title,
-    client: r.client,
-    year: r.year,
-    badge: r.badge,
-    software: r.software,
-    delivery: r.delivery,
-    description: r.description,
-    img: r.img,
-    videoSrcMp4: r.videoSrcMp4,
-    videoSrcWebm: r.videoSrcWebm,
-    process: r.process || [],
-    makingOfVideoMp4: r.makingOfVideoMp4,
-    makingOfVideoWebm: r.makingOfVideoWebm,
-    order: idx,
+  return RENDERS.map((r, index) => ({
+    ...r,
+    order: index,
   }));
 }
 
@@ -50,7 +37,7 @@ export default async function handler(req: any, res: any) {
     return res.status(200).end();
   }
 
-  // 1. GET: Listar todos los proyectos 3D (público / frontend & admin)
+  // 1. GET: Listar todos los renders 3D (público / frontend & admin)
   if (req.method === "GET") {
     try {
       const renders = await getRenders();
@@ -67,7 +54,7 @@ export default async function handler(req: any, res: any) {
     return res.status(401).json({ error: "No autorizado" });
   }
 
-  // 2. POST: Crear nuevo proyecto 3D
+  // 2. POST: Crear nuevo render 3D
   if (req.method === "POST") {
     try {
       const {
@@ -122,13 +109,15 @@ export default async function handler(req: any, res: any) {
         order: renders.length,
       };
 
+      const preSnapId = await createPreSnapshot();
+
       renders.push(newRender);
 
       if (isKvConfigured()) {
         await kv.set("miluarte:renders", JSON.stringify(renders));
       }
 
-      await addChangelogEntry(`Creó el proyecto 3D "${newRender.title}"`, "renders");
+      await recordChangelog(`Creó el proyecto 3D "${newRender.title}"`, "renders", preSnapId);
 
       return res.status(201).json(newRender);
     } catch (error: any) {
@@ -145,6 +134,7 @@ export default async function handler(req: any, res: any) {
 
       // Modo Reordenar
       if (reorder && Array.isArray(ids)) {
+        const preSnapId = await createPreSnapshot();
         const renderMap = new Map(renders.map((r) => [r.id, r]));
         const reordered: RenderItem[] = [];
 
@@ -166,20 +156,22 @@ export default async function handler(req: any, res: any) {
           await kv.set("miluarte:renders", JSON.stringify(reordered));
         }
 
-        await addChangelogEntry("Reordenó los proyectos 3D", "renders");
+        await recordChangelog("Reordenó la posición de los proyectos 3D", "renders", preSnapId);
         return res.status(200).json(reordered);
       }
 
       // Modo Edición individual
-      const renderId = id || req.query?.id;
-      if (!renderId) {
-        return res.status(400).json({ error: "ID de proyecto requerido" });
+      const targetId = id || req.query?.id;
+      if (!targetId) {
+        return res.status(400).json({ error: "ID del proyecto 3D requerido" });
       }
 
-      const index = renders.findIndex((r) => r.id === renderId);
+      const index = renders.findIndex((r) => r.id === targetId);
       if (index === -1) {
         return res.status(404).json({ error: "Proyecto 3D no encontrado" });
       }
+
+      const preSnapId = await createPreSnapshot();
 
       renders[index] = {
         ...renders[index],
@@ -190,7 +182,7 @@ export default async function handler(req: any, res: any) {
         await kv.set("miluarte:renders", JSON.stringify(renders));
       }
 
-      await addChangelogEntry(`Editó el proyecto 3D "${renders[index].title}"`, "renders");
+      await recordChangelog(`Editó el proyecto 3D "${renders[index].title}"`, "renders", preSnapId);
 
       return res.status(200).json(renders[index]);
     } catch (error: any) {
@@ -202,18 +194,20 @@ export default async function handler(req: any, res: any) {
   // 4. DELETE: Eliminar proyecto 3D
   if (req.method === "DELETE") {
     try {
-      const renderId = req.query?.id || req.body?.id;
-      if (!renderId) {
-        return res.status(400).json({ error: "ID de proyecto requerido para eliminar" });
+      const targetId = req.query?.id || req.body?.id;
+      if (!targetId) {
+        return res.status(400).json({ error: "ID del proyecto 3D requerido para eliminar" });
       }
 
       let renders = await getRenders();
-      const target = renders.find((r) => r.id === renderId);
+      const target = renders.find((r) => r.id === targetId);
       if (!target) {
-        return res.status(404).json({ error: "Proyecto no encontrado" });
+        return res.status(404).json({ error: "Proyecto 3D no encontrado" });
       }
 
-      renders = renders.filter((r) => r.id !== renderId);
+      const preSnapId = await createPreSnapshot();
+
+      renders = renders.filter((r) => r.id !== targetId);
       renders.forEach((r, idx) => {
         r.order = idx;
       });
@@ -222,9 +216,9 @@ export default async function handler(req: any, res: any) {
         await kv.set("miluarte:renders", JSON.stringify(renders));
       }
 
-      await addChangelogEntry(`Eliminó el proyecto 3D "${target.title}"`, "renders");
+      await recordChangelog(`Eliminó el proyecto 3D "${target.title}"`, "renders", preSnapId);
 
-      return res.status(200).json({ success: true, deletedId: renderId });
+      return res.status(200).json({ success: true, deletedId: targetId });
     } catch (error: any) {
       console.error("Error al eliminar render 3D:", error);
       return res.status(500).json({ error: "Error al eliminar proyecto 3D" });

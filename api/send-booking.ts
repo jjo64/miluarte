@@ -19,12 +19,12 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { projectType, description, timeline, budget, name, email } = req.body;
+    const { name, email, projectType, budget, deadline, description } = req.body;
 
     // 1. Basic validation
-    if (!projectType || !description || !timeline || !budget || !name || !email) {
+    if (!name || !email || !projectType || !description) {
       return res.status(400).json({
-        error: "Todos los campos son obligatorios / All fields are required."
+        error: "Los campos Nombre, Correo, Tipo de Proyecto y Descripción son obligatorios."
       });
     }
 
@@ -36,35 +36,57 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    // 3. DNS MX record validation (Verificar si el dominio existe y recibe correos)
-    const domain = email.split("@")[1];
-    const isDomainValid = await resolveMx(domain);
-    if (!isDomainValid) {
-      return res.status(400).json({
-        error: "El dominio del correo electrónico no existe o no puede recibir mensajes. Revisa posibles faltas de ortografía (ej: gamil.com)."
-      });
+    // 3. DNS MX record validation (opcional)
+    try {
+      const domain = email.split("@")[1];
+      const isDomainValid = await resolveMx(domain);
+      if (!isDomainValid) {
+        return res.status(400).json({
+          error: "El dominio del correo electrónico no existe o no puede recibir mensajes. Revisa posibles faltas de ortografía (ej: gamil.com)."
+        });
+      }
+    } catch {
+      // Continuar si DNS falla temporalmente
     }
 
-    // 4. Configure recipients
-    const toEmail = projectType === "commercial"
-      ? (process.env.RESEND_TO_PRIORITY || "miluartedenara@gmail.com")
-      : (process.env.RESEND_TO_COMMON || "miluartedenara@gmail.com");
+    // 4. Guardar SIEMPRE en la base de datos para la bandeja de encargos del CMS
+    try {
+      const { kv, isKvConfigured } = await import("./admin/_lib/kv");
+      if (isKvConfigured()) {
+        const raw = await kv.get("miluarte:messages:booking");
+        let messages = typeof raw === "string" ? JSON.parse(raw || "[]") : (raw as any) || [];
+        messages.unshift({
+          id: `book-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          timestamp: new Date().toISOString(),
+          name,
+          email,
+          projectType,
+          budget: budget || "No especificado",
+          deadline: deadline || "Flexible",
+          description,
+          read: false,
+          type: "booking",
+        });
+        if (messages.length > 200) messages = messages.slice(0, 200);
+        await kv.set("miluarte:messages:booking", JSON.stringify(messages));
+      }
+    } catch (kvErr) {
+      console.warn("KV booking message save warning:", kvErr);
+    }
 
-    const fromEmail = process.env.RESEND_FROM || "onboarding@resend.dev";
+    // 5. Enviar por email si RESEND_API_KEY está configurada
     const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+      const toEmail = projectType === "commercial"
+        ? (process.env.RESEND_TO_PRIORITY || "miluartedenara@gmail.com")
+        : (process.env.RESEND_TO_COMMON || "miluartedenara@gmail.com");
 
-    if (!apiKey) {
-      console.error("RESEND_API_KEY is not defined in environment variables.");
-      return res.status(500).json({
-        error: "La plataforma de envío de correos no está configurada. Contacta con soporte técnico."
-      });
-    }
+      const fromEmail = process.env.RESEND_FROM || "onboarding@resend.dev";
+      const subject = projectType === "commercial"
+        ? `[COMERCIAL - PRIORIDAD] Nuevo Encargo de ${name}`
+        : `[PERSONAL] Nuevo Encargo de ${name}`;
 
-    const subject = projectType === "commercial"
-      ? `[COMERCIAL - PRIORIDAD] Nuevo Encargo de ${name}`
-      : `[PERSONAL] Nuevo Encargo de ${name}`;
-
-    const htmlContent = `
+      const htmlContent = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -100,77 +122,54 @@ export default async function handler(req: any, res: any) {
     
     <div class="meta-grid">
       <div class="meta-item">
-        <div class="meta-label">Cliente</div>
+        <div class="meta-label">Cliente / Contacto:</div>
         <div class="meta-value">${name}</div>
       </div>
       <div class="meta-item">
-        <div class="meta-label">Correo electrónico</div>
+        <div class="meta-label">Correo:</div>
         <div class="meta-value"><a href="mailto:${email}" style="color: #E55427; text-decoration: none;">${email}</a></div>
       </div>
       <div class="meta-item">
-        <div class="meta-label">Plazo de entrega</div>
-        <div class="meta-value">${timeline}</div>
+        <div class="meta-label">Presupuesto estimado:</div>
+        <div class="meta-value">${budget || "No especificado"}</div>
       </div>
       <div class="meta-item">
-        <div class="meta-label">Presupuesto aproximado</div>
-        <div class="meta-value">${budget}</div>
+        <div class="meta-label">Fecha límite / Deadline:</div>
+        <div class="meta-value">${deadline || "Flexible"}</div>
       </div>
     </div>
     
     <div class="footer">
-      Este correo electrónico fue generado automáticamente desde el formulario de encargos de miluartedenara.com a través de Resend.
+      Este correo electrónico fue generado automáticamente desde la solicitud de encargos de miluartedenara.com.
     </div>
   </div>
 </body>
 </html>
-    `;
+      `;
 
-    // 5. Send using Resend API
-    const resendResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: toEmail,
-        subject: subject,
-        html: htmlContent,
-        reply_to: email // Permite al usuario responder directamente al remitente
-      })
-    });
-
-    // 6. Guardar copia en Vercel KV para la bandeja del panel de administración
-    try {
-      const { kv, isKvConfigured } = await import("./admin/_lib/kv");
-      if (isKvConfigured()) {
-        const raw = await kv.get("miluarte:messages:booking");
-        let messages = typeof raw === "string" ? JSON.parse(raw || "[]") : (raw as any) || [];
-        messages.unshift({
-          id: `book-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          timestamp: new Date().toISOString(),
-          name,
-          email,
-          company: projectType || "",
-          subject: subject || "Encargo Artístico",
-          message: `${description}\n\n[Detalles: Tipo=${projectType || "No especificado"} | Presupuesto=${budget || "No especificado"} | Plazo=${deadline || "No especificado"}]`,
-          read: false,
-          type: "booking",
-          details: {
-            projectType,
-            budget,
-            deadline,
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
           },
+          body: JSON.stringify({
+            from: fromEmail,
+            to: toEmail,
+            subject,
+            html: htmlContent,
+            reply_to: email
+          })
         });
-        if (messages.length > 200) messages = messages.slice(0, 200);
-        await kv.set("miluarte:messages:booking", JSON.stringify(messages));
+      } catch (emailErr) {
+        console.warn("Resend booking email delivery error:", emailErr);
       }
-    } catch (kvErr) {
-      console.warn("KV booking message save warning:", kvErr);
+    } else {
+      console.info("ℹ️ RESEND_API_KEY no detectada. Encargo almacenado localmente en la bandeja del CMS.");
     }
 
-    return res.status(200).json({ success: true, id: resendData.id });
+    return res.status(200).json({ success: true, message: "Encargo recibido y guardado correctamente" });
   } catch (error: any) {
     console.error("Handler error:", error);
     return res.status(500).json({ error: "Error interno del servidor / Internal Server Error" });

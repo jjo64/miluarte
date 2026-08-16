@@ -1,6 +1,6 @@
 import { kv, isKvConfigured } from "./_lib/kv";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth";
-import { addChangelogEntry } from "./_lib/changelog";
+import { createPreSnapshot, recordChangelog } from "./_lib/changelog";
 import { SiteTexts } from "../../src/app/types/cms";
 import { translations } from "../../src/app/locales/translations";
 
@@ -76,6 +76,9 @@ export default async function handler(req: any, res: any) {
       const updates = req.body || {};
       const currentTexts = await getTexts();
 
+      // Capturar pre-snapshot ANTES de mutar
+      const preSnapId = await createPreSnapshot();
+
       // Deep merge con los textos existentes para no sobrescribir claves no modificadas
       const merged = deepMerge(currentTexts, updates);
 
@@ -83,7 +86,7 @@ export default async function handler(req: any, res: any) {
         await kv.set("miluarte:texts", JSON.stringify(merged));
       }
 
-      await addChangelogEntry("Actualizó textos del sitio web (ES/EN)", "texts");
+      await recordChangelog("Actualizó textos del sitio web (ES/EN)", "texts", preSnapId);
 
       return res.status(200).json(merged);
     } catch (error: any) {
