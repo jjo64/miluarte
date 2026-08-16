@@ -674,12 +674,19 @@ export function CollectionPage() {
   const meta = dynamicMeta;
   const isTwoColumns = meta.twoColumns ?? false;
   
+  // Helper para traducir solo si la clave realmente existe en el diccionario
+  const getSafeTranslation = (key: string, fallback: string) => {
+    const res = t(key);
+    if (!res || res === key) return fallback;
+    return res;
+  };
+
   // Localize metadata dynamically
   const localizedMeta = {
     ...meta,
-    title: t(`collection.meta.${slug}.title`) || meta.title,
-    label: t(`collection.meta.${slug}.label`) || meta.label,
-    statement: t(`collection.meta.${slug}.statement`) || meta.statement,
+    title: getSafeTranslation(`collection.meta.${slug}.title`, meta.title),
+    label: getSafeTranslation(`collection.meta.${slug}.label`, meta.label),
+    statement: getSafeTranslation(`collection.meta.${slug}.statement`, meta.statement),
   };
 
   const [ctaH, setCtaH] = useState(false);

@@ -5,11 +5,12 @@ import { AdminGuard } from "./components/admin/AdminGuard";
 
 // Route-based code splitting: each page is a separate chunk downloaded on demand.
 const HomePage       = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
-const CollectionPage = lazy(() => import("./pages/CollectionPage").then(m => ({ default: m.CollectionPage })));
-const RendersPage    = lazy(() => import("./pages/RendersPage").then(m => ({ default: m.RendersPage })));
-const ResumePage     = lazy(() => import("./pages/ResumePage").then(m => ({ default: m.ResumePage })));
-const NotFoundPage   = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
-const EncargoPage    = lazy(() => import("./pages/EncargoPage").then(m => ({ default: m.EncargoPage })));
+const CollectionPage  = lazy(() => import("./pages/CollectionPage").then(m => ({ default: m.CollectionPage })));
+const CollectionsPage = lazy(() => import("./pages/CollectionsPage").then(m => ({ default: m.CollectionsPage })));
+const RendersPage     = lazy(() => import("./pages/RendersPage").then(m => ({ default: m.RendersPage })));
+const ResumePage      = lazy(() => import("./pages/ResumePage").then(m => ({ default: m.ResumePage })));
+const NotFoundPage    = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
+const EncargoPage     = lazy(() => import("./pages/EncargoPage").then(m => ({ default: m.EncargoPage })));
 
 // Admin pages
 const AdminLogin         = lazy(() => import("./pages/admin/AdminLogin").then(m => ({ default: m.AdminLogin })));
@@ -35,6 +36,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true,               Component: HomePage },
       { path: "renders",           Component: RendersPage },
+      { path: "colecciones",       Component: CollectionsPage },
+      { path: "collections",       Component: CollectionsPage },
       { path: "coleccion/:slug",   Component: CollectionPage },
       { path: "resume",            Component: ResumePage },
       { path: "cv",                Component: ResumePage },

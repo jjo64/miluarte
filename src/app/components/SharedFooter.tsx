@@ -160,6 +160,12 @@ export function SharedFooter() {
                   {item.label}
                 </button>
               ))}
+              <button
+                onClick={() => navigate("/colecciones")}
+                className="font-sans text-brand-blush hover:text-brand-cream text-xs font-semibold bg-transparent border-none p-0 cursor-pointer transition-colors duration-200 hover:underline text-left pt-1.5 flex items-center gap-1"
+              >
+                <span>{language === "es" ? "Ver todas las colecciones →" : "View all collections →"}</span>
+              </button>
             </div>
           </div>
 

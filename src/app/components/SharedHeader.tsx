@@ -10,9 +10,9 @@ import { getOptimizedImageUrl } from "../utils/cloudinary";
 // ─── Navigation types ───────────────────────────────────────────────────────
 
 type NavLink =
-  | { label: string; path: string; external?: false; thumbnail?: string }
-  | { label: string; href: string; external: true; thumbnail?: string }
-  | { label: string; onClick: () => void; external?: never; thumbnail?: string };
+  | { label: string; path: string; external?: false; thumbnail?: string; highlight?: boolean }
+  | { label: string; href: string; external: true; thumbnail?: string; highlight?: boolean }
+  | { label: string; onClick: () => void; external?: never; thumbnail?: string; highlight?: boolean };
 
 interface NavCard {
   label: string;
@@ -160,6 +160,11 @@ export function SharedHeader() {
           label: "Pasta Ya", 
           path: "/coleccion/pasta-ya",
           thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821171/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg" 
+        },
+        { 
+          label: language === "es" ? "Ver más colecciones →" : "View more collections →", 
+          path: "/colecciones",
+          highlight: true,
         },
       ],
     },
@@ -479,6 +484,21 @@ export function SharedHeader() {
                       </a>
                     );
                   }
+                  if (lnk.highlight) {
+                    return (
+                      <button
+                        key={i}
+                        className="mt-2 pt-3 border-t border-brand-cream/10 font-sans text-brand-blush hover:text-brand-cream text-xs font-semibold tracking-wider uppercase cursor-pointer flex items-center justify-between bg-transparent p-0 text-left transition-colors duration-200 group w-full"
+                        onClick={() => handleNavLink(lnk.path)}
+                      >
+                        <span className="group-hover:translate-x-1 transition-transform duration-200">
+                          {lnk.label}
+                        </span>
+                        <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+                      </button>
+                    );
+                  }
+
                   return (
                     <button
                       key={i}
