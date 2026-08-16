@@ -233,792 +233,32 @@
   ],
   "miluarte:texts": {
     "es": {
-      "nav": {
-        "services": "Servicios",
-        "projects": "Proyectos",
-        "contact": "Contacto",
-        "commission": "ENCARGO",
-        "resume": "Currículum",
-        "closeMenu": "Cerrar menú",
-        "openMenu": "Abrir menú"
-      },
       "hero": {
-        "tagline": "Naziiii xdg",
+        "tagline": "Ilustradora & artista digital · Madrid",
         "greetingBefore": "Hola,\nsoy ",
-        "greetingItalic": "XD",
+        "greetingItalic": "Nerea",
         "artline": "Transformo ideas en mundos visuales con alma.",
         "bio1": "Me llamo Nerea Lucas Pajares, artísticamente conocida como Miluartedenara. Con un Máster en Ilustración y Arte Digital, creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, joyería artesanal hecha a mano y concept art para proyectos musicales. Cada pieza está hecha con dedicación y amor por los detalles.",
         "bio2": "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
         "viewWorks": "Ver trabajos",
         "sendInquiry": "Escribir encargo"
-      },
-      "gallery": {
-        "title": "Galería",
-        "subtitle": "Obras recientes.\nDesplázate para explorar.",
-        "hint": "scroll para explorar",
-        "filters": {
-          "all": "Todos",
-          "ilustracion": "🎨 Ilustración",
-          "concept": "🧠 Concept Art",
-          "musica": "🎵 Diseño musical",
-          "joyeria": "💍 Joyería"
-        },
-        "alts": {
-          "obra1": "Ilustración digital de una flor antropomorfa con tipografía pop, serie Musae",
-          "obra2": "Retrato ilustrado de personaje femenino con cabello azul y elementos marinos",
-          "obra3": "Personaje femenino envuelto en llamas con bocadillo de cómic, ilustración narrativa",
-          "obra4": "Bodegón ilustrado de herramientas creativas y setas psicodélicas para el sello musical Diggin'",
-          "obra5": "Escena de estudio ilustrado con estantería de libros y caballete de pintura",
-          "obra6": "Pieza de joyería artesanal con detalle ilustrado a mano",
-          "obra7": "Concept art de paisaje isométrico con cabaña y vegetación",
-          "obra8": "Detalle de personaje manga a color, estilo característico de Miluarte"
-        }
-      },
-      "process": {
-        "title": "El Proceso Creativo",
-        "subtitle": "Del Boceto al Arte Final",
-        "hint": "Desliza la barra central para comparar el trazo de boceto y el acabado digital final de la ilustración.",
-        "cursorHint": "Deslizar"
-      },
-      "services": {
-        "ctaBeforeAfter": "↔ Desplázate para ver antes & después",
-        "render3D": "Render 3D",
-        "realResult": "Resultado real",
-        "viewWorks": "Ver trabajos",
-        "items": {
-          "diseno-grafico": {
-            "label": "Diseño Gráfico",
-            "title": "Identidad visual\ny comunicación",
-            "description": "Desde el logotipo hasta el catálogo completo. Banners, publicidad, retoque y composición fotográfica con Photoshop, e ilustración técnica para proyectos comerciales.",
-            "bullets": [
-              "Logotipos & identidad visual",
-              "Banners & material publicitario",
-              "Catálogos & diseño editorial",
-              "Composición fotográfica",
-              "Ilustración técnica & planos"
-            ]
-          },
-          "3d-stands": {
-            "label": "3D & Stands",
-            "title": "Del plano\na la realidad",
-            "description": "Diseño y visualización 3D de stands para ferias, productos y espacios. Reconstrucciones arquitectónicas y conversión a planos técnicos listos para fabricación y construcción.",
-            "bullets": [
-              "Diseño de stands para ferias",
-              "Renders de producto fotorrealistas",
-              "Reconstrucciones arquitectónicas",
-              "Planos técnicos para producción",
-              "Visualización de espacios & interiores"
-            ]
-          },
-          "diggin": {
-            "label": "Diggin'",
-            "title": "Diseñadora oficial\ndel sello musical",
-            "description": "Dirección de arte completa para el sello musical independiente Diggin'. Portadas, identidad visual, ilustraciones para campañas y videoclips animados.",
-            "bullets": [
-              "Portadas de álbum & EP",
-              "Identidad visual del sello",
-              "Ilustraciones musicales",
-              "Videoclips animados",
-              "Merchandising musical"
-            ]
-          },
-          "ilustracion": {
-            "label": "Ilustraciones",
-            "title": "Arte personal\nsin filtros",
-            "description": "Obra libre y la serie Musae. Personajes femeninos, naturaleza subvertida y mundos propios en tinta y color. También muñecas personalizadas, arte en arcilla y joyería artesanal.",
-            "bullets": [
-              "Serie Musae — prints firmados",
-              "Retratos & encargos personales",
-              "Muñecas articuladas a medida",
-              "Arte en arcilla & escultura",
-              "Joyería artesanal"
-            ]
-          },
-          "concept-art": {
-            "label": "Concept Art",
-            "title": "Del concepto\nal universo",
-            "description": "No solo el dibujo final: el proceso completo de construir un mundo visual desde cero. Personajes con ficha técnica, escenarios coherentes y props diseñados para funcionar en la narrativa.",
-            "bullets": [
-              "Diseño de personajes & fichas técnicas",
-              "Escenarios & worldbuilding",
-              "Props & objetos narrativos",
-              "Biblias visuales & guías de estilo",
-              "Concept para videojuegos & animación"
-            ]
-          }
-        }
-      },
-      "collection": {
-        "back": "Volver",
-        "interest": "¿Te interesa alguna pieza?",
-        "requestQuote": "Pide presupuesto",
-        "animasBible": {
-          "tagline": "Presentación · Biblia Visual Completa",
-          "title": "El universo Animas",
-          "description": "Una presentación de 31 páginas que documenta el proceso completo: desde los primeros bocetos de personajes hasta el arte final, las fichas técnicas y el elenco completo del universo."
-        },
-        "meta": {
-          "ilustracion": {
-            "title": "Ilustración",
-            "label": "Obra personal",
-            "statement": "Obra personal que explora la tensión entre forma y vacío. Series que se construyen desde la intuición y se resuelven en el material. Cada pieza es un estado, no una conclusión."
-          },
-          "diggin": {
-            "title": "Diggin'",
-            "label": "Sello musical · Dirección de arte",
-            "statement": "Portadas, identidad y dirección de arte para el sello independiente Diggin'. Graffiti, psicodelia y hip-hop en formato visual."
-          },
-          "concept-art": {
-            "title": "Concept Art",
-            "label": "Desarrollo visual",
-            "statement": "Concept art e ilustración editorial. Personajes, atmósferas y narrativa visual construidos desde la emoción."
-          },
-          "diseno-grafico": {
-            "title": "Diseño Gráfico",
-            "label": "Identidad visual",
-            "statement": "Sistemas de identidad, publicaciones y diseño editorial. La imagen al servicio del mensaje."
-          },
-          "3d-stands": {
-            "title": "3D & Stands",
-            "label": "Diseño de espacios · Ferias",
-            "statement": "Diseño y visualización 3D de stands y espacios expositivos para ferias y eventos."
-          },
-          "animas": {
-            "title": "Animas",
-            "label": "Concept Art · Universo propio",
-            "statement": "Un mundo construido desde dentro: criaturas que nacen de la naturaleza, personajes con historia propia y un bestiario de formas que nunca termina de revelarse. Animas es un proyecto de concept art completo —fichas técnicas, turn-arounds, expresiones, armas y mascotas— creado como ejercicio de worldbuilding personal."
-          },
-          "retratos": {
-            "title": "Retratos y más",
-            "label": "Estudio artístico · Obra de clase",
-            "statement": "El cuaderno de trabajo. Retratos de iconos que se niegan al olvido, anatomía llevada al límite del cartoon, criaturas extraídas de pesadillas elegantes y ciudades que Lovecraft hubiera firmado. Un archivo de lo que el lápiz aprende cuando no tiene miedo."
-          },
-          "pasta-ya": {
-            "title": "Pasta Ya",
-            "label": "Diseño de personajes · Campaña",
-            "statement": "Cuando la pasta italiana cobra vida propia y muy mal carácter. Bravioli, Tortastini y sus colegas son personajes de diseño para campaña: expresivos, únicos y con más personalidad por centímetro cuadrado que la mayoría de protagonistas de Hollywood."
-          }
-        },
-        "availability": {
-          "available": "Disponible",
-          "unavailable": "No disponible",
-          "musicalProject": "Proyecto musical"
-        }
-      },
-      "footer": {
-        "studio": "Estudio creativo multidisciplinar.\nIlustración, diseño y dirección de arte.\nMadrid, España.",
-        "work": "Trabajo",
-        "contact": "Contacto",
-        "budget": "Pide presupuesto",
-        "rights": "© 2024 Miluarte. Todos los derechos reservados.",
-        "madeWithCriteria": "Hecho con amor por @snctryjo - Josue."
-      },
-      "notfound": {
-        "title": "Página no encontrada",
-        "back": "Volver al inicio"
-      },
-      "resume": {
-        "title": "Currículum Vitae",
-        "subtitle": "Artista Visual, Diseñadora 3D e Ilustradora",
-        "downloadPDF": "Guardar como PDF / Imprimir",
-        "back": "Volver al inicio",
-        "sections": {
-          "profile": "Sobre Mí",
-          "experience": "Experiencia Profesional",
-          "education": "Educación",
-          "skills": "Habilidades",
-          "languages": "Idiomas"
-        },
-        "profileText": "Artista visual multidisciplinar con un Máster en Arte e Ilustración Digital. Especializada en la dirección de arte para proyectos musicales, diseño tridimensional de stands comerciales y modelado físico de muñecas personalizadas y joyería. Combino técnicas tradicionales con herramientas digitales de última generación para crear narrativas visuales coherentes y espacios físicos impactantes.",
-        "experienceItems": [
-          {
-            "role": "Ilustradora Creativa",
-            "company": "Por cuenta propia / Freelance",
-            "period": "2024 - Actualidad",
-            "description": "Trabajos independientes de ilustración editorial, diseño de personajes y desarrollo de concept art para diversos proyectos comerciales independientes."
-          },
-          {
-            "role": "Diseñadora Gráfica",
-            "company": "Ledme Europa",
-            "period": "2024 - Actualidad",
-            "description": "Creación integral de catálogos (diseño, maquetación, dibujos técnicos, edición fotográfica y subida a web). Diseño y mantenimiento de página web y tienda online, y creación de contenido para redes sociales."
-          },
-          {
-            "role": "Ilustradora Gráfica",
-            "company": "Sello musical Diggin'",
-            "period": "2024 - Actualidad",
-            "description": "Ilustración digital y diseño gráfico para lanzamientos de música, portadas de álbumes y merchandising oficial del sello en remoto."
-          },
-          {
-            "role": "Diseñadora Gráfica Freelance",
-            "company": "Varias Empresas",
-            "period": "2019 - Actualidad",
-            "description": "Diseño gráfico general, identidad de marca, modelado y renderizado 3D de stands para ferias comerciales y espacios expositivos para diversos clientes."
-          }
-        ],
-        "educationItems": [
-          {
-            "degree": "Máster en Arte e Ilustración Digital",
-            "school": "Trazos",
-            "period": "2023 - 2024"
-          },
-          {
-            "degree": "Máster en Arte Digital",
-            "school": "Trazos",
-            "period": "2024"
-          },
-          {
-            "degree": "Máster en Ilustración",
-            "school": "Trazos de Arte",
-            "period": "2024"
-          },
-          {
-            "degree": "Bachillerato",
-            "school": "IES La Arboleda",
-            "period": ""
-          }
-        ],
-        "skillsItems": {
-          "digital": "Digital: Photoshop, Illustrator, Procreate, Blender 3D, CAD (Planos Técnicos).",
-          "traditional": "Tradicional: Pintura al óleo, acuarela, tinta, escultura en arcilla, joyería artesanal.",
-          "creative": "Concepto: Dirección de arte, concept art, diseño de personajes, maquetación editorial."
-        },
-        "languagesItems": [
-          {
-            "language": "Español",
-            "level": "Nativo"
-          },
-          {
-            "language": "Inglés",
-            "level": "Competencia básica profesional"
-          },
-          {
-            "language": "Chino",
-            "level": "Competencia básica profesional"
-          }
-        ]
-      },
-      "booking": {
-        "title": "Cuéntame tu proyecto",
-        "subtitle": "Hablemos de tu idea. Rellena los pasos y te responderé en menos de 48 horas.",
-        "close": "Cerrar",
-        "next": "Siguiente",
-        "prev": "Atrás",
-        "submit": "Enviar solicitud",
-        "steps": {
-          "step": "Paso",
-          "of": "de",
-          "type": "Tipo de proyecto",
-          "details": "Detalles del encargo",
-          "contact": "Datos de contacto"
-        },
-        "types": {
-          "commercial": {
-            "title": "Proyecto Comercial",
-            "desc": "Stands 3D, identidad visual corporativa, branding, concept art para estudios/discográficas."
-          },
-          "personal": {
-            "title": "Proyecto Personal",
-            "desc": "Muñecas de arcilla personalizadas, joyería a medida, prints firmados, retratos digitales."
-          }
-        },
-        "fields": {
-          "description": "Describe tu idea (estilo, referencias, materiales...)",
-          "descriptionPlaceholder": "Ej: Quiero una muñeca personalizada inspirada en la temática del bosque, de unos 20 cm...",
-          "timeline": "¿Cuándo lo necesitas?",
-          "timelinePlaceholder": "Ej: Para antes del 15 de Octubre",
-          "name": "Nombre completo",
-          "email": "Correo electrónico",
-          "budget": "Presupuesto aproximado",
-          "budgetRanges": [
-            "Menos de 300€",
-            "300€ - 1.000€",
-            "1.000€ - 3.000€",
-            "Más de 3.000€"
-          ]
-        },
-        "success": {
-          "title": "¡Solicitud enviada!",
-          "message": "Gracias por contactar. Analizaré tu propuesta de inmediato para darle vida a tu idea.",
-          "close": "Volver a la web"
-        }
-      },
-      "featured": {
-        "eyebrow": "Proyecto destacado",
-        "tag": "Diggin' Records",
-        "title": "Diggin' — identidad visual de un sello musical",
-        "description": "Dirección de arte completa para el sello independiente Diggin': portadas de álbum, identidad visual, ilustraciones para campañas y videoclips animados. Un proyecto largo donde el estilo de Nerea se convirtió en la cara visual del sello.",
-        "tags": [
-          "Dirección de arte",
-          "Portadas de álbum",
-          "Branding musical",
-          "Animación"
-        ],
-        "bullets": [
-          "Concepto visual y moodboard inicial",
-          "Portadas de álbum y EP",
-          "Identidad visual del sello",
-          "Adaptaciones para redes sociales"
-        ],
-        "viewCase": "Ver caso completo →"
-      },
-      "clients": {
-        "eyebrow": "Clientes & colaboraciones",
-        "title": "Marcas, sellos y proyectos con los que he trabajado",
-        "description": "He colaborado con músicos, marcas y proyectos creativos desarrollando identidades visuales e ilustraciones personalizadas."
-      },
-      "seoServices": {
-        "eyebrow": "Servicios",
-        "title": "En qué puedo ayudarte",
-        "description": "Encargos artísticos a medida, desde una pieza personal hasta dirección de arte completa para una marca o un sello musical.",
-        "items": {
-          "editorial": {
-            "title": "Ilustración Editorial",
-            "description": "Creación de ilustraciones para libros, revistas y publicaciones digitales, con un estilo narrativo que refuerza el mensaje de cada página."
-          },
-          "concept": {
-            "title": "Concept Art",
-            "description": "Diseño visual para videojuegos, proyectos audiovisuales y narrativa visual: personajes, escenarios y props pensados para un mundo coherente."
-          },
-          "character": {
-            "title": "Diseño de Personajes",
-            "description": "Creación de personajes originales para proyectos creativos, marcas y campañas, con fichas técnicas y guías de estilo."
-          },
-          "music": {
-            "title": "Portadas Musicales",
-            "description": "Arte para álbumes, singles y material promocional, con dirección de arte completa para sellos y artistas independientes."
-          },
-          "graphic": {
-            "title": "Diseño Gráfico",
-            "description": "Identidad visual, banners, catálogos y diseño editorial para proyectos comerciales y culturales."
-          },
-          "clay": {
-            "title": "Joyería & Arte en Arcilla",
-            "description": "Piezas artesanales únicas: joyería, muñecas personalizadas y esculturas en arcilla hechas a mano."
-          }
-        }
-      },
-      "contactModal": {
-        "title": "Contacto General",
-        "subtitle": "Usa este formulario para ofertas de trabajo, colaboraciones o proyectos de gran envergadura.",
-        "close": "Cerrar",
-        "submit": "Enviar mensaje",
-        "success": {
-          "title": "¡Mensaje enviado!",
-          "message": "Gracias por contactar. Analizaré tu propuesta de inmediato y te responderé lo antes posible.",
-          "close": "Volver a la web"
-        },
-        "fields": {
-          "name": "Nombre completo",
-          "email": "Correo electrónico",
-          "company": "Empresa / Organización (Opcional)",
-          "subject": "Motivo del contacto",
-          "message": "Mensaje / Detalles de la propuesta",
-          "messagePlaceholder": "Describe detalladamente las condiciones, plazos o tu propuesta...",
-          "subjectOptions": {
-            "job": "Oferta Laboral",
-            "collab": "Colaboración / Alianza",
-            "gigantic": "Proyecto de Gran Envergadura",
-            "other": "Otro Asunto"
-          }
-        }
       }
     },
     "en": {
-      "nav": {
-        "services": "Services",
-        "projects": "Projects",
-        "contact": "Contact",
-        "commission": "COMMISSION",
-        "resume": "Resume / CV",
-        "closeMenu": "Close menu",
-        "openMenu": "Open menu"
-      },
       "hero": {
-        "tagline": "Illustrator & digital artist · Madrid",
+        "tagline": "Illustrator & Digital Artist · Madrid",
         "greetingBefore": "Hello,\nI'm ",
         "greetingItalic": "Nerea",
-        "artline": "I transform ideas into visual worlds with soul.",
-        "bio1": "I am Nerea Lucas Pajares, artistically known as Miluartedenara. With a Master's Degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom clay dolls, handmade jewelry, and concept art for music projects. Each piece is crafted with dedication and love for details.",
+        "artline": "Transforming ideas into visual worlds with soul.",
+        "bio1": "My name is Nerea Lucas Pajares, artistically known as Miluartedenara. With a Master's degree in Illustration and Digital Art, I create everything from canvases exhibited in Madrid galleries to custom handmade clay dolls, artisanal jewelry, and concept art for musical projects. Every piece is crafted with dedication and love for details.",
         "bio2": "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
         "viewWorks": "View works",
-        "sendInquiry": "Send inquiry"
-      },
-      "gallery": {
-        "title": "Gallery",
-        "subtitle": "Recent works.\nScroll to explore.",
-        "hint": "scroll to navigate",
-        "filters": {
-          "all": "All",
-          "ilustracion": "🎨 Illustration",
-          "concept": "🧠 Concept Art",
-          "musica": "🎵 Music Design",
-          "joyeria": "💍 Jewelry"
-        },
-        "alts": {
-          "obra1": "Digital illustration of an anthropomorphic flower with pop typography, Musae series",
-          "obra2": "Illustrated portrait of a female character with blue hair and marine elements",
-          "obra3": "Female character enveloped in flames with a comic bubble, narrative illustration",
-          "obra4": "Illustrated still life of creative tools and psychedelic mushrooms for the Diggin' music label",
-          "obra5": "Illustrated studio scene with a book shelf and a painting easel",
-          "obra6": "Handcrafted jewelry piece with hand-illustrated detail",
-          "obra7": "Isometric landscape concept art with a cabin and vegetation",
-          "obra8": "Detail of a colored manga character, characteristic Miluarte style"
-        }
-      },
-      "process": {
-        "title": "The Creative Process",
-        "subtitle": "From Sketch to Final Art",
-        "hint": "Slide the center bar to compare the pencil sketch lines and the final digital render of the artwork.",
-        "cursorHint": "Slide"
-      },
-      "services": {
-        "ctaBeforeAfter": "↔ Scroll to see before & after",
-        "render3D": "3D Render",
-        "realResult": "Real result",
-        "viewWorks": "View works",
-        "items": {
-          "diseno-grafico": {
-            "label": "Graphic Design",
-            "title": "Visual identity\n& communication",
-            "description": "From logos to full catalogs. Banners, advertising, photo editing and composition with Photoshop, and technical illustration for commercial projects.",
-            "bullets": [
-              "Logos & visual identity",
-              "Banners & advertising material",
-              "Catalogs & editorial design",
-              "Photographic composition",
-              "Technical illustration & drafts"
-            ]
-          },
-          "3d-stands": {
-            "label": "3D & Stands",
-            "title": "From blueprint\nto reality",
-            "description": "3D design and visualization of exhibition stands, products, and spaces. Architectural reconstructions and technical blueprints ready for manufacturing and construction.",
-            "bullets": [
-              "Fair stand design",
-              "Photorealistic product renders",
-              "Architectural reconstructions",
-              "Technical blueprints for production",
-              "Space & interior visualization"
-            ]
-          },
-          "diggin": {
-            "label": "Diggin'",
-            "title": "Official designer\nof the music label",
-            "description": "Complete art direction for the independent music label Diggin'. Covers, visual identity, campaign illustrations, and animated music videos.",
-            "bullets": [
-              "Album & EP covers",
-              "Label visual identity",
-              "Musical illustrations",
-              "Animated music videos",
-              "Music merchandising"
-            ]
-          },
-          "ilustracion": {
-            "label": "Illustrations",
-            "title": "Personal art\nwithout filters",
-            "description": "Free work and the Musae series. Female characters, subverted nature, and unique worlds in ink and color. Also custom art-dolls, clay art, and handmade jewelry.",
-            "bullets": [
-              "Musae Series — signed prints",
-              "Portraits & personal commissions",
-              "Custom ball-jointed dolls",
-              "Clay art & sculpture",
-              "Handmade jewelry"
-            ]
-          },
-          "concept-art": {
-            "label": "Concept Art",
-            "title": "From concept\nto universe",
-            "description": "Not just the final drawing: the complete process of building a visual world from scratch. Characters with model sheets, coherent environments, and props designed for narrative function.",
-            "bullets": [
-              "Character design & model sheets",
-              "Environments & worldbuilding",
-              "Props & narrative objects",
-              "Visual bibles & style guides",
-              "Concept for games & animation"
-            ]
-          }
-        }
-      },
-      "collection": {
-        "back": "Back",
-        "interest": "Interested in any piece?",
-        "requestQuote": "Request quote",
-        "animasBible": {
-          "tagline": "Presentation · Complete Visual Bible",
-          "title": "The Animas Universe",
-          "description": "A 31-page presentation documenting the full process: from early character sketches to final art, model sheets, and the complete cast of the universe."
-        },
-        "meta": {
-          "ilustracion": {
-            "title": "Illustration",
-            "label": "Personal work",
-            "statement": "Personal work exploring the tension between form and void. Series built from intuition and resolved in the material. Each piece is a state, not a conclusion."
-          },
-          "diggin": {
-            "title": "Diggin'",
-            "label": "Music label · Art direction",
-            "statement": "Covers, identity, and art direction for the independent label Diggin'. Graffiti, psychedelia, and hip-hop in visual format."
-          },
-          "concept-art": {
-            "title": "Concept Art",
-            "label": "Visual development",
-            "statement": "Concept art and editorial illustration. Characters, atmospheres, and visual storytelling built from emotion."
-          },
-          "diseno-grafico": {
-            "title": "Graphic Design",
-            "label": "Visual identity",
-            "statement": "Identity systems, publications, and editorial design. The image at the service of the message."
-          },
-          "3d-stands": {
-            "title": "3D & Stands",
-            "label": "Space design · Fairs",
-            "statement": "3D design and visualization of stands and exhibition spaces for fairs and events."
-          },
-          "animas": {
-            "title": "Animas",
-            "label": "Concept Art · Personal Universe",
-            "statement": "A world built from within: creatures born of nature, characters with their own story, and a bestiary of forms that never stops revealing itself. Animas is a complete concept art project — model sheets, turn-arounds, expressions, weapons, and companion creatures — created as a personal worldbuilding exercise."
-          },
-          "retratos": {
-            "title": "Portraits & more",
-            "label": "Art studies · Sketchbook",
-            "statement": "The working sketchbook. Portraits of icons who refuse to be forgotten, anatomy pushed to the edge of cartoon, creatures pulled from elegant nightmares, and cities Lovecraft himself would have signed. An archive of what the pencil learns when it has nothing to fear."
-          },
-          "pasta-ya": {
-            "title": "Pasta Ya",
-            "label": "Character design · Campaign",
-            "statement": "When Italian pasta takes on a life of its own — and a very bad attitude. Bravioli, Tortastini, and their crew are campaign-ready character designs: expressive, unique, and packed with more personality per square centimetre than most Hollywood protagonists."
-          }
-        },
-        "availability": {
-          "available": "Available",
-          "unavailable": "Not available",
-          "musicalProject": "Music project"
-        }
-      },
-      "footer": {
-        "studio": "Multidisciplinary creative studio.\nIllustration, design, and art direction.\nBarcelona, Spain.",
-        "work": "Work",
-        "contact": "Contact",
-        "budget": "Request budget",
-        "rights": "© 2024 All rights reserved.",
-        "madeWithCriteria": "Made with criteria."
-      },
-      "notfound": {
-        "title": "Page not found",
-        "back": "Back to home"
-      },
-      "resume": {
-        "title": "Curriculum Vitae",
-        "subtitle": "Visual Artist, 3D Designer & Illustrator",
-        "downloadPDF": "Save as PDF / Print",
-        "back": "Back to home",
-        "sections": {
-          "profile": "Profile",
-          "experience": "Professional Experience",
-          "education": "Education",
-          "skills": "Skills",
-          "languages": "Languages"
-        },
-        "profileText": "Multidisciplinary visual artist with a Master's in Digital Art and Illustration. Specialized in art direction for music projects, 3D stand design for commercial fairs, and custom ball-jointed clay doll and jewelry creation. I combine traditional techniques with cutting-edge digital tools to create cohesive visual stories and impactful physical spaces.",
-        "experienceItems": [
-          {
-            "role": "Creative Illustrator",
-            "company": "Self-employed / Freelance",
-            "period": "2024 - Present",
-            "description": "Freelance work in editorial illustration, character design, and concept art development for independent clients and commercial projects."
-          },
-          {
-            "role": "Graphic Designer",
-            "company": "Ledme Europa",
-            "period": "2024 - Present",
-            "description": "Comprehensive catalog creation (design, layout, technical drawings, photo editing, and web upload). Design and maintenance of website and online store, and content creation for social media."
-          },
-          {
-            "role": "Graphic Illustrator",
-            "company": "Diggin' Records",
-            "period": "2024 - Present",
-            "description": "Digital illustration and graphic design for musical releases, album covers, and official merchandise for the label remotely."
-          },
-          {
-            "role": "Freelance Graphic Designer",
-            "company": "Various Companies",
-            "period": "2019 - Present",
-            "description": "General graphic design, brand identity, 3D modeling and rendering of stands for trade shows and exhibitions for multiple clients."
-          }
-        ],
-        "educationItems": [
-          {
-            "degree": "Master's Degree in Digital Art & Illustration",
-            "school": "Trazos",
-            "period": "2023 - 2024"
-          },
-          {
-            "degree": "Master's Degree in Digital Art",
-            "school": "Trazos",
-            "period": "2024"
-          },
-          {
-            "degree": "Master's Degree in Illustration",
-            "school": "Trazos de Arte",
-            "period": "2024"
-          },
-          {
-            "degree": "High School Diploma",
-            "school": "IES La Arboleda",
-            "period": ""
-          }
-        ],
-        "skillsItems": {
-          "digital": "Digital: Photoshop, Illustrator, Procreate, Blender 3D, CAD (Technical Plans).",
-          "traditional": "Traditional: Oil painting, watercolor, ink, clay sculpting, handmade jewelry.",
-          "creative": "Concept: Art direction, concept art, character design, editorial layout."
-        },
-        "languagesItems": [
-          {
-            "language": "Spanish",
-            "level": "Native"
-          },
-          {
-            "language": "English",
-            "level": "Basic Professional Proficiency"
-          },
-          {
-            "language": "Chinese",
-            "level": "Basic Professional Proficiency"
-          }
-        ]
-      },
-      "booking": {
-        "title": "Tell me about your project",
-        "subtitle": "Let's talk about your idea. Fill in the steps and I will get back to you within 48 hours.",
-        "close": "Close",
-        "next": "Next",
-        "prev": "Back",
-        "submit": "Submit request",
-        "steps": {
-          "step": "Step",
-          "of": "of",
-          "type": "Project Type",
-          "details": "Project Details",
-          "contact": "Contact Information"
-        },
-        "types": {
-          "commercial": {
-            "title": "Commercial Project",
-            "desc": "3D stands, corporate visual identity, branding, concept art for studios/labels."
-          },
-          "personal": {
-            "title": "Personal Project",
-            "desc": "Custom clay dolls, bespoke jewelry, signed prints, digital portraits."
-          }
-        },
-        "fields": {
-          "description": "Describe your idea (style, references, materials...)",
-          "descriptionPlaceholder": "E.g. I would like a custom clay doll inspired by forest themes, about 20 cm...",
-          "timeline": "When do you need it?",
-          "timelinePlaceholder": "E.g. Before October 15th",
-          "name": "Full Name",
-          "email": "Email address",
-          "budget": "Approximate budget",
-          "budgetRanges": [
-            "Under €300",
-            "€300 - €1,000",
-            "€1,000 - €3,000",
-            "Over €3,000"
-          ]
-        },
-        "success": {
-          "title": "Request sent!",
-          "message": "Thank you for reaching out. I will analyze your proposal immediately to bring your idea to life.",
-          "close": "Back to website"
-        }
-      },
-      "featured": {
-        "eyebrow": "Featured Project",
-        "tag": "Diggin' Records",
-        "title": "Diggin' — visual identity of a music label",
-        "description": "Complete art direction for the independent label Diggin': album covers, visual identity, campaign illustrations, and animated music videos. A long-term project where Nerea's style became the visual face of the label.",
-        "tags": [
-          "Art Direction",
-          "Album Covers",
-          "Music Branding",
-          "Animation"
-        ],
-        "bullets": [
-          "Visual concept and initial moodboard",
-          "Album and EP covers",
-          "Visual identity of the label",
-          "Social media adaptations"
-        ],
-        "viewCase": "View full case →"
-      },
-      "clients": {
-        "eyebrow": "Clients & collaborations",
-        "title": "Brands, labels and projects I've worked with",
-        "description": "I've collaborated with musicians, brands and creative projects, developing visual identities and custom illustrations."
-      },
-      "seoServices": {
-        "eyebrow": "Services",
-        "title": "How I can help you",
-        "description": "Bespoke artistic commissions, from a personal piece to full art direction for a brand or a music label.",
-        "items": {
-          "editorial": {
-            "title": "Editorial Illustration",
-            "description": "Creating illustrations for books, magazines and digital publications, with a storytelling style that reinforces the message of each page."
-          },
-          "concept": {
-            "title": "Concept Art",
-            "description": "Visual design for video games, audiovisual projects and visual storytelling: characters, environments and props designed for a coherent world."
-          },
-          "character": {
-            "title": "Character Design",
-            "description": "Creation of original characters for creative projects, brands and campaigns, with model sheets and style guides."
-          },
-          "music": {
-            "title": "Music Covers",
-            "description": "Artwork for albums, singles and promotional material, with full art direction for labels and independent artists."
-          },
-          "graphic": {
-            "title": "Graphic Design",
-            "description": "Visual identity, banners, catalogs and editorial design for commercial and cultural projects."
-          },
-          "clay": {
-            "title": "Jewelry & Clay Art",
-            "description": "Unique handcrafted pieces: jewelry, custom art-dolls and hand-sculpted clay figures."
-          }
-        }
-      },
-      "contactModal": {
-        "title": "General Contact",
-        "subtitle": "Use this form for job offers, collaborations, or large-scale projects.",
-        "close": "Close",
-        "submit": "Send message",
-        "success": {
-          "title": "Message sent!",
-          "message": "Thank you for reaching out. I will review your proposal and get back to you as soon as possible.",
-          "close": "Back to website"
-        },
-        "fields": {
-          "name": "Full Name",
-          "email": "Email address",
-          "company": "Company / Organization (Optional)",
-          "subject": "Reason for contact",
-          "message": "Message / Proposal details",
-          "messagePlaceholder": "Describe in detail the conditions, timeline or your proposal...",
-          "subjectOptions": {
-            "job": "Job Offer",
-            "collab": "Collaboration / Partnership",
-            "gigantic": "Large-Scale Project",
-            "other": "Other Inquiries"
-          }
-        }
+        "sendInquiry": "Commission inquiry"
       }
     }
   },
   "miluarte:social": {
-    "instagram": "https://www.instagram.com/snctryjo/",
+    "instagram": "https://www.instagram.com/naraneko13/",
     "linkedin": "https://www.linkedin.com/in/nerealucaspajares4815162342/",
     "behance": "",
     "tiktok": "",
@@ -1026,251 +266,14 @@
   },
   "miluarte:changelog": [
     {
-      "id": "cqRrX-VMAIpx6CmVSmcbq",
-      "timestamp": "2026-08-16T13:55:48.918Z",
-      "action": "Actualizó los enlaces de redes sociales",
-      "section": "social",
-      "snapshotId": "snap-1786888548023-k6eJ",
-      "canRollback": true
-    },
-    {
-      "id": "jcwu84k8ZDpnalQUky1Uj",
-      "timestamp": "2026-08-16T13:55:28.104Z",
-      "action": "Actualizó los enlaces de redes sociales",
-      "section": "social",
-      "snapshotId": "snap-1786888526728-jmn9",
-      "canRollback": true
-    },
-    {
-      "id": "XqKazzaAex2j9--OuS_QO",
-      "timestamp": "2026-08-16T13:55:04.169Z",
-      "action": "Restauró la página al punto anterior: \"Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"\"",
+      "id": "init-production",
+      "timestamp": "2026-08-16T16:29:04.609Z",
+      "action": "Sistema CMS inicializado y listo para producción",
       "section": "system",
-      "snapshotId": "snap-1786888503411-LlTz",
-      "canRollback": true
-    },
-    {
-      "id": "3z4xujY7l9ZRBqk-jwT-c",
-      "timestamp": "2026-08-16T13:53:15.908Z",
-      "action": "Creó la galería \"pruebafinal\"",
-      "section": "galleries",
-      "snapshotId": "snap-1786888394327-DeXs",
-      "canRollback": true
-    },
-    {
-      "id": "EVhPWrR3gd3NM6Pewqkae",
-      "timestamp": "2026-08-16T13:48:24.750Z",
-      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
-      "section": "system",
-      "snapshotId": "snap-1786888104245-RjqD",
-      "canRollback": true
-    },
-    {
-      "id": "eAdp9oMM2v5c1NkUlATWK",
-      "timestamp": "2026-08-16T13:44:14.439Z",
-      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
-      "section": "system",
-      "snapshotId": "snap-1786887853786-cJQ5",
-      "canRollback": true
-    },
-    {
-      "id": "lel_PQ0yix370qe3BE04E",
-      "timestamp": "2026-08-16T13:43:28.818Z",
-      "action": "Actualizó los enlaces de redes sociales",
-      "section": "social",
-      "snapshotId": "snap-1786887808000-5noa",
-      "canRollback": true
-    },
-    {
-      "id": "VHTcwUaLRcrxbfkn0wZgY",
-      "timestamp": "2026-08-16T13:43:03.990Z",
-      "action": "Actualizó los enlaces de redes sociales",
-      "section": "social",
-      "snapshotId": "snap-1786887783354-BaRe",
-      "canRollback": true
-    },
-    {
-      "id": "jWS38pLK63KH4p2RPXDTA",
-      "timestamp": "2026-08-16T13:41:21.073Z",
-      "action": "Actualizó textos del sitio web (ES/EN)",
-      "section": "texts",
-      "snapshotId": "snap-1786887680210-zFpD",
-      "canRollback": true
-    },
-    {
-      "id": "cfIRUSUBRdvj5UsmVSRhx",
-      "timestamp": "2026-08-16T13:40:18.000Z",
-      "action": "Reordenó las obras de la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786887617326-zML1",
-      "canRollback": true
-    },
-    {
-      "id": "Gh0hdR9k2ybMw3L3I3VM4",
-      "timestamp": "2026-08-16T13:40:11.278Z",
-      "action": "Reordenó las obras de la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786887610591-ueAH",
-      "canRollback": true
-    },
-    {
-      "id": "tZ7GA384K2C7hi1GFK0JM",
-      "timestamp": "2026-08-16T13:40:10.777Z",
-      "action": "Reordenó las obras de la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786887609651-kRXQ",
-      "canRollback": true
-    },
-    {
-      "id": "dSPFlUAmWoDjdVW0DkO3z",
-      "timestamp": "2026-08-16T13:40:04.690Z",
-      "action": "Reordenó las obras de la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786887604147-YeaE",
-      "canRollback": true
-    },
-    {
-      "id": "betfzzynsZcpjBYOkFbj0",
-      "timestamp": "2026-08-16T13:40:03.344Z",
-      "action": "Reordenó las obras de la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786887602685-Izoq",
-      "canRollback": true
-    },
-    {
-      "id": "iw5_kSNVp8hT6guXyFa7T",
-      "timestamp": "2026-08-16T13:39:30.902Z",
-      "action": "Subió la obra \"nueva obra\" en la galería \"prueba2\"",
-      "section": "works",
-      "snapshotId": "snap-1786887570308-3vMv",
-      "canRollback": true
-    },
-    {
-      "id": "pAE-vLKHyfWN9vAKNX7pR",
-      "timestamp": "2026-08-16T13:32:51.432Z",
-      "action": "Creó la galería \"prueba2\"",
-      "section": "galleries",
-      "snapshotId": "snap-1786887170848--AB3",
-      "canRollback": true
-    },
-    {
-      "id": "6bsgSGHboFs8LcFtOGANr",
-      "timestamp": "2026-08-16T13:32:15.464Z",
-      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
-      "section": "system",
-      "snapshotId": "snap-1786887134899-tpGH",
-      "canRollback": true
-    },
-    {
-      "id": "0SXIb8ij1lHyyu-2f6oWu",
-      "timestamp": "2026-08-16T13:15:58.448Z",
-      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
-      "section": "system",
-      "snapshotId": "snap-1786886157598-eRcu",
-      "canRollback": true
-    },
-    {
-      "id": "kdTYs7rD8kVJHieVwjjfg",
-      "timestamp": "2026-08-16T13:15:42.616Z",
-      "action": "Restauró la página al punto anterior: \"Subió la obra \"Prueba 1\" en la galería \"ilustracion\"\"",
-      "section": "system",
-      "snapshotId": "snap-1786886141961-Ulgo",
-      "canRollback": true
-    },
-    {
-      "id": "fQYrlI1KoSKkWa16T07Ww",
-      "timestamp": "2026-08-16T13:14:44.312Z",
-      "action": "Actualizó los enlaces de redes sociales",
-      "section": "social",
-      "snapshotId": "snap-1786886083410-YTT1",
-      "canRollback": true
-    },
-    {
-      "id": "6dPCjG8pmqLB2RhfpB2Oz",
-      "timestamp": "2026-08-16T13:14:33.354Z",
-      "action": "Actualizó los enlaces de redes sociales",
-      "section": "social",
-      "snapshotId": "snap-1786886072353-Njev",
-      "canRollback": true
-    },
-    {
-      "id": "-yHN4pY08IxUz6ltqW4IN",
-      "timestamp": "2026-08-16T13:12:46.860Z",
-      "action": "Actualizó textos del sitio web (ES/EN)",
-      "section": "texts",
-      "snapshotId": "snap-1786885965938-u977",
-      "canRollback": true
-    },
-    {
-      "id": "eKoaRH2uB_fy6X7H4xeOi",
-      "timestamp": "2026-08-16T13:12:39.292Z",
-      "action": "Actualizó textos del sitio web (ES/EN)",
-      "section": "texts",
-      "snapshotId": "snap-1786885958585-yKlo",
-      "canRollback": true
-    },
-    {
-      "id": "OGgqzKPaKnz4h5vWXNKlQ",
-      "timestamp": "2026-08-16T13:12:16.635Z",
-      "action": "Actualizó textos del sitio web (ES/EN)",
-      "section": "texts",
-      "snapshotId": "snap-1786885936014-Bh0S",
-      "canRollback": true
-    },
-    {
-      "id": "iiaYu3wZ1Jnw2A_nVilkh",
-      "timestamp": "2026-08-16T13:09:27.900Z",
-      "action": "Reordenó las obras de la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786885767176-xM2j",
-      "canRollback": true
-    },
-    {
-      "id": "jFQa0KNlb8GX3-LAttxeI",
-      "timestamp": "2026-08-16T13:09:26.158Z",
-      "action": "Reordenó las obras de la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786885765360-io1u",
-      "canRollback": true
-    },
-    {
-      "id": "eWytiGEKMiV-urCPv-CRG",
-      "timestamp": "2026-08-16T13:06:30.033Z",
-      "action": "Subió la obra \"Prueba nueva galeria\" en la galería \"pruebaxd\"",
-      "section": "works",
-      "snapshotId": "snap-1786885589231-DsIF",
-      "canRollback": true
-    },
-    {
-      "id": "wi_NvSYP-Fv-LvmL4dRNA",
-      "timestamp": "2026-08-16T13:05:27.263Z",
-      "action": "Creó la galería \"pruebaxd\"",
-      "section": "galleries",
-      "snapshotId": "snap-1786885526751-GSdu",
-      "canRollback": true
-    },
-    {
-      "id": "EVnaFtKQ2CjPk-8HRwzC8",
-      "timestamp": "2026-08-16T13:03:46.232Z",
-      "action": "Subió la obra \"Prueba 1\" en la galería \"ilustracion\"",
-      "section": "works",
-      "snapshotId": "snap-1786885425608-Ks2I",
-      "canRollback": true
+      "canRollback": false
     }
   ],
-  "miluarte:messages:contact": [
-    {
-      "id": "msg-1786888230920-712z",
-      "timestamp": "2026-08-16T13:50:30.920Z",
-      "name": "josue",
-      "email": "josue@gmail.com",
-      "company": "josue SA",
-      "subject": "Oferta Laboral / Trabajo",
-      "message": "te quiero a vos hermosa, como hago??",
-      "read": false,
-      "type": "contact"
-    }
-  ],
+  "miluarte:messages:contact": [],
   "miluarte:messages:booking": [],
   "miluarte:snapshot:snap-1786887134899-tpGH": {
     "galleries": [
@@ -16410,8 +15413,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 0,
-      "featured": true
+      "order": 0
     },
     {
       "id": "mu2",
@@ -16425,8 +15427,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 1,
-      "featured": true
+      "order": 1
     },
     {
       "id": "mu3",
@@ -16440,8 +15441,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 2,
-      "featured": false
+      "order": 2
     },
     {
       "id": "mu4",
@@ -16455,8 +15455,7 @@
       "imgPos": "50% 25%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 3,
-      "featured": false
+      "order": 3
     },
     {
       "id": "mu5",
@@ -16470,8 +15469,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 4,
-      "featured": false
+      "order": 4
     },
     {
       "id": "mu6",
@@ -16485,8 +15483,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 5,
-      "featured": false
+      "order": 5
     },
     {
       "id": "mu7",
@@ -16500,8 +15497,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 6,
-      "featured": false
+      "order": 6
     },
     {
       "id": "mu8",
@@ -16515,8 +15511,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-3",
       "aspect": "16/9",
-      "order": 7,
-      "featured": false
+      "order": 7
     },
     {
       "id": "mu9",
@@ -16530,8 +15525,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 8,
-      "featured": false
+      "order": 8
     },
     {
       "id": "mu10",
@@ -16545,8 +15539,7 @@
       "imgPos": "50% 15%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 9,
-      "featured": false
+      "order": 9
     },
     {
       "id": "mu11",
@@ -16560,8 +15553,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 10,
-      "featured": false
+      "order": 10
     }
   ],
   "miluarte:gallery:diggin": [
@@ -16577,8 +15569,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 0,
-      "featured": true
+      "order": 0
     },
     {
       "id": "dg3",
@@ -16592,8 +15583,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 1,
-      "featured": true
+      "order": 1
     },
     {
       "id": "dg12",
@@ -16607,8 +15597,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 2,
-      "featured": false
+      "order": 2
     },
     {
       "id": "dg13",
@@ -16622,8 +15611,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 3,
-      "featured": false
+      "order": 3
     },
     {
       "id": "dg16",
@@ -16637,8 +15625,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 4,
-      "featured": false
+      "order": 4
     },
     {
       "id": "dg7",
@@ -16652,8 +15639,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 5,
-      "featured": false
+      "order": 5
     },
     {
       "id": "dg8",
@@ -16667,8 +15653,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 6,
-      "featured": false
+      "order": 6
     },
     {
       "id": "dg23",
@@ -16682,8 +15667,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 7,
-      "featured": false
+      "order": 7
     },
     {
       "id": "dg9",
@@ -16697,8 +15681,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 8,
-      "featured": false
+      "order": 8
     },
     {
       "id": "dg2",
@@ -16712,8 +15695,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 9,
-      "featured": false
+      "order": 9
     },
     {
       "id": "dg11",
@@ -16727,8 +15709,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 10,
-      "featured": false
+      "order": 10
     },
     {
       "id": "dg14",
@@ -16742,8 +15723,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 11,
-      "featured": false
+      "order": 11
     },
     {
       "id": "dg19",
@@ -16757,8 +15737,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 12,
-      "featured": false
+      "order": 12
     },
     {
       "id": "dg5",
@@ -16772,8 +15751,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 13,
-      "featured": false
+      "order": 13
     },
     {
       "id": "dg24",
@@ -16787,8 +15765,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 14,
-      "featured": false
+      "order": 14
     },
     {
       "id": "dg4",
@@ -16802,8 +15779,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 15,
-      "featured": false
+      "order": 15
     },
     {
       "id": "dg6",
@@ -16817,8 +15793,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 16,
-      "featured": false
+      "order": 16
     },
     {
       "id": "dg10",
@@ -16832,8 +15807,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 17,
-      "featured": false
+      "order": 17
     },
     {
       "id": "dg15",
@@ -16847,8 +15821,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 18,
-      "featured": false
+      "order": 18
     },
     {
       "id": "dg17",
@@ -16862,8 +15835,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 19,
-      "featured": false
+      "order": 19
     },
     {
       "id": "dg18",
@@ -16877,8 +15849,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 20,
-      "featured": false
+      "order": 20
     },
     {
       "id": "dg20",
@@ -16892,8 +15863,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 21,
-      "featured": false
+      "order": 21
     },
     {
       "id": "dg21",
@@ -16907,8 +15877,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 22,
-      "featured": false
+      "order": 22
     },
     {
       "id": "dg22",
@@ -16922,8 +15891,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 23,
-      "featured": false
+      "order": 23
     }
   ],
   "miluarte:gallery:animas": [
@@ -16939,8 +15907,7 @@
       "imgPos": "50% 15%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 0,
-      "featured": true
+      "order": 0
     },
     {
       "id": "an2",
@@ -16954,8 +15921,7 @@
       "imgPos": "50% 12%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 1,
-      "featured": true
+      "order": 1
     },
     {
       "id": "an3",
@@ -16969,8 +15935,7 @@
       "imgPos": "50% 12%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 2,
-      "featured": false
+      "order": 2
     },
     {
       "id": "an4",
@@ -16984,8 +15949,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 3,
-      "featured": false
+      "order": 3
     },
     {
       "id": "an5",
@@ -16999,8 +15963,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 4,
-      "featured": false
+      "order": 4
     },
     {
       "id": "an6",
@@ -17014,8 +15977,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 5,
-      "featured": false
+      "order": 5
     },
     {
       "id": "an7",
@@ -17029,8 +15991,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 6,
-      "featured": false
+      "order": 6
     },
     {
       "id": "an25",
@@ -17044,8 +16005,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-3",
       "aspect": "16/9",
-      "order": 7,
-      "featured": false
+      "order": 7
     },
     {
       "id": "an8",
@@ -17059,8 +16019,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 8,
-      "featured": false
+      "order": 8
     },
     {
       "id": "an9",
@@ -17074,8 +16033,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 9,
-      "featured": false
+      "order": 9
     },
     {
       "id": "an27",
@@ -17089,8 +16047,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-3",
       "aspect": "16/9",
-      "order": 10,
-      "featured": false
+      "order": 10
     },
     {
       "id": "an10",
@@ -17104,8 +16061,7 @@
       "imgPos": "50% 15%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 11,
-      "featured": false
+      "order": 11
     },
     {
       "id": "an11",
@@ -17119,8 +16075,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 12,
-      "featured": false
+      "order": 12
     },
     {
       "id": "an12",
@@ -17134,8 +16089,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 13,
-      "featured": false
+      "order": 13
     },
     {
       "id": "an13",
@@ -17149,8 +16103,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 14,
-      "featured": false
+      "order": 14
     },
     {
       "id": "an14",
@@ -17164,8 +16117,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-3",
       "aspect": "16/9",
-      "order": 15,
-      "featured": false
+      "order": 15
     },
     {
       "id": "an15",
@@ -17179,8 +16131,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 16,
-      "featured": false
+      "order": 16
     },
     {
       "id": "an16",
@@ -17194,8 +16145,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 17,
-      "featured": false
+      "order": 17
     },
     {
       "id": "an17",
@@ -17209,8 +16159,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 18,
-      "featured": false
+      "order": 18
     },
     {
       "id": "an18",
@@ -17224,8 +16173,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 19,
-      "featured": false
+      "order": 19
     },
     {
       "id": "an19",
@@ -17239,8 +16187,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 20,
-      "featured": false
+      "order": 20
     },
     {
       "id": "an20",
@@ -17254,8 +16201,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 21,
-      "featured": false
+      "order": 21
     },
     {
       "id": "an21",
@@ -17269,8 +16215,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 22,
-      "featured": false
+      "order": 22
     },
     {
       "id": "an22",
@@ -17284,8 +16229,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 23,
-      "featured": false
+      "order": 23
     },
     {
       "id": "an26",
@@ -17299,8 +16243,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 24,
-      "featured": false
+      "order": 24
     },
     {
       "id": "an23",
@@ -17314,8 +16257,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "1/1",
-      "order": 25,
-      "featured": false
+      "order": 25
     },
     {
       "id": "an24",
@@ -17329,8 +16271,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "2/1",
-      "order": 26,
-      "featured": false
+      "order": 26
     }
   ],
   "miluarte:gallery:retratos": [
@@ -17346,8 +16287,7 @@
       "imgPos": "50% 15%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 0,
-      "featured": true
+      "order": 0
     },
     {
       "id": "rt2",
@@ -17361,8 +16301,7 @@
       "imgPos": "50% 15%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 1,
-      "featured": true
+      "order": 1
     },
     {
       "id": "rt3",
@@ -17376,8 +16315,7 @@
       "imgPos": "50% 15%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 2,
-      "featured": false
+      "order": 2
     },
     {
       "id": "rt4",
@@ -17391,8 +16329,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 3,
-      "featured": false
+      "order": 3
     },
     {
       "id": "rt24",
@@ -17406,8 +16343,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-3",
       "aspect": "16/9",
-      "order": 4,
-      "featured": false
+      "order": 4
     },
     {
       "id": "rt15",
@@ -17421,8 +16357,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 5,
-      "featured": false
+      "order": 5
     },
     {
       "id": "rt16",
@@ -17436,8 +16371,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 6,
-      "featured": false
+      "order": 6
     },
     {
       "id": "rt25",
@@ -17451,8 +16385,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 7,
-      "featured": false
+      "order": 7
     },
     {
       "id": "rt17",
@@ -17466,8 +16399,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 8,
-      "featured": false
+      "order": 8
     },
     {
       "id": "rt14",
@@ -17477,12 +16409,11 @@
       "size": "Digital",
       "price": "Encargo",
       "available": true,
-      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821003/8-Cuerpos-Cartoon-copia_tcgads.jpg",
+      "img": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820003/8-Cuerpos-Cartoon-copia_tcgads.jpg",
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 9,
-      "featured": false
+      "order": 9
     },
     {
       "id": "rt13",
@@ -17496,8 +16427,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-3",
       "aspect": "16/9",
-      "order": 10,
-      "featured": false
+      "order": 10
     },
     {
       "id": "rt5",
@@ -17511,8 +16441,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 11,
-      "featured": false
+      "order": 11
     },
     {
       "id": "rt6",
@@ -17526,8 +16455,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 12,
-      "featured": false
+      "order": 12
     },
     {
       "id": "rt8",
@@ -17541,8 +16469,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 13,
-      "featured": false
+      "order": 13
     },
     {
       "id": "rt7",
@@ -17556,8 +16483,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 14,
-      "featured": false
+      "order": 14
     },
     {
       "id": "rt26",
@@ -17571,8 +16497,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 15,
-      "featured": false
+      "order": 15
     },
     {
       "id": "rt23",
@@ -17586,8 +16511,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 16,
-      "featured": false
+      "order": 16
     },
     {
       "id": "rt12",
@@ -17601,8 +16525,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 17,
-      "featured": false
+      "order": 17
     },
     {
       "id": "rt11",
@@ -17616,8 +16539,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 18,
-      "featured": false
+      "order": 18
     },
     {
       "id": "rt22",
@@ -17631,8 +16553,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 19,
-      "featured": false
+      "order": 19
     },
     {
       "id": "rt20",
@@ -17646,8 +16567,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 20,
-      "featured": false
+      "order": 20
     },
     {
       "id": "rt21",
@@ -17661,8 +16581,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 21,
-      "featured": false
+      "order": 21
     },
     {
       "id": "rt27",
@@ -17676,8 +16595,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 22,
-      "featured": false
+      "order": 22
     },
     {
       "id": "rt28",
@@ -17691,8 +16609,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 23,
-      "featured": false
+      "order": 23
     },
     {
       "id": "rt10",
@@ -17706,8 +16623,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 24,
-      "featured": false
+      "order": 24
     },
     {
       "id": "rt9",
@@ -17721,8 +16637,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 25,
-      "featured": false
+      "order": 25
     },
     {
       "id": "rt18",
@@ -17736,8 +16651,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 26,
-      "featured": false
+      "order": 26
     },
     {
       "id": "rt19",
@@ -17751,8 +16665,7 @@
       "imgPos": "50% 20%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 27,
-      "featured": false
+      "order": 27
     }
   ],
   "miluarte:gallery:pasta-ya": [
@@ -17768,8 +16681,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 0,
-      "featured": true
+      "order": 0
     },
     {
       "id": "py2",
@@ -17783,8 +16695,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 1,
-      "featured": true
+      "order": 1
     },
     {
       "id": "py3",
@@ -17798,8 +16709,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 2,
-      "featured": false
+      "order": 2
     },
     {
       "id": "py4",
@@ -17813,8 +16723,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-2",
       "aspect": "3/2",
-      "order": 3,
-      "featured": false
+      "order": 3
     },
     {
       "id": "py6",
@@ -17828,8 +16737,7 @@
       "imgPos": "50% 50%",
       "gridCol": "md:col-span-3",
       "aspect": "16/9",
-      "order": 4,
-      "featured": false
+      "order": 4
     },
     {
       "id": "py5",
@@ -17843,8 +16751,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-1",
       "aspect": "3/4",
-      "order": 5,
-      "featured": false
+      "order": 5
     },
     {
       "id": "py7",
@@ -17858,8 +16765,7 @@
       "imgPos": "50% 30%",
       "gridCol": "md:col-span-2",
       "aspect": "16/9",
-      "order": 6,
-      "featured": false
+      "order": 6
     }
   ],
   "miluarte:snapshot:snap-1786888394327-DeXs": {
@@ -27849,5 +26755,8 @@
         }
       ]
     }
-  }
+  },
+  "miluarte:gallery:concept-art": [],
+  "miluarte:gallery:diseno-grafico": [],
+  "miluarte:gallery:3d-stands": []
 }

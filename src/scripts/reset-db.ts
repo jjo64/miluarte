@@ -1,10 +1,30 @@
-import { kv, isKvConfigured } from "../../api/admin/_lib/kv.js";
+import * as fs from "fs";
+import * as path from "path";
+import { kv } from "../../api/admin/_lib/kv.js";
 import { META, WORKS_BY_SLUG, RENDERS, translations, getBaseGalleries } from "../../api/admin/_lib/initialData.js";
-import dotenv from "dotenv";
 
-// Cargar .env.local si existe
-dotenv.config({ path: ".env.local" });
-dotenv.config();
+// Cargar variables de .env.local manualmente sin dependencias
+function loadEnv() {
+  const envPath = path.resolve(process.cwd(), ".env.local");
+  if (fs.existsSync(envPath)) {
+    const lines = fs.readFileSync(envPath, "utf-8").split("\n");
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const idx = trimmed.indexOf("=");
+      if (idx !== -1) {
+        const key = trimmed.slice(0, idx).trim();
+        let val = trimmed.slice(idx + 1).trim();
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+          val = val.slice(1, -1);
+        }
+        process.env[key] = val;
+      }
+    }
+  }
+}
+
+loadEnv();
 
 async function resetDatabase() {
   console.log("🧹 Iniciando reseteo y limpieza de la base de datos de producción...\n");
