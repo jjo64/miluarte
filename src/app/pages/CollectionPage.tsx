@@ -8,6 +8,7 @@ import { Flip } from "gsap/Flip";
 import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
 import { getOptimizedImageUrl } from "../utils/cloudinary";
+import { NotFoundPage } from "./NotFoundPage";
 
 
 gsap.registerPlugin(Flip);
@@ -594,43 +595,29 @@ export function CollectionPage() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   
-  const [dynamicMeta, setDynamicMeta] = useState<CollectionMeta>(() => 
-    META[slug] ?? {
-      title: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " "),
-      label: "Colección artística",
-      statement: "",
-      accent: "var(--color-brand-blush)",
-      twoColumns: false,
-    }
-  );
+  const isBase = Boolean(META[slug]);
+  const [dynamicMeta, setDynamicMeta] = useState<CollectionMeta | null>(() => META[slug] ?? null);
   const [dynamicWorks, setDynamicWorks] = useState<Work[]>(() => WORKS_BY_SLUG[slug] ?? []);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(!isBase);
+  const [isNotFound, setIsNotFound] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
 
-    // Resetear a estáticos si existen
     if (META[slug]) {
       setDynamicMeta(META[slug]);
+      setDynamicWorks(WORKS_BY_SLUG[slug] ?? []);
+      setIsNotFound(false);
+      setIsLoading(false);
     } else {
-      setDynamicMeta({
-        title: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " "),
-        label: "Colección artística",
-        statement: "",
-        accent: "var(--color-brand-blush)",
-        twoColumns: false,
-      });
-    }
-
-    if (WORKS_BY_SLUG[slug]) {
-      setDynamicWorks(WORKS_BY_SLUG[slug]);
-    } else {
+      setDynamicMeta(null);
       setDynamicWorks([]);
+      setIsLoading(true);
+      setIsNotFound(false);
     }
 
     async function loadDynamicContent() {
       try {
-        setIsLoading(true);
         // 1. Cargar metadatos de la galería
         const gallRes = await fetch("/api/admin/galleries");
         if (gallRes.ok) {
@@ -645,8 +632,17 @@ export function CollectionPage() {
                 accent: found.accent || "var(--color-brand-blush)",
                 twoColumns: Boolean(found.twoColumns),
               });
+              setIsNotFound(false);
+            } else if (!META[slug] && isMounted) {
+              setIsNotFound(true);
+              setIsLoading(false);
+              return;
             }
           }
+        } else if (!META[slug] && isMounted) {
+          setIsNotFound(true);
+          setIsLoading(false);
+          return;
         }
 
         // 2. Cargar obras de la galería
@@ -658,7 +654,9 @@ export function CollectionPage() {
           }
         }
       } catch (err) {
-        // Fallback silencioso a los datos cargados
+        if (!META[slug] && isMounted) {
+          setIsNotFound(true);
+        }
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -670,6 +668,18 @@ export function CollectionPage() {
       isMounted = false;
     };
   }, [slug]);
+
+  if (isNotFound) {
+    return <NotFoundPage />;
+  }
+
+  if (isLoading || !dynamicMeta) {
+    return (
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-brand-orange border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   const meta = dynamicMeta;
   const isTwoColumns = meta.twoColumns ?? false;
