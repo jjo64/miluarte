@@ -2,17 +2,43 @@ import { createClient } from "@vercel/kv";
 import * as fs from "fs";
 import * as path from "path";
 
-// Local JSON storage for development without remote KV credentials
-const localDbPath = path.resolve(process.cwd(), "cms-local-db.json");
+// Memoria global compartida durante el ciclo de vida del contenedor serverless
+declare global {
+  var __CMS_MEMORY_STORE__: Record<string, any> | undefined;
+}
+
+if (!globalThis.__CMS_MEMORY_STORE__) {
+  globalThis.__CMS_MEMORY_STORE__ = {};
+}
+
+// Rutas seguras para local y /tmp en Serverless
+const isVercelServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const localDbPath = isVercelServerless
+  ? path.resolve("/tmp", "cms-local-db.json")
+  : path.resolve(process.cwd(), "cms-local-db.json");
+
 const seedPath = path.resolve(process.cwd(), "cms-seed-backup.json");
 
 function getLocalStore(): Record<string, any> {
+  // 1. Intentar memoria RAM primero
+  const mem = globalThis.__CMS_MEMORY_STORE__ || {};
+  if (Object.keys(mem).length > 0) {
+    return mem;
+  }
+
+  // 2. Intentar leer de archivo local
   try {
     if (fs.existsSync(localDbPath)) {
-      return JSON.parse(fs.readFileSync(localDbPath, "utf-8"));
+      const data = JSON.parse(fs.readFileSync(localDbPath, "utf-8"));
+      globalThis.__CMS_MEMORY_STORE__ = data;
+      return data;
     }
+  } catch (e) {
+    // Ignorar si no se puede leer el archivo
+  }
 
-    // Inicializar desde el seed backup
+  // 3. Inicializar desde el seed backup si existe
+  try {
     if (fs.existsSync(seedPath)) {
       const seed = JSON.parse(fs.readFileSync(seedPath, "utf-8"));
       const store: Record<string, any> = {
@@ -31,20 +57,29 @@ function getLocalStore(): Record<string, any> {
         }
       }
 
-      fs.writeFileSync(localDbPath, JSON.stringify(store, null, 2), "utf-8");
+      globalThis.__CMS_MEMORY_STORE__ = store;
+
+      try {
+        fs.writeFileSync(localDbPath, JSON.stringify(store, null, 2), "utf-8");
+      } catch {
+        // Ignorar si filesystem es read-only
+      }
+
       return store;
     }
   } catch (e) {
-    console.warn("Local store read error:", e);
+    // Ignorar
   }
-  return {};
+
+  return globalThis.__CMS_MEMORY_STORE__ || {};
 }
 
 function saveLocalStore(store: Record<string, any>) {
+  globalThis.__CMS_MEMORY_STORE__ = store;
   try {
     fs.writeFileSync(localDbPath, JSON.stringify(store, null, 2), "utf-8");
-  } catch (e) {
-    console.warn("Local store write error:", e);
+  } catch {
+    // En Vercel Serverless `/tmp` suele ser escribible, pero si falla no crashea
   }
 }
 
@@ -53,8 +88,14 @@ let lastUrl: string | undefined = undefined;
 let lastToken: string | undefined = undefined;
 
 function getRemoteClient() {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url =
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.STORAGE_KV_REST_API_URL;
+  const token =
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.STORAGE_KV_REST_API_TOKEN;
 
   if (!url || !token) {
     return null;
@@ -162,5 +203,5 @@ export const kv = {
 };
 
 export function isKvConfigured(): boolean {
-  return true; // Siempre activo gracias al fallback local persistente y KV remoto dinámico
+  return true; // Siempre activo gracias al fallback local/memoria y KV remoto
 }

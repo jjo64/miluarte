@@ -24,22 +24,29 @@ function deepMerge(target: any, source: any): any {
 }
 
 async function getTexts(): Promise<SiteTexts> {
+  const defaultTexts: SiteTexts = {
+    es: translations.es,
+    en: translations.en,
+  };
+
   if (isKvConfigured()) {
     try {
       const raw = await kv.get("miluarte:texts");
       if (raw) {
-        return typeof raw === "string" ? JSON.parse(raw) : (raw as any);
+        const parsed = typeof raw === "string" ? JSON.parse(raw) : (raw as any);
+        if (parsed && (parsed.es || parsed.en)) {
+          return {
+            es: deepMerge(defaultTexts.es, parsed.es || {}),
+            en: deepMerge(defaultTexts.en, parsed.en || {}),
+          };
+        }
       }
     } catch (e) {
-      console.warn("KV get texts error, using fallback:", e);
+      console.warn("KV get texts error, using default translations:", e);
     }
   }
 
-  // Fallback estático de translations.ts
-  return {
-    es: translations.es,
-    en: translations.en,
-  };
+  return defaultTexts;
 }
 
 export default async function handler(req: any, res: any) {
@@ -61,7 +68,11 @@ export default async function handler(req: any, res: any) {
       const texts = await getTexts();
       return res.status(200).json(texts);
     } catch (error: any) {
-      return res.status(500).json({ error: "Error al obtener textos del sitio" });
+      console.warn("Falling back to default static translations on GET /api/admin/texts:", error);
+      return res.status(200).json({
+        es: translations.es,
+        en: translations.en,
+      });
     }
   }
 
