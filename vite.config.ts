@@ -37,30 +37,36 @@ function localApiDevServer() {
           urlObj.searchParams.forEach((v, k) => {
             query[k] = v;
           });
-          req.query = query;
+          // Recargar env dinámicamente para reflejar cambios en .env.local sin reiniciar el servidor
+          const currentEnv = loadEnv('', process.cwd(), '');
+          Object.assign(process.env, currentEnv);
 
           // Parse JSON body if present
           if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method || '')) {
-            const buffers: Buffer[] = [];
-            for await (const chunk of req) {
-              buffers.push(chunk);
-            }
-            const data = Buffer.concat(buffers).toString();
-            try {
-              req.body = data ? JSON.parse(data) : {};
-            } catch {
-              req.body = {};
+            if (!req.body) {
+              const buffers: Buffer[] = [];
+              for await (const chunk of req) {
+                buffers.push(chunk);
+              }
+              const data = Buffer.concat(buffers).toString();
+              try {
+                req.body = data ? JSON.parse(data) : {};
+              } catch {
+                req.body = {};
+              }
             }
           }
 
           // Polyfill res.status and res.json for Express/Vercel compatibility
-          res.status = (statusCode: number) => {
+          res.status = function(statusCode: number) {
             res.statusCode = statusCode;
             return res;
           };
-          res.json = (data: any) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(data));
+          res.json = function(data: any) {
+            if (!res.writableEnded) {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify(data));
+            }
             return res;
           };
 

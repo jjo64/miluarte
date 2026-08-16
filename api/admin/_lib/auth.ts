@@ -28,10 +28,18 @@ export function extractTokenFromHeader(authHeader?: string): string | null {
 }
 
 export async function verifyPassword(password: string, hashOrPlain: string): Promise<boolean> {
+  if (!password || !hashOrPlain) return false;
+  const cleanPass = password.trim();
+  const cleanTarget = hashOrPlain.trim().replace(/^['"]|['"]$/g, "");
+
   // Si está hasheado con bcrypt (empieza con $2a$, $2b$, $2y$)
-  if (hashOrPlain.startsWith("$2a$") || hashOrPlain.startsWith("$2b$") || hashOrPlain.startsWith("$2y$")) {
-    return bcrypt.compare(password, hashOrPlain);
+  if (cleanTarget.startsWith("$2a$") || cleanTarget.startsWith("$2b$") || cleanTarget.startsWith("$2y$")) {
+    try {
+      return await bcrypt.compare(cleanPass, cleanTarget);
+    } catch {
+      return false;
+    }
   }
-  // Fallback seguro en desarrollo o si el usuario guardó temporalmente texto plano
-  return password === hashOrPlain;
+  // Fallback seguro en desarrollo o si se introdujo texto plano
+  return cleanPass === cleanTarget;
 }
