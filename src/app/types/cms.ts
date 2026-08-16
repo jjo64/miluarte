@@ -69,6 +69,8 @@ export interface ChangelogEntry {
   timestamp: string;     // ISO 8601
   action: string;        // "Subió 3 fotos a Ilustración"
   section: "galleries" | "works" | "renders" | "texts" | "social" | "messages" | "system";
+  snapshotId?: string;   // ID del snapshot en KV para rollback automático
+  canRollback?: boolean; // Indica si tiene punto de restauración
 }
 
 export interface ContactMessage {

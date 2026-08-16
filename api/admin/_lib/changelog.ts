@@ -5,10 +5,47 @@ import { nanoid } from "nanoid";
 export async function addChangelogEntry(
   action: string,
   section: ChangelogEntry["section"]
-): Promise<void> {
-  if (!isKvConfigured()) return;
+): Promise<string | null> {
+  if (!isKvConfigured()) return null;
 
   try {
+    const snapshotId = `snap-${Date.now()}-${nanoid(4)}`;
+
+    // 1. Capturar snapshot del estado actual antes del cambio (para permitir rollback)
+    try {
+      const [galleries, renders, texts, social] = await Promise.all([
+        kv.get("miluarte:galleries"),
+        kv.get("miluarte:renders"),
+        kv.get("miluarte:texts"),
+        kv.get("miluarte:social"),
+      ]);
+
+      const snapshotData: Record<string, any> = {
+        galleries,
+        renders,
+        texts,
+        social,
+        works: {},
+      };
+
+      if (galleries) {
+        const galleriesArr = typeof galleries === "string" ? JSON.parse(galleries) : (galleries as any);
+        if (Array.isArray(galleriesArr)) {
+          await Promise.all(
+            galleriesArr.map(async (g: any) => {
+              snapshotData.works[g.slug] = await kv.get(`miluarte:gallery:${g.slug}`);
+            })
+          );
+        }
+      }
+
+      // Guardar snapshot en KV con TTL de 30 días
+      await kv.set(`miluarte:snapshot:${snapshotId}`, JSON.stringify(snapshotData));
+    } catch (snapErr) {
+      console.warn("No se pudo capturar snapshot de seguridad:", snapErr);
+    }
+
+    // 2. Registrar en el changelog
     const raw = await kv.get("miluarte:changelog");
     let entries: ChangelogEntry[] = [];
     if (typeof raw === "string") {
@@ -22,16 +59,58 @@ export async function addChangelogEntry(
       timestamp: new Date().toISOString(),
       action,
       section,
+      snapshotId,
+      canRollback: true,
     };
 
     entries.unshift(newEntry);
-    // Mantener las últimas 50 entradas
     if (entries.length > 50) {
       entries = entries.slice(0, 50);
     }
 
     await kv.set("miluarte:changelog", JSON.stringify(entries));
+    return snapshotId;
   } catch (error) {
     console.error("Error al registrar en changelog:", error);
+    return null;
+  }
+}
+
+export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
+  if (!isKvConfigured()) return false;
+
+  try {
+    const rawSnapshot = await kv.get(`miluarte:snapshot:${snapshotId}`);
+    if (!rawSnapshot) return false;
+
+    const snapshot = typeof rawSnapshot === "string" ? JSON.parse(rawSnapshot) : rawSnapshot;
+
+    // Restaurar colecciones principales
+    if (snapshot.galleries) {
+      await kv.set("miluarte:galleries", typeof snapshot.galleries === "string" ? snapshot.galleries : JSON.stringify(snapshot.galleries));
+    }
+    if (snapshot.renders) {
+      await kv.set("miluarte:renders", typeof snapshot.renders === "string" ? snapshot.renders : JSON.stringify(snapshot.renders));
+    }
+    if (snapshot.texts) {
+      await kv.set("miluarte:texts", typeof snapshot.texts === "string" ? snapshot.texts : JSON.stringify(snapshot.texts));
+    }
+    if (snapshot.social) {
+      await kv.set("miluarte:social", typeof snapshot.social === "string" ? snapshot.social : JSON.stringify(snapshot.social));
+    }
+
+    // Restaurar obras por galería
+    if (snapshot.works) {
+      for (const [slug, worksData] of Object.entries(snapshot.works)) {
+        if (worksData) {
+          await kv.set(`miluarte:gallery:${slug}`, typeof worksData === "string" ? worksData : JSON.stringify(worksData));
+        }
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error al revertir snapshot:", error);
+    return false;
   }
 }

@@ -140,9 +140,15 @@ Este panel de administración fue diseñado exclusivamente para ti. A partir de 
 
 ---
 
-## 11. Copias de seguridad (Backup) y solución de dudas
+## 11. Copias de seguridad (Backup), Revertir Cambios y Solución de Dudas
 
-### ¿Cómo hacer una copia de seguridad?
+### ¿Cómo deshacer un cambio o volver a una versión anterior? (¡Revertir!)
+1. Si tocaste textos, borraste una obra por error o no te gusta cómo quedó la página, ve a **"Historial de Cambios"** en el menú.
+2. Verás una lista cronológica de todo lo que se ha modificado.
+3. Al lado de cada cambio anterior verás el botón **"⏪ Revertir a esta versión"**.
+4. Haz clic en él y confirma: **tu portfolio volverá automáticamente al estado exacto que tenía antes de ese cambio**.
+
+### ¿Cómo hacer una copia de seguridad en archivo?
 1. Ve a la pantalla principal del panel (**Dashboard**).
 2. En la caja inferior derecha, haz clic en **"⬇ Exportar Backup Completo (.JSON)"**.
 3. Se descargará un archivo con la fecha del día conteniendo **todas tus obras, galerías, proyectos 3D, textos y mensajes**.
