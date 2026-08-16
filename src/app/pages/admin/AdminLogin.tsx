@@ -6,7 +6,7 @@ import { C, SERIF, SANS, ease, fadeUp } from "../../tokens";
 import { useAdminApi } from "../../hooks/useAdminApi";
 
 export function AdminLogin() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("miluartedenara@gmail.com");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
