@@ -37,6 +37,7 @@ function localApiDevServer() {
           urlObj.searchParams.forEach((v, k) => {
             query[k] = v;
           });
+          req.query = query;
           // Recargar env dinámicamente para reflejar cambios en .env.local sin reiniciar el servidor
           const currentEnv = loadEnv('', process.cwd(), '');
           Object.assign(process.env, currentEnv);
