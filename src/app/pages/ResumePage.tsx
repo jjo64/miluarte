@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { ArrowLeft, Printer, Mail, Instagram, Globe } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 export function ResumePage() {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ export function ResumePage() {
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 items-end">
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
               <img
-                src="https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png"
+                src={getOptimizedImageUrl(t("resumePhoto") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png", 300)}
                 alt="Nerea Lucas Pajares"
                 className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover border border-brand-cream/15 shadow-sm shrink-0 print:w-20 print:h-20"
               />

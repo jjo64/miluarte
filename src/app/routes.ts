@@ -46,6 +46,7 @@ const AdminMessages      = lazyWithReload(() => import("./pages/admin/AdminMessa
 const AdminSocial        = lazyWithReload(() => import("./pages/admin/AdminSocial").then(m => ({ default: m.AdminSocial })));
 const AdminChangelog     = lazyWithReload(() => import("./pages/admin/AdminChangelog").then(m => ({ default: m.AdminChangelog })));
 const AdminHomeEditor    = lazyWithReload(() => import("./pages/admin/AdminHomeEditor").then(m => ({ default: m.AdminHomeEditor })));
+const AdminResumeEditor  = lazyWithReload(() => import("./pages/admin/AdminResumeEditor").then(m => ({ default: m.AdminResumeEditor })));
 
 function withAdminGuard(Component: React.ComponentType) {
   return function ProtectedRoute() {
@@ -80,6 +81,10 @@ export const router = createBrowserRouter([
   {
     path: "/admin/inicio",
     Component: withAdminGuard(AdminHomeEditor),
+  },
+  {
+    path: "/admin/cv",
+    Component: withAdminGuard(AdminResumeEditor),
   },
   {
     path: "/admin/galerias",

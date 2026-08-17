@@ -1,4 +1,7 @@
-﻿User-agent: *
+User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
 
 Sitemap: https://miluartedenara.com/sitemap.xml

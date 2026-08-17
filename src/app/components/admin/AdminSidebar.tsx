@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router";
 import {
   LayoutDashboard,
@@ -10,6 +11,7 @@ import {
   ExternalLink,
   LogOut,
   Sparkles,
+  GraduationCap,
   X,
 } from "lucide-react";
 import { useAdminApi } from "../../hooks/useAdminApi";
@@ -19,8 +21,34 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
-  const { removeToken } = useAdminApi();
+  const { removeToken, request } = useAdminApi();
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function checkUnread() {
+      try {
+        const [contacts, bookings] = await Promise.all([
+          request<any[]>("/api/admin/messages?type=contact"),
+          request<any[]>("/api/admin/messages?type=booking"),
+        ]);
+        if (isMounted) {
+          const unreadC = Array.isArray(contacts) ? contacts.filter((m) => !m.read).length : 0;
+          const unreadB = Array.isArray(bookings) ? bookings.filter((m) => !m.read).length : 0;
+          setUnreadCount(unreadC + unreadB);
+        }
+      } catch {
+        // Silencioso
+      }
+    }
+    checkUnread();
+    const interval = setInterval(checkUnread, 30000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleLogout = () => {
     removeToken();
@@ -30,9 +58,10 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const navItems = [
     { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
     { to: "/admin/inicio", label: "Editar Inicio (Live)", icon: Sparkles },
+    { to: "/admin/cv", label: "Currículum (CV)", icon: GraduationCap },
     { to: "/admin/galerias", label: "Galerías y Obras", icon: Images },
     { to: "/admin/renders", label: "Renders 3D & Stands", icon: Box },
-    { to: "/admin/mensajes", label: "Mensajes Recibidos", icon: MessageSquare },
+    { to: "/admin/mensajes", label: "Mensajes Recibidos", icon: MessageSquare, badge: unreadCount },
     { to: "/admin/redes", label: "Redes Sociales", icon: Share2 },
     { to: "/admin/historial", label: "Historial de Cambios", icon: History },
   ];
@@ -85,7 +114,12 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
                 }
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
-                <span>{item.label}</span>
+                <span className="flex-1 text-left">{item.label}</span>
+                {Boolean(item.badge && item.badge > 0) && (
+                  <span className="px-2 py-0.5 rounded-full bg-brand-orange text-brand-ink text-[10px] font-bold font-mono animate-pulse shadow">
+                    {item.badge}
+                  </span>
+                )}
               </NavLink>
             );
           })}
