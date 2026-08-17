@@ -241,8 +241,8 @@ function ServiceSection({ service, index }: { service: ServiceData; index: numbe
                 {t("services.ctaBeforeAfter")}
               </p>
               <BeforeAfterSlider
-                beforeSrc={IMG_3D_BEFORE}
-                afterSrc={IMG_3D_AFTER}
+                beforeSrc={t("servicesImages.stand3dBefore") || IMG_3D_BEFORE}
+                afterSrc={t("servicesImages.stand3dAfter") || IMG_3D_AFTER}
                 beforeLabel={t("services.render3D")}
                 afterLabel={t("services.realResult")}
                 height={400}
@@ -264,11 +264,25 @@ function ServiceSection({ service, index }: { service: ServiceData; index: numbe
 export function ServiceSections() {
   const { t } = useLanguage();
 
+  const imgDisenoGrafico = t("servicesImages.disenoGrafico") || artDiggin;
+  const imgStandBefore    = t("servicesImages.stand3dBefore") || IMG_3D_BEFORE;
+  const imgStandAfter     = t("servicesImages.stand3dAfter") || IMG_3D_AFTER;
+  const imgDiggin         = t("servicesImages.diggin") || artDiggin;
+  const imgIlustracion    = t("servicesImages.ilustracion") || artMusae;
+  const imgConceptArt     = t("servicesImages.conceptArt") || artPortraits;
+
   // Localize services metadata on the fly
   const localizedServices = SERVICES.map((s) => {
     const key = s.slug;
+    let dynamicImg = s.img;
+    if (s.id === "diseno-grafico") dynamicImg = imgDisenoGrafico;
+    if (s.id === "diggin") dynamicImg = imgDiggin;
+    if (s.id === "ilustraciones") dynamicImg = imgIlustracion;
+    if (s.id === "concept-art") dynamicImg = imgConceptArt;
+
     return {
       ...s,
+      img: dynamicImg,
       label: t(`services.items.${key}.label`) || s.label,
       title: t(`services.items.${key}.title`) || s.title,
       description: t(`services.items.${key}.description`) || s.description,
@@ -278,7 +292,13 @@ export function ServiceSections() {
 
   return (
     <>
-      {localizedServices.map((s, i) => <ServiceSection key={s.id} service={s} index={i} />)}
+      {localizedServices.map((s, i) => (
+        <ServiceSection
+          key={s.id}
+          service={s}
+          index={i}
+        />
+      ))}
     </>
   );
 }

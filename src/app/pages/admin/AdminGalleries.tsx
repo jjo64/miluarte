@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Plus, ArrowUpDown, Check, X, Sparkles } from "lucide-react";
+import { Plus, ArrowUpDown, Check, X, Sparkles, Globe } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { GalleryCard } from "../../components/admin/GalleryCard";
 import { DragSortableList } from "../../components/admin/DragSortableList";
@@ -10,19 +10,25 @@ import { Toast } from "../../components/admin/Toast";
 import { GalleryMeta } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
 
+type Lang = "es" | "en";
+
 export function AdminGalleries() {
   const [galleries, setGalleries] = useState<GalleryMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [isReordering, setIsReordering] = useState(false);
+  const [lang, setLang] = useState<Lang>("es");
 
   // Modal Crear / Editar
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingGallery, setEditingGallery] = useState<GalleryMeta | null>(null);
   const [formData, setFormData] = useState({
     title: "",
+    titleEn: "",
     slug: "",
-    label: "",
+    label: "Obra artística",
+    labelEn: "Artistic work",
     statement: "",
+    statementEn: "",
     accent: "#EAA898",
     twoColumns: false,
     featured: false,
@@ -44,8 +50,26 @@ export function AdminGalleries() {
   const fetchGalleries = async () => {
     try {
       setLoading(true);
-      const data = await request<GalleryMeta[]>("/api/admin/galleries");
-      setGalleries(data);
+      const [galleriesData, textsData] = await Promise.all([
+        request<GalleryMeta[]>("/api/admin/galleries"),
+        request<any>("/api/admin/texts"),
+      ]);
+
+      const safeGalleries = Array.isArray(galleriesData) ? galleriesData : [];
+
+      // Enriquecer con textos en inglés si existen
+      if (textsData?.en?.collection?.meta) {
+        safeGalleries.forEach((g) => {
+          const metaEn = textsData.en.collection.meta[g.slug];
+          if (metaEn) {
+            (g as any).titleEn = metaEn.title;
+            (g as any).labelEn = metaEn.label;
+            (g as any).statementEn = metaEn.statement;
+          }
+        });
+      }
+
+      setGalleries(safeGalleries);
     } catch (err: any) {
       setToast({
         message: "Error al cargar las galerías: " + (err.message || "Fallo de conexión"),
@@ -65,9 +89,12 @@ export function AdminGalleries() {
     setEditingGallery(null);
     setFormData({
       title: "",
+      titleEn: "",
       slug: "",
       label: "Obra artística",
+      labelEn: "Artistic work",
       statement: "",
+      statementEn: "",
       accent: "#EAA898",
       twoColumns: false,
       featured: false,
@@ -79,9 +106,12 @@ export function AdminGalleries() {
     setEditingGallery(gallery);
     setFormData({
       title: gallery.title,
+      titleEn: (gallery as any).titleEn || gallery.title,
       slug: gallery.slug,
       label: gallery.label || "",
+      labelEn: (gallery as any).labelEn || gallery.label || "",
       statement: gallery.statement || "",
+      statementEn: (gallery as any).statementEn || gallery.statement || "",
       accent: gallery.accent || "#EAA898",
       twoColumns: Boolean(gallery.twoColumns),
       featured: Boolean(gallery.featured),
@@ -95,7 +125,7 @@ export function AdminGalleries() {
 
     try {
       if (editingGallery) {
-        // Actualizar
+        // Actualizar Galería
         await request("/api/admin/galleries", {
           method: "PUT",
           body: JSON.stringify({
@@ -103,7 +133,37 @@ export function AdminGalleries() {
             ...formData,
           }),
         });
-        setToast({ message: "Galería actualizada exitosamente", type: "success", open: true });
+
+        // Guardar traducciones ES y EN en texts
+        await request("/api/admin/texts", {
+          method: "PUT",
+          body: JSON.stringify({
+            es: {
+              collection: {
+                meta: {
+                  [editingGallery.slug]: {
+                    title: formData.title,
+                    label: formData.label,
+                    statement: formData.statement,
+                  },
+                },
+              },
+            },
+            en: {
+              collection: {
+                meta: {
+                  [editingGallery.slug]: {
+                    title: formData.titleEn || formData.title,
+                    label: formData.labelEn || formData.label,
+                    statement: formData.statementEn || formData.statement,
+                  },
+                },
+              },
+            },
+          }),
+        });
+
+        setToast({ message: "Galería y traducciones guardadas exitosamente", type: "success", open: true });
       } else {
         // Crear
         await request("/api/admin/galleries", {
@@ -154,20 +214,52 @@ export function AdminGalleries() {
           slugs: reordered.map((g) => g.slug),
         }),
       });
-      setToast({ message: "Nuevo orden de galerías guardado", type: "success", open: true });
+      setToast({ message: "Orden de galerías actualizado", type: "success", open: true });
     } catch (err: any) {
-      setToast({ message: "Error al guardar orden", type: "error", open: true });
+      setToast({
+        message: "Error al guardar el orden",
+        type: "error",
+        open: true,
+      });
       fetchGalleries();
     }
   };
 
   const headerActions = (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-2.5 flex-wrap justify-end">
+      {/* Selector de idioma ES/EN */}
+      <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
+        <button
+          type="button"
+          onClick={() => setLang("es")}
+          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+            lang === "es"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
+              : "text-brand-cream/60 hover:text-brand-cream"
+          }`}
+        >
+          <span>🇪🇸</span>
+          <span>Español</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setLang("en")}
+          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+            lang === "en"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
+              : "text-brand-cream/60 hover:text-brand-cream"
+          }`}
+        >
+          <span>🇬🇧</span>
+          <span>English</span>
+        </button>
+      </div>
+
       <button
         onClick={() => setIsReordering(!isReordering)}
-        className={`px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
+        className={`px-3.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
           isReordering
-            ? "bg-brand-blush text-brand-ink"
+            ? "bg-brand-blush text-brand-ink font-semibold"
             : "border border-brand-cream/15 text-brand-cream/80 hover:text-brand-cream hover:bg-brand-cream/5"
         }`}
       >
@@ -177,7 +269,7 @@ export function AdminGalleries() {
 
       <button
         onClick={handleOpenCreate}
-        className="px-4 py-2 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-md"
+        className="px-4 py-1.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-md"
       >
         <Plus className="w-4 h-4" />
         <span className="hidden sm:inline">Nueva Galería</span>
@@ -188,7 +280,7 @@ export function AdminGalleries() {
   return (
     <AdminLayout
       title="Galerías de Arte"
-      subtitle="Organiza, edita y añade nuevas colecciones al portfolio de Nerea"
+      subtitle={`Organiza y edita las colecciones en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
       actions={headerActions}
     >
       {/* Loading Skeleton */}
@@ -215,16 +307,27 @@ export function AdminGalleries() {
           enableDrag={isReordering}
           onReorder={(items) => handleReorder(items as any)}
           gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          renderItem={(g) => (
-            <GalleryCard
-              gallery={g}
-              worksCount={(g as any).worksCount ?? 0}
-              onOpen={() => navigate(`/admin/galerias/${g.slug}`)}
-              onEditMeta={() => handleOpenEdit(g)}
-              onDelete={() => setDeletingGallery(g)}
-              isReorderMode={isReordering}
-            />
-          )}
+          renderItem={(g) => {
+            const displayTitle = lang === "en" ? (g as any).titleEn || g.title : g.title;
+            const displayLabel = lang === "en" ? (g as any).labelEn || g.label : g.label;
+            const displayStatement = lang === "en" ? (g as any).statementEn || g.statement : g.statement;
+
+            return (
+              <GalleryCard
+                gallery={{
+                  ...g,
+                  title: displayTitle,
+                  label: displayLabel,
+                  statement: displayStatement,
+                }}
+                worksCount={(g as any).worksCount ?? 0}
+                onOpen={() => navigate(`/admin/galerias/${g.slug}`)}
+                onEditMeta={() => handleOpenEdit(g)}
+                onDelete={() => setDeletingGallery(g)}
+                isReorderMode={isReordering}
+              />
+            );
+          }}
         />
       )}
 
@@ -240,7 +343,7 @@ export function AdminGalleries() {
             >
               <div className="flex items-center justify-between pb-4 mb-5 border-b border-brand-cream/10">
                 <h3 className="font-serif text-2xl text-brand-cream font-light">
-                  {editingGallery ? "Editar Galería" : "Nueva Galería"}
+                  {editingGallery ? "Editar Galería (Bilingüe)" : "Nueva Galería"}
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
@@ -251,127 +354,141 @@ export function AdminGalleries() {
               </div>
 
               <form onSubmit={handleSaveGallery} className="flex flex-col gap-4">
-                {/* Título */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                    Título de la Galería *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setFormData({
-                        ...formData,
-                        title: val,
-                        slug: editingGallery
-                          ? formData.slug
-                          : val
-                              .toLowerCase()
-                              .replace(/[^a-z0-9]+/g, "-")
-                              .replace(/(^-|-$)/g, ""),
-                      });
-                    }}
-                    placeholder="Ej: Joyería Artesanal"
-                    required
-                    className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-sm focus:border-brand-blush outline-none"
-                  />
-                </div>
-
-                {/* Slug / Ruta URL */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                    Slug / URL de la Galería
-                  </label>
-                  <div className="flex items-center bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-sm text-brand-cream">
-                    <span className="text-brand-cream/40 mr-1 font-mono">/coleccion/</span>
+                {/* Título Español / Inglés */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium flex items-center gap-1">
+                      <span>Título (Español 🇪🇸) *</span>
+                    </label>
                     <input
                       type="text"
-                      value={formData.slug}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, ""),
-                        })
-                      }
-                      disabled={Boolean(editingGallery)}
-                      placeholder="joyeria-artesanal"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="Ej: Ilustración"
                       required
-                      className="bg-transparent text-brand-blush font-mono flex-1 outline-none disabled:opacity-60"
+                      className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-sm focus:border-brand-blush outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium flex items-center gap-1">
+                      <span>Título (Inglés 🇬🇧)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.titleEn}
+                      onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+                      placeholder="Ej: Illustration"
+                      className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-sm focus:border-brand-blush outline-none"
                     />
                   </div>
                 </div>
 
-                {/* Subtítulo / Label */}
+                {/* Slug */}
                 <div className="flex flex-col gap-1.5">
                   <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                    Subtítulo / Categoría
+                    Slug / URL *
                   </label>
                   <input
                     type="text"
-                    value={formData.label}
-                    onChange={(e) => setFormData({ ...formData, label: e.target.value })}
-                    placeholder="Ej: Obra personal · Técnica mixta"
-                    className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-sm focus:border-brand-blush outline-none"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") })}
+                    placeholder="ej: ilustracion"
+                    required
+                    disabled={Boolean(editingGallery)}
+                    className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-sm font-mono focus:border-brand-blush outline-none disabled:opacity-50"
                   />
                 </div>
 
-                {/* Declaración / Statement */}
+                {/* Etiqueta / Label ES y EN */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
+                      Categoría (ES 🇪🇸)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.label}
+                      onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+                      placeholder="Ej: Obra personal"
+                      className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2 text-brand-cream text-sm focus:border-brand-blush outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
+                      Categoría (EN 🇬🇧)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.labelEn}
+                      onChange={(e) => setFormData({ ...formData, labelEn: e.target.value })}
+                      placeholder="Ej: Personal work"
+                      className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2 text-brand-cream text-sm focus:border-brand-blush outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Statement / Descripción ES */}
                 <div className="flex flex-col gap-1.5">
                   <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                    Descripción / Declaración Artística
+                    Declaración Artística (Español 🇪🇸)
                   </label>
                   <textarea
-                    rows={3}
+                    rows={2}
                     value={formData.statement}
                     onChange={(e) => setFormData({ ...formData, statement: e.target.value })}
-                    placeholder="Escribe el texto que describe la intención artística de esta colección..."
-                    className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl p-3 text-brand-cream text-sm focus:border-brand-blush outline-none resize-none leading-relaxed"
+                    placeholder="Descripción artística de la serie..."
+                    className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-xs leading-relaxed focus:border-brand-blush outline-none resize-y"
                   />
                 </div>
 
-                {/* Color de acento & Opciones */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                {/* Statement / Descripción EN */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
+                    Declaración Artística (Inglés 🇬🇧)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={formData.statementEn}
+                    onChange={(e) => setFormData({ ...formData, statementEn: e.target.value })}
+                    placeholder="Artist statement in English..."
+                    className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-xs leading-relaxed focus:border-brand-blush outline-none resize-y"
+                  />
+                </div>
+
+                {/* Color de Acento y Opciones */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
                   <div className="flex flex-col gap-1.5">
                     <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
                       Color de Acento
                     </label>
-                    <div className="flex items-center gap-3 bg-brand-bg border border-brand-cream/15 rounded-xl p-2">
+                    <div className="flex items-center gap-2">
                       <input
                         type="color"
-                        value={formData.accent.startsWith("#") ? formData.accent : "#EAA898"}
+                        value={formData.accent}
                         onChange={(e) => setFormData({ ...formData, accent: e.target.value })}
-                        className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
+                        className="w-8 h-8 rounded-lg border-0 cursor-pointer bg-transparent"
                       />
-                      <span className="font-mono text-xs text-brand-cream/80">{formData.accent}</span>
+                      <span className="font-mono text-xs text-brand-cream/60">{formData.accent}</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col justify-center gap-2 pt-2 sm:pt-0">
-                    <label className="flex items-center gap-2 cursor-pointer text-xs text-brand-cream/80">
+                  <div className="flex flex-col justify-end">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-brand-cream">
                       <input
                         type="checkbox"
                         checked={formData.featured}
                         onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                        className="w-4 h-4 rounded-md accent-brand-blush"
+                        className="w-4 h-4 rounded accent-brand-blush"
                       />
-                      <span>Destacar en Galería de Inicio</span>
-                    </label>
-
-                    <label className="flex items-center gap-2 cursor-pointer text-xs text-brand-cream/80">
-                      <input
-                        type="checkbox"
-                        checked={formData.twoColumns}
-                        onChange={(e) => setFormData({ ...formData, twoColumns: e.target.checked })}
-                        className="w-4 h-4 rounded-md accent-brand-blush"
-                      />
-                      <span>Formato 2 Columnas (Diggin')</span>
+                      <span>Destacada en Home</span>
                     </label>
                   </div>
                 </div>
 
                 {/* Botones de acción */}
-                <div className="flex items-center justify-end gap-3 pt-4 mt-2 border-t border-brand-cream/10">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-brand-cream/10 mt-2">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
@@ -381,9 +498,9 @@ export function AdminGalleries() {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                    className="px-6 py-2.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer"
                   >
-                    Guardar Galería
+                    {editingGallery ? "Guardar Cambios" : "Crear Galería"}
                   </button>
                 </div>
               </form>
@@ -392,17 +509,17 @@ export function AdminGalleries() {
         )}
       </AnimatePresence>
 
-      {/* Confirmación Borrar Galería */}
+      {/* Confirmación Borrar */}
       <ConfirmDialog
         isOpen={Boolean(deletingGallery)}
         onClose={() => setDeletingGallery(null)}
         onConfirm={handleDeleteGallery}
-        title="¿Eliminar galería completa?"
-        description={`Estás a punto de borrar la colección "${deletingGallery?.title}" y todas sus obras registradas. Esta acción no se puede deshacer.`}
+        title="¿Eliminar galería?"
+        description={`¿Estás segura de que deseas eliminar permanentemente la galería "${deletingGallery?.title}"? Esta acción no se puede deshacer.`}
         confirmText="Eliminar Galería"
+        destructive={true}
       />
 
-      {/* Notificación Toast */}
       <Toast
         isOpen={toast.open}
         message={toast.message}

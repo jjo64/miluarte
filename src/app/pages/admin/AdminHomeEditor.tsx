@@ -13,6 +13,11 @@ import {
   Camera,
   Layers,
   Image as ImageIcon,
+  Eye,
+  EyeOff,
+  Plus,
+  Trash2,
+  ArrowUpRight,
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { Toast } from "../../components/admin/Toast";
@@ -23,8 +28,8 @@ import { getOptimizedImageUrl } from "../../utils/cloudinary";
 import { ClientsMarquee } from "../../components/ClientsMarquee";
 import { HorizontalGallery } from "../../components/HorizontalGallery";
 import { SketchSlider } from "../../components/SketchSlider";
-import { ServiceSections } from "../../components/ServiceSections";
-import { SharedFooter } from "../../components/SharedFooter";
+import { BeforeAfterSlider } from "../../components/BeforeAfterSlider";
+import { C, SANS, SERIF, RADIUS } from "../../tokens";
 
 type Lang = "es" | "en";
 type DeviceView = "desktop" | "tablet" | "mobile";
@@ -33,6 +38,12 @@ const DEFAULT_ANIMAS_SKETCH = "https://res.cloudinary.com/doznr2qm4/image/upload
 const DEFAULT_ANIMAS_FINAL  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
 const DEFAULT_FEATURED_IMG  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg";
 const DEFAULT_HERO_IMG      = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg";
+
+const DEFAULT_STAND_BEFORE = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/Captura_de_pantalla_2026-06-18_224728_qvosll.png";
+const DEFAULT_STAND_AFTER  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg";
+const DEFAULT_DIGGIN_IMG   = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg";
+const DEFAULT_MUSAE_IMG    = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
+const DEFAULT_PORTRAIT_IMG = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
 
 const DEFAULT_GALLERY_IMAGES = [
   { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", category: "ilustracion", altKey: "obra1" },
@@ -70,6 +81,7 @@ export function AdminHomeEditor() {
 
   const [lang, setLang] = useState<Lang>("es");
   const [device, setDevice] = useState<DeviceView>("desktop");
+  const [cleanPreview, setCleanPreview] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -96,6 +108,16 @@ export function AdminHomeEditor() {
   const [sketchImg, setSketchImg] = useState<string>(DEFAULT_ANIMAS_SKETCH);
   const [finalImg, setFinalImg] = useState<string>(DEFAULT_ANIMAS_FINAL);
   const [galleryImages, setGalleryImages] = useState(DEFAULT_GALLERY_IMAGES);
+
+  // Imágenes de las secciones de servicios
+  const [servicesImages, setServicesImages] = useState({
+    disenoGrafico: DEFAULT_DIGGIN_IMG,
+    stand3dBefore: DEFAULT_STAND_BEFORE,
+    stand3dAfter: DEFAULT_STAND_AFTER,
+    diggin: DEFAULT_DIGGIN_IMG,
+    ilustracion: DEFAULT_MUSAE_IMG,
+    conceptArt: DEFAULT_PORTRAIT_IMG,
+  });
 
   // Toast
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
@@ -127,6 +149,9 @@ export function AdminHomeEditor() {
         if (Array.isArray(res.galleryImages) && res.galleryImages.length > 0) {
           setGalleryImages(res.galleryImages);
         }
+        if (res.servicesImages) {
+          setServicesImages((prev) => ({ ...prev, ...res.servicesImages }));
+        }
       }
     } catch (err: any) {
       console.warn("Usando textos base:", err);
@@ -150,7 +175,7 @@ export function AdminHomeEditor() {
     setHasChanges(true);
   };
 
-  const getDraftValue = (path: string): string => {
+  const getDraftValue = (path: string): any => {
     const parts = path.split(".");
     let current: any = draftTexts[lang];
     for (const p of parts) {
@@ -160,10 +185,24 @@ export function AdminHomeEditor() {
         return "";
       }
     }
-    return typeof current === "string" ? current : "";
+    return current !== undefined ? current : "";
   };
 
-  const t = (path: string) => getDraftValue(path);
+  const t = (path: string) => {
+    const val = getDraftValue(path);
+    return typeof val === "string" ? val : "";
+  };
+
+  const getBullets = (path: string): string[] => {
+    const val = getDraftValue(path);
+    return Array.isArray(val) ? val : [];
+  };
+
+  const updateBullet = (path: string, index: number, val: string) => {
+    const currentBullets = [...getBullets(path)];
+    currentBullets[index] = val;
+    updateDraft(path, currentBullets);
+  };
 
   // Disparar selector de archivo para una imagen específica
   const triggerImageUpload = (target: string) => {
@@ -204,6 +243,9 @@ export function AdminHomeEditor() {
           }
           return next;
         });
+      } else if (activeImageTarget.startsWith("services_")) {
+        const key = activeImageTarget.replace("services_", "") as keyof typeof servicesImages;
+        setServicesImages((prev) => ({ ...prev, [key]: res.secureUrl }));
       }
 
       setHasChanges(true);
@@ -237,6 +279,7 @@ export function AdminHomeEditor() {
           sketchImg,
           finalImg,
           galleryImages,
+          servicesImages,
         }),
       });
 
@@ -269,7 +312,7 @@ export function AdminHomeEditor() {
   };
 
   const headerActions = (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5 flex-wrap justify-end">
       {/* Selector de idioma */}
       <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
         <button
@@ -332,6 +375,21 @@ export function AdminHomeEditor() {
         </button>
       </div>
 
+      {/* Botón Vista Limpia */}
+      <button
+        type="button"
+        onClick={() => setCleanPreview(!cleanPreview)}
+        className={`px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
+          cleanPreview
+            ? "bg-brand-cream/20 border-brand-cream text-brand-cream font-semibold shadow-xs"
+            : "border-brand-cream/15 text-brand-cream/70 hover:text-brand-cream"
+        }`}
+        title={cleanPreview ? "Mostrar controles de edición" : "Ocultar controles para ver resultado limpio"}
+      >
+        {cleanPreview ? <EyeOff className="w-3.5 h-3.5 text-brand-blush" /> : <Eye className="w-3.5 h-3.5" />}
+        <span className="hidden sm:inline">{cleanPreview ? "Editar" : "Vista Limpia"}</span>
+      </button>
+
       {/* Botón Descartar */}
       {hasChanges && (
         <button
@@ -368,7 +426,7 @@ export function AdminHomeEditor() {
         href="/"
         target="_blank"
         rel="noopener noreferrer"
-        className="px-3 py-2 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 transition-all hidden md:flex items-center gap-1.5 no-underline"
+        className="px-3 py-2 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 transition-all hidden xl:flex items-center gap-1.5 no-underline"
       >
         <ExternalLink className="w-3.5 h-3.5" />
         <span>Ver Web</span>
@@ -393,34 +451,36 @@ export function AdminHomeEditor() {
 
       <div className="w-full flex flex-col items-center select-none">
         {/* Barra superior de guía interactiva */}
-        <div className="w-full flex items-center justify-between px-5 py-3 bg-brand-dark/95 border border-brand-cream/10 rounded-t-2xl text-xs font-sans text-brand-cream/70 shadow-lg">
-          <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-medium text-brand-cream">
-              Lienzo Completo: Clica sobre cualquier texto o sobre cualquier foto para reemplazarla al instante.
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            {hasChanges ? (
-              <span className="px-2.5 py-0.5 rounded-full bg-brand-orange/20 text-brand-orange text-[11px] font-mono border border-brand-orange/30">
-                ● Cambios sin guardar
+        {!cleanPreview && (
+          <div className="w-full flex items-center justify-between px-5 py-3 bg-brand-dark/95 border border-brand-cream/10 rounded-t-2xl text-xs font-sans text-brand-cream/70 shadow-lg">
+            <div className="flex items-center gap-2.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-medium text-brand-cream">
+                Lienzo Completo: Clica sobre cualquier texto o sobre cualquier foto para reemplazarla al instante.
               </span>
-            ) : (
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-400/10 text-emerald-400 text-[11px] font-mono border border-emerald-400/20">
-                ✓ Todo sincronizado
+            </div>
+            <div className="flex items-center gap-3">
+              {hasChanges ? (
+                <span className="px-2.5 py-0.5 rounded-full bg-brand-orange/20 text-brand-orange text-[11px] font-mono border border-brand-orange/30">
+                  ● Cambios sin guardar
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-400/10 text-emerald-400 text-[11px] font-mono border border-emerald-400/20">
+                  ✓ Todo sincronizado
+                </span>
+              )}
+              <span className="font-mono text-[11px] text-brand-blush bg-brand-blush/10 px-2 py-0.5 rounded border border-brand-blush/20">
+                Idioma: {lang.toUpperCase()}
               </span>
-            )}
-            <span className="font-mono text-[11px] text-brand-blush bg-brand-blush/10 px-2 py-0.5 rounded border border-brand-blush/20">
-              Idioma: {lang.toUpperCase()}
-            </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Viewport a Pantalla Completa o Responsivo */}
         <div
           className={`w-full transition-all duration-300 border-x border-b border-brand-cream/10 rounded-b-2xl overflow-hidden shadow-2xl bg-brand-bg text-brand-cream ${
             device === "mobile"
-              ? "max-w-[400px]"
+              ? "max-w-[420px]"
               : device === "tablet"
               ? "max-w-[768px]"
               : "w-full"
@@ -435,6 +495,7 @@ export function AdminHomeEditor() {
                   label="Tagline del Hero"
                   value={t("hero.tagline")}
                   onChange={(val) => updateDraft("hero.tagline", val)}
+                  cleanPreview={cleanPreview}
                   className="font-sans text-brand-blush text-[10px] tracking-[0.34em] uppercase mb-4 font-semibold"
                 />
 
@@ -443,12 +504,14 @@ export function AdminHomeEditor() {
                     label="Saludo inicial"
                     value={t("hero.greetingBefore")}
                     onChange={(val) => updateDraft("hero.greetingBefore", val)}
+                    cleanPreview={cleanPreview}
                     className="font-serif text-brand-cream text-[2.6rem] md:text-[4.5rem] leading-[0.98] font-light tracking-tight whitespace-pre-line inline"
                   />
                   <EditableField
                     label="Nombre en cursiva"
                     value={t("hero.greetingItalic")}
                     onChange={(val) => updateDraft("hero.greetingItalic", val)}
+                    cleanPreview={cleanPreview}
                     className="font-serif italic text-brand-blush text-[2.6rem] md:text-[4.5rem] leading-[0.98] font-light tracking-tight inline ml-2"
                   />
                 </div>
@@ -457,6 +520,7 @@ export function AdminHomeEditor() {
                   label="Frase artística / Manifiesto"
                   value={t("hero.artline")}
                   onChange={(val) => updateDraft("hero.artline", val)}
+                  cleanPreview={cleanPreview}
                   multiline
                   className="font-serif italic text-brand-wall text-[1.15rem] md:text-[1.45rem] font-light leading-relaxed mb-6 max-w-[500px]"
                 />
@@ -467,6 +531,7 @@ export function AdminHomeEditor() {
                   label="Biografía principal (Párrafo 1)"
                   value={t("hero.bio1")}
                   onChange={(val) => updateDraft("hero.bio1", val)}
+                  cleanPreview={cleanPreview}
                   multiline
                   className="font-sans text-brand-cream/80 text-[13.5px] leading-relaxed mb-3 max-w-[500px]"
                 />
@@ -475,6 +540,7 @@ export function AdminHomeEditor() {
                   label="Biografía secundaria (Párrafo 2)"
                   value={t("hero.bio2")}
                   onChange={(val) => updateDraft("hero.bio2", val)}
+                  cleanPreview={cleanPreview}
                   multiline
                   className="font-sans text-brand-cream/70 text-[13.5px] leading-relaxed mb-8 max-w-[500px]"
                 />
@@ -484,13 +550,15 @@ export function AdminHomeEditor() {
                     label="Texto Botón 1"
                     value={t("hero.viewWorks")}
                     onChange={(val) => updateDraft("hero.viewWorks", val)}
-                    className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3.5 px-7 font-semibold"
+                    cleanPreview={cleanPreview}
+                    className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3.5 px-7 font-semibold rounded-lg"
                   />
                   <EditableField
                     label="Texto Botón 2"
                     value={t("hero.sendInquiry")}
                     onChange={(val) => updateDraft("hero.sendInquiry", val)}
-                    className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 bg-transparent"
+                    cleanPreview={cleanPreview}
+                    className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 bg-transparent rounded-lg"
                   />
                 </div>
               </div>
@@ -521,23 +589,25 @@ export function AdminHomeEditor() {
                   </div>
 
                   {/* Overlay interactivo de cambio de foto */}
-                  <div className="absolute inset-0 bg-black/70 backdrop-blur-xs opacity-0 group-hover/photo:opacity-100 transition-opacity flex flex-col items-center justify-center p-6 text-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-xl">
-                      {uploadingTarget === "hero" ? (
-                        <div className="w-5 h-5 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Camera className="w-6 h-6" />
-                      )}
+                  {!cleanPreview && (
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-xs opacity-0 group-hover/photo:opacity-100 transition-opacity flex flex-col items-center justify-center p-6 text-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-xl">
+                        {uploadingTarget === "hero" ? (
+                          <div className="w-5 h-5 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Camera className="w-6 h-6" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-sans text-xs font-semibold text-brand-cream uppercase tracking-wider">
+                          {uploadingTarget === "hero" ? "Subiendo a Cloudinary..." : "Cambiar Foto del Hero"}
+                        </p>
+                        <p className="font-sans text-[11px] text-brand-cream/60 mt-1">
+                          Haz clic para seleccionar una foto de tu ordenador
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-sans text-xs font-semibold text-brand-cream uppercase tracking-wider">
-                        {uploadingTarget === "hero" ? "Subiendo a Cloudinary..." : "Cambiar Foto del Hero"}
-                      </p>
-                      <p className="font-sans text-[11px] text-brand-cream/60 mt-1">
-                        Haz clic para seleccionar una foto de tu ordenador
-                      </p>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 <p className="font-sans text-brand-cream/60 text-[11px] tracking-wider text-center">
@@ -554,6 +624,7 @@ export function AdminHomeEditor() {
                 label="Eyebrow del proyecto"
                 value={t("featured.eyebrow")}
                 onChange={(val) => updateDraft("featured.eyebrow", val)}
+                cleanPreview={cleanPreview}
                 className="font-sans text-brand-blush text-[10px] tracking-[0.15em] uppercase flex items-center gap-2 font-medium"
               />
 
@@ -572,25 +643,27 @@ export function AdminHomeEditor() {
                   {t("featured.tag") || "DIRECCIÓN DE ARTE · IDENTIDAD VISUAL"}
                 </div>
 
-                {/* Overlay de edición al hover */}
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-xs opacity-0 group-hover/featured:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 text-center">
-                  <div className="w-10 h-10 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-lg">
-                    {uploadingTarget === "featured" ? (
-                      <div className="w-4 h-4 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <Camera className="w-5 h-5" />
-                    )}
+                {!cleanPreview && (
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-xs opacity-0 group-hover/featured:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 text-center">
+                    <div className="w-10 h-10 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-lg">
+                      {uploadingTarget === "featured" ? (
+                        <div className="w-4 h-4 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Camera className="w-5 h-5" />
+                      )}
+                    </div>
+                    <span className="font-sans text-xs font-semibold text-brand-cream tracking-wider uppercase">
+                      {uploadingTarget === "featured" ? "Subiendo a Cloudinary..." : "Cambiar Imagen de Proyecto Destacado"}
+                    </span>
                   </div>
-                  <span className="font-sans text-xs font-semibold text-brand-cream tracking-wider uppercase">
-                    {uploadingTarget === "featured" ? "Subiendo a Cloudinary..." : "Cambiar Imagen de Proyecto Destacado"}
-                  </span>
-                </div>
+                )}
               </div>
 
               <EditableField
                 label="Título Proyecto Destacado"
                 value={t("featured.title")}
                 onChange={(val) => updateDraft("featured.title", val)}
+                cleanPreview={cleanPreview}
                 className="font-serif text-brand-cream text-3xl md:text-4xl font-light leading-tight"
               />
 
@@ -598,6 +671,7 @@ export function AdminHomeEditor() {
                 label="Descripción Proyecto Destacado"
                 value={t("featured.description")}
                 onChange={(val) => updateDraft("featured.description", val)}
+                cleanPreview={cleanPreview}
                 multiline
                 className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed my-2"
               />
@@ -607,22 +681,39 @@ export function AdminHomeEditor() {
                   label="Texto Botón Ver Caso"
                   value={t("featured.viewCase")}
                   onChange={(val) => updateDraft("featured.viewCase", val)}
+                  cleanPreview={cleanPreview}
                   className="font-sans text-brand-cream text-[10px] tracking-widest uppercase border border-brand-cream/30 py-3.5 px-7 rounded-lg inline-block font-medium"
                 />
               </div>
             </div>
           </section>
 
-          {/* ── 3. Carrusel de Clientes en Vivo ── */}
-          <div className="border-y border-brand-cream/10 bg-brand-bg/50">
-            <ClientsMarquee />
-          </div>
+          {/* ── 3. Clientes y Colaboraciones ── */}
+          <section className="py-12 px-6 md:px-12 text-center bg-brand-bg/50 border-y border-brand-cream/10">
+            <EditableField
+              label="Eyebrow Clientes"
+              value={t("clients.eyebrow")}
+              onChange={(val) => updateDraft("clients.eyebrow", val)}
+              cleanPreview={cleanPreview}
+              className="font-sans text-brand-blush text-[10px] tracking-[0.2em] uppercase mb-2 font-medium"
+            />
+            <EditableField
+              label="Título Clientes"
+              value={t("clients.title")}
+              onChange={(val) => updateDraft("clients.title", val)}
+              cleanPreview={cleanPreview}
+              className="font-serif text-brand-cream text-2xl md:text-3xl font-light mb-3"
+            />
+            <div className="mt-6">
+              <ClientsMarquee />
+            </div>
+          </section>
 
           {/* ── 4. Galería Horizontal de Obras Destacadas Interactiva ── */}
           <div className="py-10 bg-brand-bg">
             <HorizontalGallery
               images={galleryImages}
-              editable={true}
+              editable={!cleanPreview}
               onImageClick={(idx) => triggerImageUpload(`gallery_${idx}`)}
             />
           </div>
@@ -634,18 +725,21 @@ export function AdminHomeEditor() {
                 label="Título Proceso Creativo"
                 value={t("process.title")}
                 onChange={(val) => updateDraft("process.title", val)}
+                cleanPreview={cleanPreview}
                 className="font-sans text-brand-blush text-[10px] tracking-widest uppercase mb-1.5 font-medium"
               />
               <EditableField
                 label="Subtítulo Proceso Creativo"
                 value={t("process.subtitle")}
                 onChange={(val) => updateDraft("process.subtitle", val)}
+                cleanPreview={cleanPreview}
                 className="font-serif text-brand-cream text-2xl md:text-3xl font-light mb-2.5"
               />
               <EditableField
                 label="Texto Guía / Hint"
                 value={t("process.hint")}
                 onChange={(val) => updateDraft("process.hint", val)}
+                cleanPreview={cleanPreview}
                 multiline
                 className="font-sans text-brand-cream/60 text-xs"
               />
@@ -659,42 +753,471 @@ export function AdminHomeEditor() {
               title={t("process.title")}
               subtitle={t("process.subtitle")}
               hint={t("process.hint")}
-              editable={true}
+              editable={!cleanPreview}
               onSketchClick={() => triggerImageUpload("sketch")}
               onFinalClick={() => triggerImageUpload("final")}
             />
           </div>
 
           {/* ── 6. Especialidades y Servicios (SeoServices) ── */}
-          <section className="py-20 px-6 md:px-12 max-w-4xl mx-auto">
-            <EditableField
-              label="Eyebrow Servicios"
-              value={t("seoServices.eyebrow")}
-              onChange={(val) => updateDraft("seoServices.eyebrow", val)}
-              className="font-sans text-brand-blush text-[10px] tracking-[0.15em] uppercase mb-2 font-medium"
-            />
-            <EditableField
-              label="Título de Servicios"
-              value={t("seoServices.title")}
-              onChange={(val) => updateDraft("seoServices.title", val)}
-              className="font-serif text-brand-cream text-3xl md:text-5xl font-light mb-4"
-            />
-            <EditableField
-              label="Descripción de Servicios"
-              value={t("seoServices.description")}
-              onChange={(val) => updateDraft("seoServices.description", val)}
-              multiline
-              className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed mb-10 max-w-2xl"
-            />
+          <section className="py-20 px-6 md:px-12 max-w-5xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <EditableField
+                label="Eyebrow Servicios"
+                value={t("seoServices.eyebrow")}
+                onChange={(val) => updateDraft("seoServices.eyebrow", val)}
+                cleanPreview={cleanPreview}
+                className="font-sans text-brand-blush text-[10px] tracking-[0.15em] uppercase mb-2 font-medium"
+              />
+              <EditableField
+                label="Título de Servicios"
+                value={t("seoServices.title")}
+                onChange={(val) => updateDraft("seoServices.title", val)}
+                cleanPreview={cleanPreview}
+                className="font-serif text-brand-cream text-3xl md:text-5xl font-light mb-4"
+              />
+              <EditableField
+                label="Descripción de Servicios"
+                value={t("seoServices.description")}
+                onChange={(val) => updateDraft("seoServices.description", val)}
+                cleanPreview={cleanPreview}
+                multiline
+                className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed"
+              />
+            </div>
+
+            {/* Grid de 4 Especialidades */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { key: "editorial", label: "Ilustración Editorial" },
+                { key: "concept", label: "Concept Art" },
+                { key: "graphics", label: "Diseño Gráfico" },
+                { key: "clay", label: "Joyería & Arcilla" },
+              ].map((item) => (
+                <div key={item.key} className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10 flex flex-col justify-between">
+                  <div>
+                    <EditableField
+                      label={`Título ${item.label}`}
+                      value={t(`seoServices.items.${item.key}.title`)}
+                      onChange={(val) => updateDraft(`seoServices.items.${item.key}.title`, val)}
+                      cleanPreview={cleanPreview}
+                      className="font-serif text-lg text-brand-cream mb-2"
+                    />
+                    <EditableField
+                      label={`Descripción ${item.label}`}
+                      value={t(`seoServices.items.${item.key}.description`)}
+                      onChange={(val) => updateDraft(`seoServices.items.${item.key}.description`, val)}
+                      cleanPreview={cleanPreview}
+                      multiline
+                      className="font-sans text-xs text-brand-cream/60 leading-relaxed"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
 
-          {/* ── 7. Secciones Completas de Servicios en Acordeón ── */}
-          <div className="border-t border-brand-cream/10">
-            <ServiceSections />
+          {/* ── 7. SECCIONES DE SERVICIOS DETALLADAS (ServiceSections) 100% EDITABLES ── */}
+          <div className="border-t border-brand-cream/10 flex flex-col">
+            {/* 1. Diseño Gráfico (Identidad Visual y Comunicación) */}
+            <section className="bg-brand-bg py-20 px-6 md:px-12 border-b border-brand-cream/10">
+              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                {/* Imagen Editable al Clic */}
+                <div
+                  onClick={() => triggerImageUpload("services_disenoGrafico")}
+                  className="group/img relative aspect-[4/3] rounded-2xl overflow-hidden bg-brand-dark border-2 border-transparent hover:border-brand-blush cursor-pointer shadow-xl"
+                  title="Haz clic para cambiar la imagen de Diseño Gráfico"
+                >
+                  <img
+                    src={getOptimizedImageUrl(servicesImages.disenoGrafico, 800)}
+                    alt="Diseño Gráfico"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                  />
+                  {!cleanPreview && (
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                      <div className="w-10 h-10 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center">
+                        <Camera className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs uppercase font-sans text-brand-cream font-semibold tracking-wider">
+                        Cambiar Imagen
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Textos */}
+                <div className="flex flex-col gap-3">
+                  <EditableField
+                    label="Etiqueta Sección"
+                    value={t("services.items.diseno-grafico.label")}
+                    onChange={(val) => updateDraft("services.items.diseno-grafico.label", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-sans text-brand-blush text-[10px] tracking-[0.28em] uppercase font-semibold"
+                  />
+                  <EditableField
+                    label="Título Sección"
+                    value={t("services.items.diseno-grafico.title")}
+                    onChange={(val) => updateDraft("services.items.diseno-grafico.title", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-serif text-brand-cream text-3xl md:text-4xl font-light whitespace-pre-line leading-tight"
+                  />
+                  <EditableField
+                    label="Descripción Sección"
+                    value={t("services.items.diseno-grafico.description")}
+                    onChange={(val) => updateDraft("services.items.diseno-grafico.description", val)}
+                    cleanPreview={cleanPreview}
+                    multiline
+                    className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed"
+                  />
+
+                  {/* Bullets */}
+                  <div className="flex flex-col gap-2 my-4">
+                    {getBullets("services.items.diseno-grafico.bullets").map((bullet, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-brand-blush text-xs">◆</span>
+                        <EditableField
+                          label={`Punto ${idx + 1}`}
+                          value={bullet}
+                          onChange={(val) => updateBullet("services.items.diseno-grafico.bullets", idx, val)}
+                          cleanPreview={cleanPreview}
+                          className="font-sans text-xs text-brand-cream"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 2. 3D & Stands (Del plano a la realidad) */}
+            <section className="bg-brand-dark py-20 px-6 md:px-12 border-b border-brand-cream/10">
+              <div className="max-w-5xl mx-auto flex flex-col gap-8">
+                <div className="max-w-2xl">
+                  <EditableField
+                    label="Etiqueta Sección"
+                    value={t("services.items.3d-stands.label")}
+                    onChange={(val) => updateDraft("services.items.3d-stands.label", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-sans text-brand-blush text-[10px] tracking-[0.28em] uppercase font-semibold mb-2"
+                  />
+                  <EditableField
+                    label="Título Sección"
+                    value={t("services.items.3d-stands.title")}
+                    onChange={(val) => updateDraft("services.items.3d-stands.title", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-serif text-brand-cream text-3xl md:text-5xl font-light whitespace-pre-line leading-tight mb-3"
+                  />
+                  <EditableField
+                    label="Descripción Sección"
+                    value={t("services.items.3d-stands.description")}
+                    onChange={(val) => updateDraft("services.items.3d-stands.description", val)}
+                    cleanPreview={cleanPreview}
+                    multiline
+                    className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed mb-6"
+                  />
+
+                  <div className="flex flex-col gap-2">
+                    {getBullets("services.items.3d-stands.bullets").map((bullet, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-brand-blush text-xs">◆</span>
+                        <EditableField
+                          label={`Punto ${idx + 1}`}
+                          value={bullet}
+                          onChange={(val) => updateBullet("services.items.3d-stands.bullets", idx, val)}
+                          cleanPreview={cleanPreview}
+                          className="font-sans text-xs text-brand-cream"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Comparador 3D con botones editables */}
+                <div className="relative rounded-2xl overflow-hidden border border-brand-cream/15">
+                  <BeforeAfterSlider
+                    beforeSrc={servicesImages.stand3dBefore}
+                    afterSrc={servicesImages.stand3dAfter}
+                    beforeLabel={t("services.render3D") || "Render 3D"}
+                    afterLabel={t("services.realResult") || "Resultado real"}
+                    height={400}
+                  />
+
+                  {!cleanPreview && (
+                    <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => triggerImageUpload("services_stand3dBefore")}
+                        className="px-3 py-1.5 rounded-lg bg-brand-blush text-brand-ink text-[11px] font-sans font-semibold uppercase tracking-wider shadow-lg cursor-pointer hover:bg-brand-cream flex items-center gap-1.5"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>Cambiar Render 3D</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => triggerImageUpload("services_stand3dAfter")}
+                        className="px-3 py-1.5 rounded-lg bg-brand-blush text-brand-ink text-[11px] font-sans font-semibold uppercase tracking-wider shadow-lg cursor-pointer hover:bg-brand-cream flex items-center gap-1.5"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>Cambiar Foto Real</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* 3. Diggin' (Diseñadora Oficial del Sello Musical) */}
+            <section className="bg-brand-bg py-20 px-6 md:px-12 border-b border-brand-cream/10">
+              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div className="flex flex-col gap-3">
+                  <EditableField
+                    label="Etiqueta Sección"
+                    value={t("services.items.diggin.label")}
+                    onChange={(val) => updateDraft("services.items.diggin.label", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-sans text-brand-blush text-[10px] tracking-[0.28em] uppercase font-semibold"
+                  />
+                  <EditableField
+                    label="Título Sección"
+                    value={t("services.items.diggin.title")}
+                    onChange={(val) => updateDraft("services.items.diggin.title", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-serif text-brand-cream text-3xl md:text-4xl font-light whitespace-pre-line leading-tight"
+                  />
+                  <EditableField
+                    label="Descripción Sección"
+                    value={t("services.items.diggin.description")}
+                    onChange={(val) => updateDraft("services.items.diggin.description", val)}
+                    cleanPreview={cleanPreview}
+                    multiline
+                    className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed"
+                  />
+
+                  <div className="flex flex-col gap-2 my-4">
+                    {getBullets("services.items.diggin.bullets").map((bullet, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-brand-blush text-xs">◆</span>
+                        <EditableField
+                          label={`Punto ${idx + 1}`}
+                          value={bullet}
+                          onChange={(val) => updateBullet("services.items.diggin.bullets", idx, val)}
+                          cleanPreview={cleanPreview}
+                          className="font-sans text-xs text-brand-cream"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => triggerImageUpload("services_diggin")}
+                  className="group/img relative aspect-[4/3] rounded-2xl overflow-hidden bg-brand-dark border-2 border-transparent hover:border-brand-blush cursor-pointer shadow-xl"
+                  title="Haz clic para cambiar la imagen de Diggin"
+                >
+                  <img
+                    src={getOptimizedImageUrl(servicesImages.diggin, 800)}
+                    alt="Diggin"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                  />
+                  {!cleanPreview && (
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                      <div className="w-10 h-10 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center">
+                        <Camera className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs uppercase font-sans text-brand-cream font-semibold tracking-wider">
+                        Cambiar Imagen
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* 4. Ilustraciones (Arte Personal sin Filtros) */}
+            <section className="bg-brand-dark py-20 px-6 md:px-12 border-b border-brand-cream/10">
+              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div
+                  onClick={() => triggerImageUpload("services_ilustracion")}
+                  className="group/img relative aspect-[4/3] rounded-2xl overflow-hidden bg-brand-dark border-2 border-transparent hover:border-brand-blush cursor-pointer shadow-xl"
+                  title="Haz clic para cambiar la imagen de Ilustraciones"
+                >
+                  <img
+                    src={getOptimizedImageUrl(servicesImages.ilustracion, 800)}
+                    alt="Ilustraciones"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                  />
+                  {!cleanPreview && (
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                      <div className="w-10 h-10 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center">
+                        <Camera className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs uppercase font-sans text-brand-cream font-semibold tracking-wider">
+                        Cambiar Imagen
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <EditableField
+                    label="Etiqueta Sección"
+                    value={t("services.items.ilustracion.label")}
+                    onChange={(val) => updateDraft("services.items.ilustracion.label", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-sans text-brand-blush text-[10px] tracking-[0.28em] uppercase font-semibold"
+                  />
+                  <EditableField
+                    label="Título Sección"
+                    value={t("services.items.ilustracion.title")}
+                    onChange={(val) => updateDraft("services.items.ilustracion.title", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-serif text-brand-cream text-3xl md:text-4xl font-light whitespace-pre-line leading-tight"
+                  />
+                  <EditableField
+                    label="Descripción Sección"
+                    value={t("services.items.ilustracion.description")}
+                    onChange={(val) => updateDraft("services.items.ilustracion.description", val)}
+                    cleanPreview={cleanPreview}
+                    multiline
+                    className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed"
+                  />
+
+                  <div className="flex flex-col gap-2 my-4">
+                    {getBullets("services.items.ilustracion.bullets").map((bullet, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-brand-blush text-xs">◆</span>
+                        <EditableField
+                          label={`Punto ${idx + 1}`}
+                          value={bullet}
+                          onChange={(val) => updateBullet("services.items.ilustracion.bullets", idx, val)}
+                          cleanPreview={cleanPreview}
+                          className="font-sans text-xs text-brand-cream"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 5. Concept Art (Del Concepto al Universo) */}
+            <section className="bg-brand-bg py-20 px-6 md:px-12">
+              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div className="flex flex-col gap-3">
+                  <EditableField
+                    label="Etiqueta Sección"
+                    value={t("services.items.concept-art.label")}
+                    onChange={(val) => updateDraft("services.items.concept-art.label", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-sans text-brand-blush text-[10px] tracking-[0.28em] uppercase font-semibold"
+                  />
+                  <EditableField
+                    label="Título Sección"
+                    value={t("services.items.concept-art.title")}
+                    onChange={(val) => updateDraft("services.items.concept-art.title", val)}
+                    cleanPreview={cleanPreview}
+                    className="font-serif text-brand-cream text-3xl md:text-4xl font-light whitespace-pre-line leading-tight"
+                  />
+                  <EditableField
+                    label="Descripción Sección"
+                    value={t("services.items.concept-art.description")}
+                    onChange={(val) => updateDraft("services.items.concept-art.description", val)}
+                    cleanPreview={cleanPreview}
+                    multiline
+                    className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed"
+                  />
+
+                  <div className="flex flex-col gap-2 my-4">
+                    {getBullets("services.items.concept-art.bullets").map((bullet, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-brand-blush text-xs">◆</span>
+                        <EditableField
+                          label={`Punto ${idx + 1}`}
+                          value={bullet}
+                          onChange={(val) => updateBullet("services.items.concept-art.bullets", idx, val)}
+                          cleanPreview={cleanPreview}
+                          className="font-sans text-xs text-brand-cream"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => triggerImageUpload("services_conceptArt")}
+                  className="group/img relative aspect-[4/3] rounded-2xl overflow-hidden bg-brand-dark border-2 border-transparent hover:border-brand-blush cursor-pointer shadow-xl"
+                  title="Haz clic para cambiar la imagen de Concept Art"
+                >
+                  <img
+                    src={getOptimizedImageUrl(servicesImages.conceptArt, 800)}
+                    alt="Concept Art"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                  />
+                  {!cleanPreview && (
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                      <div className="w-10 h-10 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center">
+                        <Camera className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs uppercase font-sans text-brand-cream font-semibold tracking-wider">
+                        Cambiar Imagen
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
           </div>
 
-          {/* ── 8. Footer Completo ── */}
-          <SharedFooter />
+          {/* ── 8. FOOTER EDITABLE INLINE ── */}
+          <footer className="bg-brand-dark border-t border-brand-cream/10 pt-20 pb-12 px-6 md:px-12">
+            <div className="max-w-5xl mx-auto">
+              <div className="mb-16">
+                <EditableField
+                  label="Eyebrow Footer CTA"
+                  value={lang === "es" ? "¿Tienes un proyecto?" : "Have a project?"}
+                  onChange={(val) => updateDraft("footer.ctaTagline", val)}
+                  cleanPreview={cleanPreview}
+                  className="font-sans text-brand-orange text-[10px] tracking-[0.3em] uppercase mb-3"
+                />
+                <h2 className="font-serif text-brand-cream text-3xl md:text-5xl font-light leading-tight">
+                  <EditableField
+                    label="Título Footer 1"
+                    value={lang === "es" ? "¿Necesitas visualizar tu proyecto" : "Need to visualize your project"}
+                    onChange={(val) => updateDraft("footer.ctaTitle1", val)}
+                    cleanPreview={cleanPreview}
+                    className="inline"
+                  />{" "}
+                  <EditableField
+                    label="Título Footer 2 (Cursiva)"
+                    value={lang === "es" ? "antes de construirlo?" : "before building it?"}
+                    onChange={(val) => updateDraft("footer.ctaTitle2", val)}
+                    cleanPreview={cleanPreview}
+                    className="italic text-brand-blush inline"
+                  />
+                </h2>
+              </div>
+
+              <div className="pt-10 border-t border-brand-cream/10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-between">
+                <div>
+                  <p className="font-serif text-brand-cream text-2xl font-light mb-2">Miluarte</p>
+                  <EditableField
+                    label="Texto del Estudio en Footer"
+                    value={t("footer.studio") || "Estudio creativo & portafolio artístico de Nerea Lucas Pajares."}
+                    onChange={(val) => updateDraft("footer.studio", val)}
+                    cleanPreview={cleanPreview}
+                    multiline
+                    className="font-sans text-xs text-brand-cream/60 leading-relaxed max-w-sm"
+                  />
+                </div>
+
+                <div className="flex flex-col md:items-end gap-2 text-xs font-sans text-brand-cream/40">
+                  <p>© {new Date().getFullYear()} Miluarte · Nerea Lucas Pajares</p>
+                  <p>Todos los derechos reservados.</p>
+                </div>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
 
@@ -716,9 +1239,10 @@ interface EditableFieldProps {
   onChange: (val: string) => void;
   multiline?: boolean;
   className?: string;
+  cleanPreview?: boolean;
 }
 
-function EditableField({ label, value, onChange, multiline = false, className = "" }: EditableFieldProps) {
+function EditableField({ label, value, onChange, multiline = false, className = "", cleanPreview = false }: EditableFieldProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [tempVal, setTempVal] = useState(value);
 
@@ -733,7 +1257,7 @@ function EditableField({ label, value, onChange, multiline = false, className = 
     }
   };
 
-  if (isEditing) {
+  if (isEditing && !cleanPreview) {
     return (
       <div className="relative z-30 p-3 rounded-2xl bg-brand-dark/98 border-2 border-brand-blush shadow-2xl my-2 max-w-full">
         <div className="flex items-center justify-between pb-2 mb-2 border-b border-brand-cream/10 text-[11px] font-sans text-brand-blush">
@@ -775,14 +1299,22 @@ function EditableField({ label, value, onChange, multiline = false, className = 
 
   return (
     <div
-      onClick={() => setIsEditing(true)}
-      className="group/editable relative cursor-pointer rounded-lg hover:outline-2 hover:outline-dashed hover:outline-brand-blush/80 hover:bg-brand-blush/10 transition-all p-1 inline-block max-w-full"
-      title={`Haz clic para editar: ${label}`}
+      onClick={() => {
+        if (!cleanPreview) setIsEditing(true);
+      }}
+      className={`group/editable relative rounded-lg transition-all inline-block max-w-full ${
+        cleanPreview
+          ? ""
+          : "cursor-pointer hover:outline-2 hover:outline-dashed hover:outline-brand-blush/80 hover:bg-brand-blush/10 p-1"
+      }`}
+      title={cleanPreview ? undefined : `Haz clic para editar: ${label}`}
     >
       <div className={className}>{value || <span className="opacity-30 italic">[{label}]</span>}</div>
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 opacity-0 group-hover/editable:opacity-100 transition-opacity bg-brand-blush text-brand-ink p-1.5 rounded-full shadow-lg pointer-events-none z-20">
-        <Edit3 className="w-3 h-3" />
-      </div>
+      {!cleanPreview && (
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 opacity-0 group-hover/editable:opacity-100 transition-opacity bg-brand-blush text-brand-ink p-1.5 rounded-full shadow-lg pointer-events-none z-20">
+          <Edit3 className="w-3 h-3" />
+        </div>
+      )}
     </div>
   );
 }

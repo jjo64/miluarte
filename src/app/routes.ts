@@ -18,7 +18,6 @@ const AdminDashboard     = lazy(() => import("./pages/admin/AdminDashboard").the
 const AdminGalleries     = lazy(() => import("./pages/admin/AdminGalleries").then(m => ({ default: m.AdminGalleries })));
 const AdminGalleryEditor = lazy(() => import("./pages/admin/AdminGalleryEditor").then(m => ({ default: m.AdminGalleryEditor })));
 const AdminRendersEditor = lazy(() => import("./pages/admin/AdminRendersEditor").then(m => ({ default: m.AdminRendersEditor })));
-const AdminTextEditor    = lazy(() => import("./pages/admin/AdminTextEditor").then(m => ({ default: m.AdminTextEditor })));
 const AdminMessages      = lazy(() => import("./pages/admin/AdminMessages").then(m => ({ default: m.AdminMessages })));
 const AdminSocial        = lazy(() => import("./pages/admin/AdminSocial").then(m => ({ default: m.AdminSocial })));
 const AdminChangelog     = lazy(() => import("./pages/admin/AdminChangelog").then(m => ({ default: m.AdminChangelog })));
@@ -69,10 +68,6 @@ export const router = createBrowserRouter([
   {
     path: "/admin/renders",
     Component: withAdminGuard(AdminRendersEditor),
-  },
-  {
-    path: "/admin/textos",
-    Component: withAdminGuard(AdminTextEditor),
   },
   {
     path: "/admin/mensajes",

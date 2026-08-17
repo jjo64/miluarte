@@ -32,7 +32,6 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     { to: "/admin/inicio", label: "Editar Inicio (Live)", icon: Sparkles },
     { to: "/admin/galerias", label: "Galerías y Obras", icon: Images },
     { to: "/admin/renders", label: "Renders 3D & Stands", icon: Box },
-    { to: "/admin/textos", label: "Textos del Sitio", icon: FileText },
     { to: "/admin/mensajes", label: "Mensajes Recibidos", icon: MessageSquare },
     { to: "/admin/redes", label: "Redes Sociales", icon: Share2 },
     { to: "/admin/historial", label: "Historial de Cambios", icon: History },

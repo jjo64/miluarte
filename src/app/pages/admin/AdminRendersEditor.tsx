@@ -34,10 +34,12 @@ import { useUpload } from "../../hooks/useUpload";
 import { getOptimizedImageUrl } from "../../utils/cloudinary";
 
 type DeviceView = "desktop" | "tablet" | "mobile";
+type Lang = "es" | "en";
 
 export function AdminRendersEditor() {
   const [renders, setRenders] = useState<RenderItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lang, setLang] = useState<Lang>("es");
   const [device, setDevice] = useState<DeviceView>("desktop");
   const [cleanPreview, setCleanPreview] = useState(false);
   const [viewMode, setViewMode] = useState<"live" | "list">("live");
@@ -216,6 +218,34 @@ export function AdminRendersEditor() {
 
   const headerActions = (
     <div className="flex items-center gap-2 flex-wrap justify-end">
+      {/* Selector de idioma */}
+      <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
+        <button
+          type="button"
+          onClick={() => setLang("es")}
+          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+            lang === "es"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
+              : "text-brand-cream/60 hover:text-brand-cream"
+          }`}
+        >
+          <span>🇪🇸</span>
+          <span>Español</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setLang("en")}
+          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+            lang === "en"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
+              : "text-brand-cream/60 hover:text-brand-cream"
+          }`}
+        >
+          <span>🇬🇧</span>
+          <span>English</span>
+        </button>
+      </div>
+
       {/* Selector de modo: Live Preview vs Lista */}
       <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
         <button

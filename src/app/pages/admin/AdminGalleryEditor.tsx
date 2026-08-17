@@ -90,6 +90,7 @@ const ASPECT_OPTIONS = [
 ];
 
 type DeviceView = "desktop" | "tablet" | "mobile";
+type Lang = "es" | "en";
 
 export function AdminGalleryEditor() {
   const { slug } = useParams<{ slug: string }>();
@@ -102,6 +103,7 @@ export function AdminGalleryEditor() {
   const [serverWorks, setServerWorks] = useState<Work[]>([]);
   const [animasSlides, setAnimasSlides] = useState<string[]>(DEFAULT_ANIMAS_SLIDES);
   const [loading, setLoading] = useState(true);
+  const [lang, setLang] = useState<Lang>("es");
   const [viewMode, setViewMode] = useState<"puzzle" | "list">("puzzle");
   const [device, setDevice] = useState<DeviceView>("desktop");
   const [cleanPreview, setCleanPreview] = useState(false);
@@ -391,6 +393,34 @@ export function AdminGalleryEditor() {
 
   const headerActions = (
     <div className="flex items-center gap-2 flex-wrap justify-end">
+      {/* Selector de idioma */}
+      <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
+        <button
+          type="button"
+          onClick={() => setLang("es")}
+          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+            lang === "es"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
+              : "text-brand-cream/60 hover:text-brand-cream"
+          }`}
+        >
+          <span>🇪🇸</span>
+          <span>Español</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setLang("en")}
+          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+            lang === "en"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
+              : "text-brand-cream/60 hover:text-brand-cream"
+          }`}
+        >
+          <span>🇬🇧</span>
+          <span>English</span>
+        </button>
+      </div>
+
       <button
         onClick={() => navigate("/admin/galerias")}
         className="px-3 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 flex items-center gap-1.5 transition-colors cursor-pointer"
