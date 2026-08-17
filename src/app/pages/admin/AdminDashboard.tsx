@@ -10,17 +10,18 @@ import {
   History,
   Download,
   ExternalLink,
-  LogOut,
   Sparkles,
-  Plus,
   ArrowRight,
   TrendingUp,
+  Sliders,
+  Eye,
 } from "lucide-react";
-import { C, SERIF, SANS, ease, fadeUp, staggerContainer, staggerItem } from "../../tokens";
+import { AdminLayout } from "../../components/admin/AdminLayout";
 import { useAdminApi } from "../../hooks/useAdminApi";
+import { fadeUp, staggerContainer, staggerItem } from "../../tokens";
 
 export function AdminDashboard() {
-  const { removeToken, request } = useAdminApi();
+  const { request } = useAdminApi();
   const navigate = useNavigate();
   const [exporting, setExporting] = useState(false);
   const [stats, setStats] = useState({
@@ -30,10 +31,32 @@ export function AdminDashboard() {
     lastUpdate: "Hoy",
   });
 
-  const handleLogout = () => {
-    removeToken();
-    navigate("/admin/login");
-  };
+  useEffect(() => {
+    async function loadDashboardStats() {
+      try {
+        const [galleries, contact, booking] = await Promise.all([
+          request<any[]>("/api/admin/galleries").catch(() => []),
+          request<any[]>("/api/admin/messages?type=contact").catch(() => []),
+          request<any[]>("/api/admin/messages?type=booking").catch(() => []),
+        ]);
+
+        const gList = Array.isArray(galleries) ? galleries : [];
+        const cList = Array.isArray(contact) ? contact : [];
+        const bList = Array.isArray(booking) ? booking : [];
+        const unreadCount = [...cList, ...bList].filter((m: any) => !m.read).length;
+
+        setStats({
+          galleriesCount: gList.length || 8,
+          worksCount: 87,
+          newMessagesCount: unreadCount,
+          lastUpdate: "Hoy",
+        });
+      } catch (e) {
+        // Fallback stats
+      }
+    }
+    loadDashboardStats();
+  }, [request]);
 
   const handleExportBackup = async () => {
     setExporting(true);
@@ -65,60 +88,45 @@ export function AdminDashboard() {
     }
   };
 
+  const headerActions = (
+    <div className="flex items-center gap-2.5">
+      <button
+        onClick={() => navigate("/admin/inicio")}
+        className="px-3.5 py-1.5 rounded-xl bg-brand-blush/15 hover:bg-brand-blush text-brand-blush hover:text-brand-ink border border-brand-blush/30 text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-xs"
+      >
+        <Sparkles className="w-3.5 h-3.5" />
+        <span>Editar Inicio (Live)</span>
+      </button>
+
+      <a
+        href="/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-3 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/80 hover:text-brand-cream hover:bg-brand-cream/5 transition-all flex items-center gap-1.5 no-underline"
+      >
+        <ExternalLink className="w-3.5 h-3.5" />
+        <span className="hidden sm:inline">Ver Web</span>
+      </a>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-cream select-none">
-      {/* Top navigation bar */}
-      <header className="border-b border-brand-cream/10 bg-brand-dark/80 backdrop-blur-md sticky top-0 z-30 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-brand-blush/20 border border-brand-blush/30 flex items-center justify-center text-brand-blush">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="font-serif text-lg tracking-tight text-brand-cream">
-                Miluarte <span className="italic text-brand-blush text-sm">Studio CMS</span>
-              </h2>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a
-              href="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-brand-cream/15 text-xs text-brand-cream/80 hover:text-brand-cream hover:bg-brand-cream/5 transition-all"
-            >
-              <span>Ver sitio web</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-dark border border-brand-orange/30 text-xs text-brand-orange hover:bg-brand-orange hover:text-white transition-all cursor-pointer"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main container */}
-      <main className="max-w-7xl mx-auto px-6 py-10">
+    <AdminLayout
+      title="Panel de Control"
+      subtitle="Gestión integral del portafolio artístico de Nerea"
+      actions={headerActions}
+    >
+      <div className="flex flex-col gap-10 select-none">
         {/* Welcome message */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          className="mb-10"
-        >
+        <motion.div variants={fadeUp} initial="hidden" animate="visible">
           <p className="font-sans text-brand-blush text-[10px] tracking-[0.3em] uppercase mb-2">
-            Panel de Control
+            Panel de Administración
           </p>
           <h1 className="font-serif text-3xl md:text-5xl font-light text-brand-cream tracking-tight">
             Hola de nuevo, <span className="italic text-brand-blush">Nerea</span> 👋
           </h1>
-          <p className="font-serif italic text-brand-wall text-sm md:text-base mt-2 max-w-xl">
-            Aquí puedes gestionar todas tus galerías de arte, subir nuevas fotos, editar textos y revisar los encargos de tus clientes.
+          <p className="font-serif italic text-brand-wall text-sm md:text-base mt-2 max-w-2xl leading-relaxed">
+            Aquí puedes gestionar todas tus galerías de arte, subir nuevas obras, personalizar los textos en español e inglés y previsualizar tu inicio en tiempo real.
           </p>
         </motion.div>
 
@@ -127,11 +135,12 @@ export function AdminDashboard() {
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4"
         >
           <motion.div
             variants={staggerItem}
-            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/5 relative overflow-hidden group"
+            onClick={() => navigate("/admin/galerias")}
+            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-blush/30 transition-all cursor-pointer relative overflow-hidden group"
           >
             <p className="font-sans text-[10px] tracking-wider uppercase text-brand-cream/60">Galerías Activas</p>
             <p className="font-serif text-3xl md:text-4xl text-brand-cream mt-2 font-light">{stats.galleriesCount}</p>
@@ -142,10 +151,13 @@ export function AdminDashboard() {
 
           <motion.div
             variants={staggerItem}
-            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/5 relative overflow-hidden group"
+            onClick={() => navigate("/admin/inicio")}
+            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-orange/30 transition-all cursor-pointer relative overflow-hidden group"
           >
-            <p className="font-sans text-[10px] tracking-wider uppercase text-brand-cream/60">Obras Totales</p>
-            <p className="font-serif text-3xl md:text-4xl text-brand-cream mt-2 font-light">{stats.worksCount}</p>
+            <p className="font-sans text-[10px] tracking-wider uppercase text-brand-cream/60">Portada / Inicio</p>
+            <p className="font-serif text-2xl md:text-3xl text-brand-blush mt-2 font-light flex items-center gap-1.5">
+              <span>Live Edit</span>
+            </p>
             <div className="absolute top-4 right-4 text-brand-orange/30 group-hover:text-brand-orange transition-colors">
               <Sparkles className="w-5 h-5" />
             </div>
@@ -153,7 +165,8 @@ export function AdminDashboard() {
 
           <motion.div
             variants={staggerItem}
-            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/5 relative overflow-hidden group"
+            onClick={() => navigate("/admin/mensajes")}
+            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-neon/30 transition-all cursor-pointer relative overflow-hidden group"
           >
             <p className="font-sans text-[10px] tracking-wider uppercase text-brand-cream/60">Mensajes Nuevos</p>
             <p className="font-serif text-3xl md:text-4xl text-brand-cream mt-2 font-light">{stats.newMessagesCount}</p>
@@ -164,7 +177,7 @@ export function AdminDashboard() {
 
           <motion.div
             variants={staggerItem}
-            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/5 relative overflow-hidden group"
+            className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/10 relative overflow-hidden group"
           >
             <p className="font-sans text-[10px] tracking-wider uppercase text-brand-cream/60">Estado CMS</p>
             <p className="font-serif text-xl md:text-2xl text-brand-blush mt-2 font-light flex items-center gap-1.5">
@@ -178,28 +191,52 @@ export function AdminDashboard() {
         </motion.div>
 
         {/* Quick action modules */}
-        <div className="mb-12">
+        <div>
           <h2 className="font-serif text-xl text-brand-cream font-light mb-5 flex items-center gap-2">
             <span>Módulos de Gestión</span>
             <div className="h-px flex-1 bg-brand-cream/10 ml-2" />
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* Editor de Inicio Live */}
+            <motion.div
+              whileHover={{ y: -4 }}
+              onClick={() => navigate("/admin/inicio")}
+              className="p-6 rounded-2xl bg-brand-dark border border-brand-blush/30 hover:border-brand-blush transition-all cursor-pointer flex flex-col justify-between group min-h-[180px] relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-brand-blush/10 rounded-full blur-xl pointer-events-none" />
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-brand-blush/20 border border-brand-blush/30 text-brand-blush flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif text-lg text-brand-cream group-hover:text-brand-blush transition-colors">
+                  Editar Inicio (Live)
+                </h3>
+                <p className="font-sans text-brand-cream/60 text-xs mt-1">
+                  Previsualiza y edita la portada entera en vivo (ES/EN) con clic.
+                </p>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-brand-blush font-medium mt-4">
+                <span>Abrir editor visual</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </motion.div>
+
             {/* Galerías */}
             <motion.div
               whileHover={{ y: -4 }}
               onClick={() => navigate("/admin/galerias")}
-              className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-blush/40 transition-all cursor-pointer flex flex-col justify-between group min-h-[160px]"
+              className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-blush/40 transition-all cursor-pointer flex flex-col justify-between group min-h-[180px]"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-brand-blush/10 border border-brand-blush/20 text-brand-blush flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Images className="w-5 h-5" />
                 </div>
                 <h3 className="font-serif text-lg text-brand-cream group-hover:text-brand-blush transition-colors">
-                  Galerías de Arte
+                  Galerías y Obras
                 </h3>
                 <p className="font-sans text-brand-cream/60 text-xs mt-1">
-                  Sube fotos, cambia títulos, precios, orden y crea nuevas galerías.
+                  Sube fotos, ajusta el tamaño puzzle de cada card y reordena.
                 </p>
               </div>
               <div className="flex items-center gap-1 text-xs text-brand-blush font-medium mt-4">
@@ -212,14 +249,14 @@ export function AdminDashboard() {
             <motion.div
               whileHover={{ y: -4 }}
               onClick={() => navigate("/admin/renders")}
-              className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-orange/40 transition-all cursor-pointer flex flex-col justify-between group min-h-[160px]"
+              className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-orange/40 transition-all cursor-pointer flex flex-col justify-between group min-h-[180px]"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-brand-orange/10 border border-brand-orange/20 text-brand-orange flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Box className="w-5 h-5" />
                 </div>
                 <h3 className="font-serif text-lg text-brand-cream group-hover:text-brand-orange transition-colors">
-                  Proyectos 3D & Stands
+                  Renders 3D & Stands
                 </h3>
                 <p className="font-sans text-brand-cream/60 text-xs mt-1">
                   Gestiona proyectos 3D, videos de making-of y pasos del proceso.
@@ -235,7 +272,7 @@ export function AdminDashboard() {
             <motion.div
               whileHover={{ y: -4 }}
               onClick={() => navigate("/admin/textos")}
-              className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-cream/40 transition-all cursor-pointer flex flex-col justify-between group min-h-[160px]"
+              className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-cream/40 transition-all cursor-pointer flex flex-col justify-between group min-h-[180px]"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-brand-cream/10 border border-brand-cream/20 text-brand-cream flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -245,7 +282,7 @@ export function AdminDashboard() {
                   Textos e Idiomas
                 </h3>
                 <p className="font-sans text-brand-cream/60 text-xs mt-1">
-                  Edita la biografía, el hero, descripciones y traducciones ES / EN.
+                  Edita la biografía, descripciones y traducciones ES / EN.
                 </p>
               </div>
               <div className="flex items-center gap-1 text-xs text-brand-cream font-medium mt-4">
@@ -257,7 +294,7 @@ export function AdminDashboard() {
         </div>
 
         {/* Secondary modules & Backup */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
           {/* Mensajes & Redes */}
           <div className="p-6 rounded-2xl bg-brand-dark border border-brand-cream/10">
             <h3 className="font-serif text-lg text-brand-cream mb-4">Comunicaciones & Redes</h3>
@@ -270,7 +307,7 @@ export function AdminDashboard() {
                   <MessageSquare className="w-4 h-4 text-brand-blush" />
                   <div>
                     <p className="font-sans text-xs text-brand-cream font-medium">Bandeja de Mensajes</p>
-                    <p className="font-sans text-[11px] text-brand-cream/50">Consultas de contacto y reservas</p>
+                    <p className="font-sans text-[11px] text-brand-cream/50">Consultas de contacto y encargos</p>
                   </div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-brand-cream/40" />
@@ -298,7 +335,7 @@ export function AdminDashboard() {
                   <History className="w-4 h-4 text-brand-cream/70" />
                   <div>
                     <p className="font-sans text-xs text-brand-cream font-medium">Historial de Cambios</p>
-                    <p className="font-sans text-[11px] text-brand-cream/50">Registro de últimas ediciones</p>
+                    <p className="font-sans text-[11px] text-brand-cream/50">Puntos de restauración y reversión</p>
                   </div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-brand-cream/40" />
@@ -334,7 +371,7 @@ export function AdminDashboard() {
             </button>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

@@ -15,10 +15,11 @@ import {
   ChevronDown,
   ChevronUp,
   Sliders,
-  Eye,
-  Type,
   Layers,
   ArrowRight,
+  User,
+  Star,
+  CheckCircle,
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { ImageUploader } from "../../components/admin/ImageUploader";
@@ -26,10 +27,18 @@ import { Toast } from "../../components/admin/Toast";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { translations as defaultTranslations } from "../../locales/translations";
 import { getOptimizedImageUrl } from "../../utils/cloudinary";
-import { C, SERIF, SANS } from "../../tokens";
+import { C, SERIF, SANS, ease, fadeUp, staggerContainer, staggerItem } from "../../tokens";
+import { ClientsMarquee } from "../../components/ClientsMarquee";
+import { HorizontalGallery } from "../../components/HorizontalGallery";
+import { SketchSlider } from "../../components/SketchSlider";
+import { ServiceSections } from "../../components/ServiceSections";
+import { SharedFooter } from "../../components/SharedFooter";
 
 type Lang = "es" | "en";
 type DeviceView = "desktop" | "tablet" | "mobile";
+
+const animasSketch = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
+const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
 
 function deepMerge(target: any, source: any): any {
   if (typeof target !== "object" || target === null) return source;
@@ -59,28 +68,25 @@ export function AdminHomeEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Textos originales guardados en servidor
+  // Textos originales en servidor
   const [serverTexts, setServerTexts] = useState({
     es: defaultTranslations.es,
     en: defaultTranslations.en,
   });
 
-  // Textos en borrador en vivo
+  // Textos en borrador interactivo
   const [draftTexts, setDraftTexts] = useState({
     es: defaultTranslations.es,
     en: defaultTranslations.en,
   });
 
-  // Imagen del hero (se guarda en texts o imagen directa)
+  // Imagen del hero
   const [heroImage, setHeroImage] = useState<string>(
     "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg"
   );
 
-  // Sección activa en el panel lateral de edición rápida
+  // Acordeón activo en panel lateral
   const [activeSection, setActiveSection] = useState<string>("hero");
-
-  // Elemento enfocado para edición rápida
-  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // Toast
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
@@ -107,13 +113,12 @@ export function AdminHomeEditor() {
         if (res.heroImage) setHeroImage(res.heroImage);
       }
     } catch (err: any) {
-      console.warn("Usando textos por defecto:", err);
+      console.warn("Usando textos base:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Helper para actualizar campo en el borrador
   const updateDraft = (path: string, value: any) => {
     setDraftTexts((prev) => {
       const next = JSON.parse(JSON.stringify(prev));
@@ -129,7 +134,6 @@ export function AdminHomeEditor() {
     setHasChanges(true);
   };
 
-  // Helper para leer campo del borrador
   const getDraftValue = (path: string): string => {
     const parts = path.split(".");
     let current: any = draftTexts[lang];
@@ -143,7 +147,8 @@ export function AdminHomeEditor() {
     return typeof current === "string" ? current : "";
   };
 
-  // Guardar cambios en el backend
+  const t = (path: string) => getDraftValue(path);
+
   const handleSave = async () => {
     try {
       setIsSaving(true);
@@ -173,7 +178,6 @@ export function AdminHomeEditor() {
     }
   };
 
-  // Descartar borrador
   const handleDiscard = () => {
     setDraftTexts(JSON.parse(JSON.stringify(serverTexts)));
     setHasChanges(false);
@@ -184,8 +188,6 @@ export function AdminHomeEditor() {
     });
   };
 
-  const t = (path: string) => getDraftValue(path);
-
   const headerActions = (
     <div className="flex items-center gap-3">
       {/* Selector de idioma */}
@@ -195,7 +197,7 @@ export function AdminHomeEditor() {
           onClick={() => setLang("es")}
           className={`px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             lang === "es"
-              ? "bg-brand-blush text-brand-ink shadow-xs"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
               : "text-brand-cream/60 hover:text-brand-cream"
           }`}
         >
@@ -207,7 +209,7 @@ export function AdminHomeEditor() {
           onClick={() => setLang("en")}
           className={`px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             lang === "en"
-              ? "bg-brand-blush text-brand-ink shadow-xs"
+              ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
               : "text-brand-cream/60 hover:text-brand-cream"
           }`}
         >
@@ -224,7 +226,7 @@ export function AdminHomeEditor() {
           className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
             device === "desktop" ? "bg-brand-cream/15 text-brand-blush" : "text-brand-cream/50 hover:text-brand-cream"
           }`}
-          title="Vista Desktop"
+          title="Vista Escritorio"
         >
           <Monitor className="w-4 h-4" />
         </button>
@@ -277,7 +279,7 @@ export function AdminHomeEditor() {
         ) : (
           <>
             <Save className="w-4 h-4" />
-            <span>{hasChanges ? "Guardar Cambios" : "Al día"}</span>
+            <span>{hasChanges ? "Guardar Cambios" : "Guardado"}</span>
           </>
         )}
       </button>
@@ -296,27 +298,29 @@ export function AdminHomeEditor() {
 
   return (
     <AdminLayout
-      title="Editor Visual del Inicio"
-      subtitle={`Previsualiza y edita en tiempo real en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
+      title="Editor Visual del Inicio (Live Preview)"
+      subtitle={`Réplica exacta e interactiva del portafolio en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
       actions={headerActions}
     >
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-8 select-none">
-        {/* ── COLUMNA IZQUIERDA: Live Preview Viewport ── */}
-        <div className="flex flex-col items-center">
-          {/* Header del Viewport */}
-          <div className="w-full flex items-center justify-between px-4 py-2 bg-brand-dark/90 border border-brand-cream/10 rounded-t-2xl text-[11px] font-sans text-brand-cream/50">
+        {/* ── COLUMNA IZQUIERDA: Réplica Exacta de la HomePage ── */}
+        <div className="flex flex-col items-center min-w-0">
+          {/* Barra superior de estado del Viewport */}
+          <div className="w-full flex items-center justify-between px-4 py-2.5 bg-brand-dark/95 border border-brand-cream/10 rounded-t-2xl text-[11px] font-sans text-brand-cream/60">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 animate-pulse" />
-              <span>Modo Editor Interactivo · Haz clic en cualquier texto o foto para editar</span>
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Réplica interactiva en vivo · Haz clic en cualquier texto para editar</span>
             </div>
-            <span className="font-mono text-[10px] text-brand-blush">
-              Idioma actual: {lang.toUpperCase()}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-brand-blush bg-brand-blush/10 px-2 py-0.5 rounded border border-brand-blush/20">
+                Idioma: {lang.toUpperCase()}
+              </span>
+            </div>
           </div>
 
-          {/* Marco simulador de pantalla */}
+          {/* Contenedor del Viewport que simula el sitio exacto */}
           <div
-            className={`w-full transition-all duration-300 border-x border-b border-brand-cream/10 rounded-b-2xl overflow-hidden shadow-2xl bg-brand-bg ${
+            className={`w-full transition-all duration-300 border-x border-b border-brand-cream/10 rounded-b-2xl overflow-hidden shadow-2xl bg-brand-bg text-brand-cream ${
               device === "mobile"
                 ? "max-w-[390px]"
                 : device === "tablet"
@@ -324,188 +328,230 @@ export function AdminHomeEditor() {
                 : "max-w-full"
             }`}
           >
-            {/* ── 1. Hero Preview ── */}
-            <div className="relative p-6 md:p-12 border-b border-brand-cream/10 group/hero">
-              <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-8 items-center">
-                {/* Lado izquierdo textos */}
-                <div className="flex flex-col gap-3">
-                  {/* Tagline */}
+            {/* ── 1. Hero Exacto ── */}
+            <section className="relative min-h-[600px] bg-brand-bg flex items-center overflow-hidden pt-16 pb-16 md:py-20 border-b border-brand-cream/10">
+              <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-10 px-6 md:px-10 max-w-[1200px] mx-auto items-center">
+                {/* Left: Bio */}
+                <div className="flex flex-col justify-center order-1">
                   <EditableField
-                    label="Tagline superior"
+                    label="Tagline del Hero"
                     value={t("hero.tagline")}
                     onChange={(val) => updateDraft("hero.tagline", val)}
-                    className="font-sans text-brand-blush text-[10px] tracking-[0.3em] uppercase font-medium"
+                    className="font-sans text-brand-blush text-[10px] tracking-[0.34em] uppercase mb-4"
                   />
 
-                  {/* Saludo y Nombre */}
-                  <div className="flex flex-wrap items-baseline gap-2">
+                  <div className="mb-4">
                     <EditableField
-                      label="Texto saludo"
+                      label="Saludo inicial"
                       value={t("hero.greetingBefore")}
                       onChange={(val) => updateDraft("hero.greetingBefore", val)}
-                      className="font-serif text-brand-cream text-3xl md:text-5xl font-light tracking-tight whitespace-pre-line"
+                      className="font-serif text-brand-cream text-[2.4rem] md:text-[4.2rem] leading-[0.98] font-light tracking-tight whitespace-pre-line inline"
                     />
                     <EditableField
-                      label="Nombre en cursiva"
+                      label="Nombre artístico en cursiva"
                       value={t("hero.greetingItalic")}
                       onChange={(val) => updateDraft("hero.greetingItalic", val)}
-                      className="font-serif italic text-brand-blush text-3xl md:text-5xl font-light"
+                      className="font-serif italic text-brand-blush text-[2.4rem] md:text-[4.2rem] leading-[0.98] font-light tracking-tight inline ml-2"
                     />
                   </div>
 
-                  {/* Frase artística */}
                   <EditableField
                     label="Frase artística / Manifiesto"
                     value={t("hero.artline")}
                     onChange={(val) => updateDraft("hero.artline", val)}
                     multiline
-                    className="font-serif italic text-brand-wall text-base md:text-lg font-light leading-relaxed my-2"
+                    className="font-serif italic text-brand-wall text-[1.1rem] md:text-[1.35rem] font-light leading-relaxed mb-6 max-w-[480px]"
                   />
 
-                  <div className="w-10 h-0.5 bg-brand-blush my-2" />
+                  <div className="w-11 h-0.5 bg-brand-blush mb-6" />
 
-                  {/* Bio 1 */}
                   <EditableField
-                    label="Biografía 1 (Párrafo principal)"
+                    label="Biografía principal (Párrafo 1)"
                     value={t("hero.bio1")}
                     onChange={(val) => updateDraft("hero.bio1", val)}
                     multiline
-                    className="font-sans text-brand-cream/80 text-xs md:text-sm leading-relaxed"
+                    className="font-sans text-brand-cream/80 text-[13px] leading-relaxed mb-3 max-w-[480px]"
                   />
 
-                  {/* Bio 2 */}
                   <EditableField
-                    label="Biografía 2 (Llamada al encargo)"
+                    label="Biografía secundaria (Párrafo 2)"
                     value={t("hero.bio2")}
                     onChange={(val) => updateDraft("hero.bio2", val)}
                     multiline
-                    className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed mt-1"
+                    className="font-sans text-brand-cream/70 text-[13px] leading-relaxed mb-8 max-w-[480px]"
                   />
 
-                  {/* Botones de acción */}
-                  <div className="flex items-center gap-3 mt-4">
+                  <div className="flex gap-3 items-center flex-wrap">
                     <EditableField
                       label="Texto Botón 1"
                       value={t("hero.viewWorks")}
                       onChange={(val) => updateDraft("hero.viewWorks", val)}
-                      className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-2.5 px-5 font-semibold rounded"
+                      className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3 px-6 font-medium cursor-pointer"
                     />
                     <EditableField
                       label="Texto Botón 2"
                       value={t("hero.sendInquiry")}
                       onChange={(val) => updateDraft("hero.sendInquiry", val)}
-                      className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/40 py-2.5 px-5 rounded"
+                      className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3 px-6 bg-transparent"
                     />
                   </div>
                 </div>
 
-                {/* Lado derecho foto */}
-                <div className="flex flex-col items-center">
-                  <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-brand-cream/10 group/img aspect-[4/5] w-full max-w-[280px] bg-brand-dark">
+                {/* Right: Foto enmarcada */}
+                <div className="flex flex-col justify-start order-2 gap-4">
+                  <div className="relative rounded-lg overflow-hidden shadow-2xl aspect-[4/5] bg-brand-dark max-w-[320px] mx-auto w-full group/heroimg">
                     <img
                       src={getOptimizedImageUrl(heroImage, 600)}
-                      alt="Hero portrait"
-                      className="w-full h-full object-cover"
+                      alt="Nerea Lucas Pajares"
+                      className="w-full h-full object-cover block"
                     />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 gap-2 text-center">
-                      <ImageIcon className="w-6 h-6 text-brand-blush" />
-                      <span className="font-sans text-xs text-brand-cream font-medium">
-                        Cambiar foto del Hero en el panel lateral
+                    <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-[#180E09]/80 backdrop-blur-sm py-1.5 px-3 rounded-full border border-white/10 select-none">
+                      <img
+                        src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg", 80)}
+                        alt=""
+                        className="w-5 h-5 rounded-full object-cover"
+                      />
+                      <span className="font-sans text-[#F5EDE0] text-[9px] tracking-widest uppercase">
+                        Miluarte
                       </span>
                     </div>
                   </div>
+
+                  <p className="font-sans text-brand-cream/60 text-[11px] tracking-wider text-center">
+                    Miluartedenara@gmail.com
+                  </p>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* ── 2. Proyecto Destacado (Diggin) ── */}
-            <div className="p-6 md:p-12 border-b border-brand-cream/10 bg-brand-dark/40">
-              <div className="max-w-2xl mx-auto flex flex-col gap-3">
+            {/* ── 2. Proyecto Destacado Exacto (Diggin) ── */}
+            <section className="bg-brand-dark py-16 border-t border-brand-cream/5">
+              <div className="px-6 max-w-2xl mx-auto flex flex-col gap-3">
                 <EditableField
-                  label="Etiqueta proyecto"
+                  label="Eyebrow del proyecto"
                   value={t("featured.eyebrow")}
                   onChange={(val) => updateDraft("featured.eyebrow", val)}
-                  className="font-sans text-brand-blush text-[10px] tracking-widest uppercase"
+                  className="font-sans text-brand-blush text-[10px] tracking-[0.15em] uppercase flex items-center gap-2"
                 />
+
+                <div className="relative rounded-xl overflow-hidden my-3 shadow-xl">
+                  <img
+                    src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1000)}
+                    alt="Diggin"
+                    className="w-full h-56 md:h-80 object-cover"
+                  />
+                  <div className="absolute top-3 left-3 bg-brand-blush text-brand-ink font-sans text-[9px] tracking-wider uppercase px-2.5 py-1 rounded">
+                    {t("featured.tag") || "DIRECCIÓN DE ARTE"}
+                  </div>
+                </div>
+
                 <EditableField
-                  label="Título proyecto destacado"
+                  label="Título Proyecto Destacado"
                   value={t("featured.title")}
                   onChange={(val) => updateDraft("featured.title", val)}
                   className="font-serif text-brand-cream text-2xl md:text-3xl font-light"
                 />
+
                 <EditableField
-                  label="Descripción del caso de estudio"
+                  label="Descripción Proyecto Destacado"
                   value={t("featured.description")}
                   onChange={(val) => updateDraft("featured.description", val)}
                   multiline
                   className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed"
                 />
-                <div className="pt-2">
+
+                <div className="pt-3">
                   <EditableField
-                    label="Texto botón ver caso"
+                    label="Texto Botón Ver Caso"
                     value={t("featured.viewCase")}
                     onChange={(val) => updateDraft("featured.viewCase", val)}
-                    className="font-sans text-brand-cream text-[10px] tracking-widest uppercase border border-brand-cream/30 py-2.5 px-6 rounded-lg inline-block"
+                    className="font-sans text-brand-cream text-[10px] tracking-widest uppercase border border-brand-cream/30 py-3 px-6 rounded-lg inline-block"
                   />
                 </div>
               </div>
+            </section>
+
+            {/* ── 3. Carrusel de Clientes en Vivo ── */}
+            <div className="border-y border-brand-cream/10 bg-brand-bg/50">
+              <ClientsMarquee />
             </div>
 
-            {/* ── 3. Proceso Creativo (Sketch Slider) ── */}
-            <div className="p-6 md:p-12 border-b border-brand-cream/10">
-              <div className="max-w-2xl mx-auto flex flex-col gap-2 text-center">
+            {/* ── 4. Galería Horizontal de Obras Destacadas ── */}
+            <div className="py-8 bg-brand-bg">
+              <HorizontalGallery />
+            </div>
+
+            {/* ── 5. El Proceso Creativo (Sketch Slider) ── */}
+            <div className="bg-brand-dark/40 py-12 border-y border-brand-cream/10">
+              <div className="max-w-xl mx-auto px-6 mb-6 text-center">
                 <EditableField
                   label="Título Proceso Creativo"
                   value={t("process.title")}
                   onChange={(val) => updateDraft("process.title", val)}
-                  className="font-sans text-brand-blush text-[10px] tracking-widest uppercase font-medium"
+                  className="font-sans text-brand-blush text-[10px] tracking-widest uppercase mb-1"
                 />
                 <EditableField
                   label="Subtítulo Proceso Creativo"
                   value={t("process.subtitle")}
                   onChange={(val) => updateDraft("process.subtitle", val)}
-                  className="font-serif text-brand-cream text-2xl md:text-3xl font-light"
+                  className="font-serif text-brand-cream text-2xl font-light mb-2"
                 />
                 <EditableField
-                  label="Instrucción / Hint de deslizador"
+                  label="Texto Guía / Hint"
                   value={t("process.hint")}
                   onChange={(val) => updateDraft("process.hint", val)}
                   multiline
-                  className="font-sans text-brand-cream/60 text-xs mt-1"
+                  className="font-sans text-brand-cream/60 text-xs"
                 />
               </div>
+
+              <SketchSlider
+                sketchImg={animasSketch}
+                finalImg={animasFinal}
+                sketchImgPos="50% 17%"
+                finalImgPos="50% 12%"
+                title={t("process.title")}
+                subtitle={t("process.subtitle")}
+                hint={t("process.hint")}
+              />
             </div>
 
-            {/* ── 4. Especialidades y Servicios ── */}
-            <div className="p-6 md:p-12 bg-brand-dark/20">
-              <div className="max-w-3xl mx-auto flex flex-col gap-3">
-                <EditableField
-                  label="Eyebrow Servicios"
-                  value={t("seoServices.eyebrow")}
-                  onChange={(val) => updateDraft("seoServices.eyebrow", val)}
-                  className="font-sans text-brand-blush text-[10px] tracking-widest uppercase"
-                />
-                <EditableField
-                  label="Título Servicios"
-                  value={t("seoServices.title")}
-                  onChange={(val) => updateDraft("seoServices.title", val)}
-                  className="font-serif text-brand-cream text-2xl md:text-3xl font-light"
-                />
-                <EditableField
-                  label="Descripción Servicios"
-                  value={t("seoServices.description")}
-                  onChange={(val) => updateDraft("seoServices.description", val)}
-                  multiline
-                  className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed mb-4"
-                />
-              </div>
+            {/* ── 6. Especialidades y Servicios (SeoServices) ── */}
+            <section className="py-16 px-6 max-w-4xl mx-auto">
+              <EditableField
+                label="Eyebrow Servicios"
+                value={t("seoServices.eyebrow")}
+                onChange={(val) => updateDraft("seoServices.eyebrow", val)}
+                className="font-sans text-brand-blush text-[10px] tracking-[0.15em] uppercase mb-2"
+              />
+              <EditableField
+                label="Título de Servicios"
+                value={t("seoServices.title")}
+                onChange={(val) => updateDraft("seoServices.title", val)}
+                className="font-serif text-brand-cream text-2xl md:text-4xl font-light mb-3"
+              />
+              <EditableField
+                label="Descripción de Servicios"
+                value={t("seoServices.description")}
+                onChange={(val) => updateDraft("seoServices.description", val)}
+                multiline
+                className="font-sans text-brand-cream/70 text-xs md:text-sm leading-relaxed mb-8 max-w-2xl"
+              />
+            </section>
+
+            {/* ── 7. Secciones Completas de Servicios en Acordeón ── */}
+            <div className="border-t border-brand-cream/10">
+              <ServiceSections />
             </div>
+
+            {/* ── 8. Footer Completo ── */}
+            <SharedFooter />
           </div>
         </div>
 
-        {/* ── COLUMNA DERECHA: Panel de Control y Edición Rápida ── */}
-        <div className="flex flex-col gap-6">
-          {/* Tarjeta de estado */}
+        {/* ── COLUMNA DERECHA: Panel de Control Rápido ── */}
+        <div className="flex flex-col gap-6 select-none">
+          {/* Tarjeta de estado de sincronización */}
           <div className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/10 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className="font-sans text-xs uppercase tracking-wider text-brand-cream/60 font-semibold">
@@ -522,11 +568,11 @@ export function AdminHomeEditor() {
               )}
             </div>
             <p className="font-sans text-xs text-brand-cream/70 leading-relaxed">
-              Puedes hacer clic directamente en cualquier texto del preview a la izquierda para editarlo o usar las pestañas de abajo.
+              Haz clic sobre cualquier texto en la réplica de la izquierda para editar al instante, o edita por bloques en las pestañas de abajo.
             </p>
           </div>
 
-          {/* Selector de Foto del Hero */}
+          {/* Uploader de la Foto Principal del Hero */}
           <div className="p-5 rounded-2xl bg-brand-dark border border-brand-cream/10 flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-brand-blush" />
@@ -534,7 +580,7 @@ export function AdminHomeEditor() {
                 Foto Principal del Hero
               </span>
             </div>
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-brand-bg border border-brand-cream/10 relative group">
+            <div className="aspect-[4/5] rounded-xl overflow-hidden bg-brand-bg border border-brand-cream/10 relative max-w-[200px] mx-auto w-full">
               <img
                 src={getOptimizedImageUrl(heroImage, 400)}
                 alt="Foto hero actual"
@@ -551,15 +597,15 @@ export function AdminHomeEditor() {
             />
           </div>
 
-          {/* Acordeones de Secciones */}
-          <div className="flex flex-col gap-2">
+          {/* Acordeones rápidos de Secciones */}
+          <div className="flex flex-col gap-2.5">
             <SectionAccordion
               title="1. Sección Hero (Portada)"
               icon={Sparkles}
               isOpen={activeSection === "hero"}
               onToggle={() => setActiveSection(activeSection === "hero" ? "" : "hero")}
             >
-              <div className="flex flex-col gap-3 p-3 text-xs">
+              <div className="flex flex-col gap-3 p-3.5 text-xs">
                 <div>
                   <label className="text-[10px] text-brand-cream/50 uppercase">Tagline</label>
                   <input
@@ -600,12 +646,12 @@ export function AdminHomeEditor() {
             </SectionAccordion>
 
             <SectionAccordion
-              title="2. Proyecto Destacado"
+              title="2. Proyecto Destacado (Diggin)"
               icon={Layers}
               isOpen={activeSection === "featured"}
               onToggle={() => setActiveSection(activeSection === "featured" ? "" : "featured")}
             >
-              <div className="flex flex-col gap-3 p-3 text-xs">
+              <div className="flex flex-col gap-3 p-3.5 text-xs">
                 <div>
                   <label className="text-[10px] text-brand-cream/50 uppercase">Título</label>
                   <input
@@ -633,7 +679,7 @@ export function AdminHomeEditor() {
               isOpen={activeSection === "process"}
               onToggle={() => setActiveSection(activeSection === "process" ? "" : "process")}
             >
-              <div className="flex flex-col gap-3 p-3 text-xs">
+              <div className="flex flex-col gap-3 p-3.5 text-xs">
                 <div>
                   <label className="text-[10px] text-brand-cream/50 uppercase">Subtítulo</label>
                   <input
@@ -668,7 +714,7 @@ export function AdminHomeEditor() {
   );
 }
 
-// ─── Componente Inline Editable para el Live Preview ──────────────────────────
+// ─── Componente Inline Editable ───────────────────────────────────────────────
 
 interface EditableFieldProps {
   label: string;
@@ -695,7 +741,7 @@ function EditableField({ label, value, onChange, multiline = false, className = 
 
   if (isEditing) {
     return (
-      <div className="relative z-30 p-2 rounded-xl bg-brand-dark/95 border-2 border-brand-blush shadow-2xl my-1">
+      <div className="relative z-30 p-2.5 rounded-xl bg-brand-dark/95 border-2 border-brand-blush shadow-2xl my-1">
         <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-brand-cream/10 text-[10px] font-sans text-brand-blush">
           <span className="font-semibold">{label}</span>
           <button
@@ -713,7 +759,7 @@ function EditableField({ label, value, onChange, multiline = false, className = 
             value={tempVal}
             onChange={(e) => setTempVal(e.target.value)}
             onBlur={handleFinish}
-            className="w-full bg-brand-bg text-brand-cream text-xs p-2 rounded-lg border border-brand-cream/15 outline-none focus:border-brand-blush resize-none font-sans"
+            className="w-full bg-brand-bg text-brand-cream text-xs p-2.5 rounded-lg border border-brand-cream/15 outline-none focus:border-brand-blush resize-none font-sans"
           />
         ) : (
           <input
@@ -725,7 +771,7 @@ function EditableField({ label, value, onChange, multiline = false, className = 
             onKeyDown={(e) => {
               if (e.key === "Enter") handleFinish();
             }}
-            className="w-full bg-brand-bg text-brand-cream text-xs p-2 rounded-lg border border-brand-cream/15 outline-none focus:border-brand-blush font-sans"
+            className="w-full bg-brand-bg text-brand-cream text-xs p-2.5 rounded-lg border border-brand-cream/15 outline-none focus:border-brand-blush font-sans"
           />
         )}
       </div>
@@ -735,7 +781,7 @@ function EditableField({ label, value, onChange, multiline = false, className = 
   return (
     <div
       onClick={() => setIsEditing(true)}
-      className="group/editable relative cursor-pointer rounded-lg hover:outline-2 hover:outline-dashed hover:outline-brand-blush/80 hover:bg-brand-blush/5 transition-all p-1"
+      className="group/editable relative cursor-pointer rounded-lg hover:outline-2 hover:outline-dashed hover:outline-brand-blush/80 hover:bg-brand-blush/10 transition-all p-1 inline-block max-w-full"
       title={`Clic para editar: ${label}`}
     >
       <div className={className}>{value || <span className="opacity-30 italic">[{label}]</span>}</div>
