@@ -35,6 +35,10 @@ export function CollectionsPage() {
 
   useEffect(() => {
     document.title = language === "es" ? "Todas las Colecciones | Miluarte" : "All Collections | Miluarte";
+    const desc = language === "es" 
+      ? "Explora las diferentes colecciones artísticas de Nerea Lucas Pajares (Miluartedenara): ilustración digital, concept art, diseño de stands 3D, arte en arcilla y joyería."
+      : "Explore the different artistic collections of Nerea Lucas Pajares (Miluartedenara): digital illustration, concept art, 3D stands, clay art, and jewelry.";
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
     window.scrollTo(0, 0);
   }, [language]);
 

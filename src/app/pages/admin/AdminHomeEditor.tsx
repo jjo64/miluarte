@@ -84,7 +84,8 @@ export function AdminHomeEditor() {
   const [cleanPreview, setCleanPreview] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  // Estado de referencia guardado en servidor
+  const [serverSnapshot, setServerSnapshot] = useState<string | null>(null);
 
   // Subida de imagen activa
   const [activeImageTarget, setActiveImageTarget] = useState<string | null>(null);
@@ -119,6 +120,19 @@ export function AdminHomeEditor() {
     conceptArt: DEFAULT_PORTRAIT_IMG,
   });
 
+  // Comparación reactiva profunda para determinar si hay cambios reales pendientes
+  const currentSnapshot = JSON.stringify({
+    draftTexts,
+    heroImage,
+    featuredImage,
+    sketchImg,
+    finalImg,
+    galleryImages,
+    servicesImages,
+  });
+
+  const hasChanges = serverSnapshot !== null && serverSnapshot !== currentSnapshot;
+
   // Toast
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
     message: "",
@@ -134,25 +148,61 @@ export function AdminHomeEditor() {
     try {
       setLoading(true);
       const res = await request<any>("/api/admin/texts");
+      let currentTexts = {
+        es: defaultTranslations.es,
+        en: defaultTranslations.en,
+      };
+      let curHero = DEFAULT_HERO_IMG;
+      let curFeatured = DEFAULT_FEATURED_IMG;
+      let curSketch = DEFAULT_ANIMAS_SKETCH;
+      let curFinal = DEFAULT_ANIMAS_FINAL;
+      let curGallery = DEFAULT_GALLERY_IMAGES;
+      let curServices = {
+        disenoGrafico: DEFAULT_DIGGIN_IMG,
+        stand3dBefore: DEFAULT_STAND_BEFORE,
+        stand3dAfter: DEFAULT_STAND_AFTER,
+        diggin: DEFAULT_DIGGIN_IMG,
+        ilustracion: DEFAULT_MUSAE_IMG,
+        conceptArt: DEFAULT_PORTRAIT_IMG,
+      };
+
       if (res && (res.es || res.en)) {
-        const merged = {
+        currentTexts = {
           es: deepMerge(defaultTranslations.es, res.es || {}),
           en: deepMerge(defaultTranslations.en, res.en || {}),
         };
-        setServerTexts(merged);
-        setDraftTexts(merged);
-
-        if (res.heroImage) setHeroImage(res.heroImage);
-        if (res.featuredImage) setFeaturedImage(res.featuredImage);
-        if (res.sketchImg) setSketchImg(res.sketchImg);
-        if (res.finalImg) setFinalImg(res.finalImg);
+        if (res.heroImage) curHero = res.heroImage;
+        if (res.featuredImage) curFeatured = res.featuredImage;
+        if (res.sketchImg) curSketch = res.sketchImg;
+        if (res.finalImg) curFinal = res.finalImg;
         if (Array.isArray(res.galleryImages) && res.galleryImages.length > 0) {
-          setGalleryImages(res.galleryImages);
+          curGallery = res.galleryImages;
         }
         if (res.servicesImages) {
-          setServicesImages((prev) => ({ ...prev, ...res.servicesImages }));
+          curServices = { ...curServices, ...res.servicesImages };
         }
       }
+
+      setServerTexts(currentTexts);
+      setDraftTexts(currentTexts);
+      setHeroImage(curHero);
+      setFeaturedImage(curFeatured);
+      setSketchImg(curSketch);
+      setFinalImg(curFinal);
+      setGalleryImages(curGallery);
+      setServicesImages(curServices);
+
+      setServerSnapshot(
+        JSON.stringify({
+          draftTexts: currentTexts,
+          heroImage: curHero,
+          featuredImage: curFeatured,
+          sketchImg: curSketch,
+          finalImg: curFinal,
+          galleryImages: curGallery,
+          servicesImages: curServices,
+        })
+      );
     } catch (err: any) {
       console.warn("Usando textos base:", err);
     } finally {
@@ -172,7 +222,6 @@ export function AdminHomeEditor() {
       current[parts[parts.length - 1]] = value;
       return next;
     });
-    setHasChanges(true);
   };
 
   const getDraftValue = (path: string): any => {
@@ -248,7 +297,6 @@ export function AdminHomeEditor() {
         setServicesImages((prev) => ({ ...prev, [key]: res.secureUrl }));
       }
 
-      setHasChanges(true);
       setToast({
         message: "¡Imagen subida y actualizada con éxito en la vista previa!",
         type: "success",
@@ -284,7 +332,7 @@ export function AdminHomeEditor() {
       });
 
       setServerTexts(JSON.parse(JSON.stringify(draftTexts)));
-      setHasChanges(false);
+      setServerSnapshot(currentSnapshot);
       setToast({
         message: "¡Página de inicio y todas las imágenes guardadas en el sitio web!",
         type: "success",
@@ -302,8 +350,7 @@ export function AdminHomeEditor() {
   };
 
   const handleDiscard = () => {
-    setDraftTexts(JSON.parse(JSON.stringify(serverTexts)));
-    setHasChanges(false);
+    fetchTexts();
     setToast({
       message: "Cambios descartados. Se restauró la última versión guardada.",
       type: "success",

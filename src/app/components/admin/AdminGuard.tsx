@@ -15,6 +15,16 @@ export function AdminGuard({ children }: AdminGuardProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const metaRobots = document.querySelector('meta[name="robots"]');
+    const originalContent = metaRobots?.getAttribute("content") || "index, follow";
+    metaRobots?.setAttribute("content", "noindex, nofollow");
+    
+    return () => {
+      metaRobots?.setAttribute("content", originalContent);
+    };
+  }, []);
+
+  useEffect(() => {
     let isMounted = true;
 
     async function checkAuth() {

@@ -107,7 +107,7 @@ export function AdminGalleryEditor() {
   const [viewMode, setViewMode] = useState<"puzzle" | "list">("puzzle");
   const [device, setDevice] = useState<DeviceView>("desktop");
   const [cleanPreview, setCleanPreview] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [serverSnapshot, setServerSnapshot] = useState<string | null>(null);
   const [isSavingBatch, setIsSavingBatch] = useState(false);
 
   // Subida de diapositiva de Ánimas
@@ -129,6 +129,13 @@ export function AdminGalleryEditor() {
     aspect: "3/4",
     featured: false,
   });
+
+  const currentSnapshot = JSON.stringify({
+    works,
+    animasSlides: slug === "animas" ? animasSlides : [],
+  });
+
+  const hasChanges = serverSnapshot !== null && serverSnapshot !== currentSnapshot;
 
   // Modal borrar obra
   const [deletingWork, setDeletingWork] = useState<Work | null>(null);
@@ -153,14 +160,21 @@ export function AdminGalleryEditor() {
       const current = allGalleries.find((g) => g.slug === slug);
       setGallery(current || null);
       const safeWorks = Array.isArray(worksData) ? worksData : [];
-      setWorks(safeWorks);
-      setServerWorks(safeWorks);
-
+      let safeSlides = DEFAULT_ANIMAS_SLIDES;
       if (textsData?.animasSlides && Array.isArray(textsData.animasSlides)) {
-        setAnimasSlides(textsData.animasSlides);
+        safeSlides = textsData.animasSlides;
       }
 
-      setHasChanges(false);
+      setWorks(safeWorks);
+      setServerWorks(safeWorks);
+      setAnimasSlides(safeSlides);
+
+      setServerSnapshot(
+        JSON.stringify({
+          works: safeWorks,
+          animasSlides: slug === "animas" ? safeSlides : [],
+        })
+      );
     } catch (err: any) {
       setToast({
         message: "Error al cargar obras: " + (err.message || "Fallo de conexión"),
@@ -186,7 +200,6 @@ export function AdminGalleryEditor() {
         return w;
       })
     );
-    setHasChanges(true);
   };
 
   // Disparar cambio de diapositiva de Ánimas
@@ -214,7 +227,6 @@ export function AdminGalleryEditor() {
         }
         return next;
       });
-      setHasChanges(true);
       setToast({ message: "Diapositiva actualizada en la Biblia de Ánimas", type: "success", open: true });
     } catch (err: any) {
       setToast({ message: err.message || "Error al subir diapositiva", type: "error", open: true });
@@ -226,7 +238,6 @@ export function AdminGalleryEditor() {
 
   const handleDeleteSlide = (index: number) => {
     setAnimasSlides((prev) => prev.filter((_, i) => i !== index));
-    setHasChanges(true);
     setToast({ message: `Diapositiva #${index + 1} eliminada`, type: "success", open: true });
   };
 
@@ -248,7 +259,7 @@ export function AdminGalleryEditor() {
       }
 
       setServerWorks(JSON.parse(JSON.stringify(works)));
-      setHasChanges(false);
+      setServerSnapshot(currentSnapshot);
       setToast({
         message: "¡Diseño de mosaico guardado y publicado en el portafolio!",
         type: "success",
@@ -267,8 +278,7 @@ export function AdminGalleryEditor() {
 
   // Descartar cambios de tamaño
   const handleDiscardChanges = () => {
-    setWorks(JSON.parse(JSON.stringify(serverWorks)));
-    setHasChanges(false);
+    fetchGalleryAndWorks();
     setToast({
       message: "Cambios de tamaño descartados.",
       type: "success",

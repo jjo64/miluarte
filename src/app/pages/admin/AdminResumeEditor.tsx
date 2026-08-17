@@ -44,7 +44,7 @@ export function AdminResumeEditor() {
   const [lang, setLang] = useState<Lang>("es");
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [serverSnapshot, setServerSnapshot] = useState<string | null>(null);
 
   // Foto de perfil del CV
   const [photo, setPhoto] = useState("https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png");
@@ -86,6 +86,13 @@ export function AdminResumeEditor() {
     languages: [...defaultTranslations.es.resume.languagesItems],
   });
 
+  const currentSnapshot = JSON.stringify({
+    photo,
+    resumeData,
+  });
+
+  const hasChanges = serverSnapshot !== null && serverSnapshot !== currentSnapshot;
+
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
     message: "",
     type: "success",
@@ -100,30 +107,53 @@ export function AdminResumeEditor() {
     try {
       setLoading(true);
       const res = await request<any>("/api/admin/texts");
+      let curPhoto = "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png";
+      let curResume = {
+        subtitleEs: defaultTranslations.es.resume.subtitle,
+        subtitleEn: defaultTranslations.en.resume.subtitle,
+        profileTextEs: defaultTranslations.es.resume.profileText,
+        profileTextEn: defaultTranslations.en.resume.profileText,
+        skillsDigitalEs: defaultTranslations.es.resume.skillsItems.digital,
+        skillsDigitalEn: defaultTranslations.en.resume.skillsItems.digital,
+        skillsTraditionalEs: defaultTranslations.es.resume.skillsItems.traditional,
+        skillsTraditionalEn: defaultTranslations.en.resume.skillsItems.traditional,
+        skillsCreativeEs: defaultTranslations.es.resume.skillsItems.creative,
+        skillsCreativeEn: defaultTranslations.en.resume.skillsItems.creative,
+        experienceEs: [...defaultTranslations.es.resume.experienceItems],
+        experienceEn: [...defaultTranslations.en.resume.experienceItems],
+        educationEs: [...defaultTranslations.es.resume.educationItems],
+        educationEn: [...defaultTranslations.en.resume.educationItems],
+        languages: [...defaultTranslations.es.resume.languagesItems],
+      };
+
       if (res) {
-        if (res.resumePhoto) setPhoto(res.resumePhoto);
+        if (res.resumePhoto) curPhoto = res.resumePhoto;
 
         const esRes = res.es?.resume || {};
         const enRes = res.en?.resume || {};
 
-        setResumeData((prev) => ({
-          subtitleEs: esRes.subtitle || prev.subtitleEs,
-          subtitleEn: enRes.subtitle || prev.subtitleEn,
-          profileTextEs: esRes.profileText || prev.profileTextEs,
-          profileTextEn: enRes.profileText || prev.profileTextEn,
-          skillsDigitalEs: esRes.skillsItems?.digital || prev.skillsDigitalEs,
-          skillsDigitalEn: enRes.skillsItems?.digital || prev.skillsDigitalEn,
-          skillsTraditionalEs: esRes.skillsItems?.traditional || prev.skillsTraditionalEs,
-          skillsTraditionalEn: enRes.skillsItems?.traditional || prev.skillsTraditionalEn,
-          skillsCreativeEs: esRes.skillsItems?.creative || prev.skillsCreativeEs,
-          skillsCreativeEn: enRes.skillsItems?.creative || prev.skillsCreativeEn,
-          experienceEs: Array.isArray(esRes.experienceItems) ? esRes.experienceItems : prev.experienceEs,
-          experienceEn: Array.isArray(enRes.experienceItems) ? enRes.experienceItems : prev.experienceEn,
-          educationEs: Array.isArray(esRes.educationItems) ? esRes.educationItems : prev.educationEs,
-          educationEn: Array.isArray(enRes.educationItems) ? enRes.educationItems : prev.educationEn,
-          languages: Array.isArray(esRes.languagesItems) ? esRes.languagesItems : prev.languages,
-        }));
+        curResume = {
+          subtitleEs: esRes.subtitle || curResume.subtitleEs,
+          subtitleEn: enRes.subtitle || curResume.subtitleEn,
+          profileTextEs: esRes.profileText || curResume.profileTextEs,
+          profileTextEn: enRes.profileText || curResume.profileTextEn,
+          skillsDigitalEs: esRes.skillsItems?.digital || curResume.skillsDigitalEs,
+          skillsDigitalEn: enRes.skillsItems?.digital || curResume.skillsDigitalEn,
+          skillsTraditionalEs: esRes.skillsItems?.traditional || curResume.skillsTraditionalEs,
+          skillsTraditionalEn: enRes.skillsItems?.traditional || curResume.skillsTraditionalEn,
+          skillsCreativeEs: esRes.skillsItems?.creative || curResume.skillsCreativeEs,
+          skillsCreativeEn: enRes.skillsItems?.creative || curResume.skillsCreativeEn,
+          experienceEs: Array.isArray(esRes.experienceItems) ? esRes.experienceItems : curResume.experienceEs,
+          experienceEn: Array.isArray(enRes.experienceItems) ? enRes.experienceItems : curResume.experienceEn,
+          educationEs: Array.isArray(esRes.educationItems) ? esRes.educationItems : curResume.educationEs,
+          educationEn: Array.isArray(enRes.educationItems) ? enRes.educationItems : curResume.educationEn,
+          languages: Array.isArray(esRes.languagesItems) ? esRes.languagesItems : curResume.languages,
+        };
       }
+
+      setPhoto(curPhoto);
+      setResumeData(curResume);
+      setServerSnapshot(JSON.stringify({ photo: curPhoto, resumeData: curResume }));
     } catch (err: any) {
       console.warn("Usando datos base de CV:", err);
     } finally {
@@ -139,7 +169,6 @@ export function AdminResumeEditor() {
       setUploadingPhoto(true);
       const res = await uploadImage(file, "miluarte/cv");
       setPhoto(res.secureUrl);
-      setHasChanges(true);
       setToast({ message: "Foto de perfil actualizada en el borrador", type: "success", open: true });
     } catch (err: any) {
       setToast({ message: err.message || "Error al subir la foto", type: "error", open: true });
@@ -187,7 +216,7 @@ export function AdminResumeEditor() {
         }),
       });
 
-      setHasChanges(false);
+      setServerSnapshot(currentSnapshot);
       setToast({ message: "¡Currículum actualizado y publicado con éxito!", type: "success", open: true });
     } catch (err: any) {
       setToast({ message: err.message || "Error al guardar el CV", type: "error", open: true });
@@ -216,7 +245,6 @@ export function AdminResumeEditor() {
       experienceEs: [newExpEs, ...prev.experienceEs],
       experienceEn: [newExpEn, ...prev.experienceEn],
     }));
-    setHasChanges(true);
   };
 
   const handleDeleteExperience = (idx: number) => {
@@ -225,7 +253,6 @@ export function AdminResumeEditor() {
       experienceEs: prev.experienceEs.filter((_, i) => i !== idx),
       experienceEn: prev.experienceEn.filter((_, i) => i !== idx),
     }));
-    setHasChanges(true);
   };
 
   // Helpers para educación
@@ -246,7 +273,6 @@ export function AdminResumeEditor() {
       educationEs: [newEduEs, ...prev.educationEs],
       educationEn: [newEduEn, ...prev.educationEn],
     }));
-    setHasChanges(true);
   };
 
   const handleDeleteEducation = (idx: number) => {
@@ -255,7 +281,6 @@ export function AdminResumeEditor() {
       educationEs: prev.educationEs.filter((_, i) => i !== idx),
       educationEn: prev.educationEn.filter((_, i) => i !== idx),
     }));
-    setHasChanges(true);
   };
 
   const headerActions = (
@@ -368,7 +393,6 @@ export function AdminResumeEditor() {
                     ...prev,
                     [lang === "es" ? "subtitleEs" : "subtitleEn"]: val,
                   }));
-                  setHasChanges(true);
                 }}
                 placeholder="Ilustradora · Diseñadora 3D · Artista Visual"
                 className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-sm focus:border-brand-blush outline-none"
@@ -388,7 +412,6 @@ export function AdminResumeEditor() {
                     ...prev,
                     [lang === "es" ? "profileTextEs" : "profileTextEn"]: val,
                   }));
-                  setHasChanges(true);
                 }}
                 placeholder="Resumen del perfil y visión profesional..."
                 className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-xs leading-relaxed focus:border-brand-blush outline-none resize-y"
@@ -431,7 +454,6 @@ export function AdminResumeEditor() {
                         next[key][idx].role = val;
                         return next;
                       });
-                      setHasChanges(true);
                     }}
                     placeholder="Puesto / Cargo"
                     className="flex-1 bg-transparent text-sm font-semibold text-brand-cream focus:text-brand-blush outline-none border-b border-transparent focus:border-brand-blush"
@@ -447,7 +469,6 @@ export function AdminResumeEditor() {
                         next[key][idx].period = val;
                         return next;
                       });
-                      setHasChanges(true);
                     }}
                     placeholder="2023 — Actualidad"
                     className="w-36 text-right bg-transparent text-xs font-mono text-brand-blush focus:text-brand-cream outline-none"
@@ -473,7 +494,6 @@ export function AdminResumeEditor() {
                       next[key][idx].company = val;
                       return next;
                     });
-                    setHasChanges(true);
                   }}
                   placeholder="Empresa / Cliente / Sello"
                   className="bg-transparent text-xs text-brand-cream/70 outline-none"
@@ -490,7 +510,6 @@ export function AdminResumeEditor() {
                       next[key][idx].description = val;
                       return next;
                     });
-                    setHasChanges(true);
                   }}
                   placeholder="Descripción del rol..."
                   className="w-full bg-brand-dark/50 border border-brand-cream/10 rounded-lg p-2.5 text-xs text-brand-cream/70 focus:border-brand-blush outline-none resize-y"
@@ -534,7 +553,6 @@ export function AdminResumeEditor() {
                         next[key][idx].degree = val;
                         return next;
                       });
-                      setHasChanges(true);
                     }}
                     placeholder="Título obtenido"
                     className="flex-1 bg-transparent text-sm font-semibold text-brand-cream focus:text-brand-blush outline-none"
@@ -550,7 +568,6 @@ export function AdminResumeEditor() {
                         next[key][idx].period = val;
                         return next;
                       });
-                      setHasChanges(true);
                     }}
                     placeholder="2021 — 2023"
                     className="w-28 text-right bg-transparent text-xs font-mono text-brand-blush outline-none"
@@ -576,7 +593,6 @@ export function AdminResumeEditor() {
                       next[key][idx].school = val;
                       return next;
                     });
-                    setHasChanges(true);
                   }}
                   placeholder="Escuela de Arte / Universidad"
                   className="bg-transparent text-xs text-brand-cream/70 outline-none"
@@ -609,7 +625,6 @@ export function AdminResumeEditor() {
                     ...prev,
                     [lang === "es" ? "skillsDigitalEs" : "skillsDigitalEn"]: val,
                   }));
-                  setHasChanges(true);
                 }}
                 className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl p-3 text-xs text-brand-cream focus:border-brand-blush outline-none resize-y leading-relaxed"
               />
@@ -628,7 +643,6 @@ export function AdminResumeEditor() {
                     ...prev,
                     [lang === "es" ? "skillsTraditionalEs" : "skillsTraditionalEn"]: val,
                   }));
-                  setHasChanges(true);
                 }}
                 className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl p-3 text-xs text-brand-cream focus:border-brand-blush outline-none resize-y leading-relaxed"
               />
@@ -647,7 +661,6 @@ export function AdminResumeEditor() {
                     ...prev,
                     [lang === "es" ? "skillsCreativeEs" : "skillsCreativeEn"]: val,
                   }));
-                  setHasChanges(true);
                 }}
                 className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl p-3 text-xs text-brand-cream focus:border-brand-blush outline-none resize-y leading-relaxed"
               />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Eye, EyeOff, Lock, Mail, ArrowRight, Sparkles } from "lucide-react";
@@ -14,6 +14,16 @@ export function AdminLogin() {
 
   const { setToken } = useAdminApi();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const metaRobots = document.querySelector('meta[name="robots"]');
+    const originalContent = metaRobots?.getAttribute("content") || "index, follow";
+    metaRobots?.setAttribute("content", "noindex, nofollow");
+    
+    return () => {
+      metaRobots?.setAttribute("content", originalContent);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
