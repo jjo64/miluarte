@@ -4,7 +4,7 @@ import { generateUploadSignature } from "./_lib/cloudinary.js";
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
@@ -14,7 +14,7 @@ export default async function handler(req: any, res: any) {
     return res.status(200).end();
   }
 
-  if (req.method !== "POST") {
+  if (req.method !== "GET" && req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
   }
 
@@ -25,7 +25,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { folder = "miluarte" } = req.body || {};
+    const folder = req.query?.folder || req.body?.folder || "miluarte";
     const folderStr = typeof folder === "string" ? folder : "miluarte";
 
     const signatureData = generateUploadSignature(folderStr);
