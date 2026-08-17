@@ -173,14 +173,8 @@ function WorkCard({
           <p className="font-serif text-brand-cream text-lg font-light mb-2 leading-tight">
             {work.title}
           </p>
-          <p className="font-sans text-brand-cream/50 text-[11px] tracking-wide mb-2.5">
+          <p className="font-sans text-brand-cream/60 text-[11px] tracking-wide">
             {work.size}
-          </p>
-          <p 
-            className="font-sans text-[11px] tracking-widest uppercase font-medium"
-            style={{ color: work.available ? accent : "rgba(245,237,224,0.35)" }}
-          >
-            {getLocalizedPrice(work.price)}
           </p>
         </div>
 

@@ -63,14 +63,12 @@ export function WorkCard({ work, onEdit, onDelete, isReorderMode = false }: Work
         </div>
 
         <div className="flex items-center justify-between mt-3 pt-2 border-t border-brand-cream/5 text-[10px] font-sans">
-          <span
-            className={`font-medium ${
-              work.available ? "text-emerald-400" : "text-brand-cream/40"
-            }`}
-          >
-            {work.available ? "Disponible" : "No disponible"}
+          <span className="text-brand-cream/60 truncate max-w-[120px]">
+            {work.size || "Medidas N/A"}
           </span>
-          <span className="text-brand-blush font-medium">{work.price || "—"}</span>
+          <span className="text-brand-blush/80 font-mono text-[9px] bg-brand-blush/10 px-1.5 py-0.5 rounded">
+            {work.gridCol?.replace("md:col-span-", "") || "1"} col · {work.aspect || "1/1"}
+          </span>
         </div>
       </div>
     </div>

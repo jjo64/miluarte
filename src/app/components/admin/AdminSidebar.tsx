@@ -29,6 +29,7 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
 
   const navItems = [
     { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
+    { to: "/admin/inicio", label: "Editar Inicio (Live)", icon: Sparkles },
     { to: "/admin/galerias", label: "Galerías y Obras", icon: Images },
     { to: "/admin/renders", label: "Renders 3D & Stands", icon: Box },
     { to: "/admin/textos", label: "Textos del Sitio", icon: FileText },

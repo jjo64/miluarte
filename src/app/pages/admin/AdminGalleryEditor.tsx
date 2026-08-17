@@ -16,6 +16,7 @@ import { AdminLayout } from "../../components/admin/AdminLayout";
 import { WorkCard } from "../../components/admin/WorkCard";
 import { DragSortableList } from "../../components/admin/DragSortableList";
 import { ImageUploader } from "../../components/admin/ImageUploader";
+import { CardResizer } from "../../components/admin/CardResizer";
 import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
 import { Toast } from "../../components/admin/Toast";
 import { GalleryMeta, Work } from "../../types/cms";
@@ -40,8 +41,6 @@ export function AdminGalleryEditor() {
     year: new Date().getFullYear().toString(),
     technique: "Acrílico sobre lienzo",
     size: "50 × 70 cm",
-    price: "Disponible",
-    available: true,
     img: "",
     publicId: "",
     imgPos: "50% 30%",
@@ -99,8 +98,6 @@ export function AdminGalleryEditor() {
       year: new Date().getFullYear().toString(),
       technique: "Acrílico sobre lienzo",
       size: "50 × 70 cm",
-      price: "Disponible",
-      available: true,
       img: "",
       publicId: "",
       imgPos: "50% 30%",
@@ -409,84 +406,51 @@ export function AdminGalleryEditor() {
                       />
                     </div>
 
-                    {/* Precio y Disponibilidad */}
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* Card Resizer interactivo (Grid Column & Aspect Ratio) */}
+                    <CardResizer
+                      gridCol={workForm.gridCol || "md:col-span-1"}
+                      aspect={workForm.aspect || "3/4"}
+                      imageUrl={workForm.img}
+                      title={workForm.title}
+                      technique={workForm.technique}
+                      year={workForm.year}
+                      onChange={({ gridCol, aspect }) => {
+                        setWorkForm((prev) => ({ ...prev, gridCol, aspect }));
+                      }}
+                    />
+
+                    {/* Enfoque visual y Destacada */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                       <div className="flex flex-col gap-1.5">
                         <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                          Precio / Estado
-                        </label>
-                        <input
-                          type="text"
-                          value={workForm.price}
-                          onChange={(e) => setWorkForm({ ...workForm, price: e.target.value })}
-                          placeholder="€650 / Encargo"
-                          className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-3 py-2 text-brand-cream text-sm focus:border-brand-blush outline-none"
-                        />
-                      </div>
-
-                      <div className="flex flex-col justify-end">
-                        <label className="flex items-center gap-2 p-2.5 bg-brand-bg border border-brand-cream/15 rounded-xl cursor-pointer text-xs text-brand-cream/80 h-[42px]">
-                          <input
-                            type="checkbox"
-                            checked={workForm.available}
-                            onChange={(e) => setWorkForm({ ...workForm, available: e.target.checked })}
-                            className="w-4 h-4 rounded-md accent-brand-blush"
-                          />
-                          <span>Disponible</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Proporción y Posición Visual */}
-                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-brand-cream/10">
-                      <div className="flex flex-col gap-1.5">
-                        <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                          Proporción Aspect
-                        </label>
-                        <select
-                          value={workForm.aspect || "3/4"}
-                          onChange={(e) => setWorkForm({ ...workForm, aspect: e.target.value })}
-                          className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-3 py-2 text-brand-cream text-xs focus:border-brand-blush outline-none"
-                        >
-                          <option value="1/1">1:1 Cuadrado</option>
-                          <option value="3/4">3:4 Vertical</option>
-                          <option value="3/2">3:2 Horizontal</option>
-                          <option value="16/9">16:9 Panorámica</option>
-                          <option value="2/1">2:1 Banner</option>
-                        </select>
-                      </div>
-
-                      <div className="flex flex-col gap-1.5">
-                        <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                          Enfoque Vertical
+                          Enfoque Vertical (Object Position)
                         </label>
                         <select
                           value={workForm.imgPos || "50% 30%"}
                           onChange={(e) => setWorkForm({ ...workForm, imgPos: e.target.value })}
-                          className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-3 py-2 text-brand-cream text-xs focus:border-brand-blush outline-none"
+                          className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-3 py-2.5 text-brand-cream text-xs focus:border-brand-blush outline-none"
                         >
-                          <option value="50% 15%">Arriba (15%)</option>
-                          <option value="50% 30%">Centro-Arriba (30%)</option>
-                          <option value="50% 50%">Centro (50%)</option>
-                          <option value="50% 80%">Abajo (80%)</option>
+                          <option value="50% 15%">Arriba (15% - Cabezas/Rostros)</option>
+                          <option value="50% 30%">Centro-Arriba (30% - Retratos)</option>
+                          <option value="50% 50%">Centro (50% - General)</option>
+                          <option value="50% 80%">Abajo (80% - Planos bajos)</option>
                         </select>
                       </div>
-                    </div>
 
-                    {/* Toggle Destacada */}
-                    <div className="pt-2">
-                      <label className="flex items-center gap-2.5 p-3 rounded-xl bg-brand-bg border border-brand-cream/15 cursor-pointer text-xs text-brand-cream">
-                        <input
-                          type="checkbox"
-                          checked={workForm.featured}
-                          onChange={(e) => setWorkForm({ ...workForm, featured: e.target.checked })}
-                          className="w-4 h-4 rounded-md accent-brand-blush"
-                        />
-                        <div className="flex items-center gap-1.5">
-                          <Star className="w-3.5 h-3.5 text-brand-blush" />
-                          <span>Marcar como Obra Destacada en Inicio</span>
-                        </div>
-                      </label>
+                      <div className="flex flex-col justify-end">
+                        <label className="flex items-center gap-2.5 p-2.5 rounded-xl bg-brand-bg border border-brand-cream/15 cursor-pointer text-xs text-brand-cream h-[42px]">
+                          <input
+                            type="checkbox"
+                            checked={workForm.featured}
+                            onChange={(e) => setWorkForm({ ...workForm, featured: e.target.checked })}
+                            className="w-4 h-4 rounded-md accent-brand-blush"
+                          />
+                          <div className="flex items-center gap-1.5">
+                            <Star className="w-3.5 h-3.5 text-brand-blush" />
+                            <span>Obra Destacada en Inicio</span>
+                          </div>
+                        </label>
+                      </div>
                     </div>
                   </form>
                 </div>

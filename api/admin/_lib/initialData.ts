@@ -16,8 +16,8 @@ export interface Work {
   year: string;
   technique: string;
   size: string;
-  price: string;
-  available: boolean;
+  price?: string;
+  available?: boolean;
   img: string;
   publicId?: string;
   imgPos: string;

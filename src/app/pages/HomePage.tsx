@@ -115,7 +115,7 @@ function Hero() {
           {/* Framed Miluarte artwork */}
           <div className="relative rounded-lg overflow-hidden shadow-2xl aspect-[4/5] bg-brand-dark">
             <img
-              src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg", 800)}
+              src={getOptimizedImageUrl(t("hero.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg", 800)}
               alt={t("gallery.alts.obra3")}
               className="w-full h-full object-cover block"
               fetchPriority="high"

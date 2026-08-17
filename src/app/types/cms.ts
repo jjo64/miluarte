@@ -15,8 +15,8 @@ export interface Work {
   year: string;
   technique: string;
   size: string;
-  price: string;
-  available: boolean;
+  price?: string;        // Opcional
+  available?: boolean;   // Opcional
   img: string;           // URL Cloudinary
   publicId?: string;     // Para gestión en Cloudinary
   imgPos: string;        // CSS object-position, ej: "50% 30%"
