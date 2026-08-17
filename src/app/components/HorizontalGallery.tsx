@@ -51,7 +51,15 @@ const IMAGES = [
   },
 ];
 
-function GalleryCard({ src, altKey, index }: { src: string; altKey: string; index: number }) {
+interface GalleryCardProps {
+  src: string;
+  altKey: string;
+  index: number;
+  editable?: boolean;
+  onImageClick?: () => void;
+}
+
+function GalleryCard({ src, altKey, index, editable, onImageClick }: GalleryCardProps) {
   const [hovered, setHovered] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
@@ -86,7 +94,8 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
   return (
     <div
       ref={cardRef}
-      className="flex-shrink-0 w-[80vw] md:w-[32vw] px-2.5 box-content"
+      className={`flex-shrink-0 w-[80vw] md:w-[32vw] px-2.5 box-content ${editable ? "cursor-pointer" : ""}`}
+      onClick={editable && onImageClick ? onImageClick : undefined}
       onMouseEnter={() => setHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -97,7 +106,7 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
       }}
       data-cursor={t("process.cursorHint")}
     >
-      <div className="relative overflow-hidden aspect-square rounded-lg shadow-xl" style={{ transform: "translateZ(20px)" }}>
+      <div className="relative overflow-hidden aspect-square rounded-lg shadow-xl group/card" style={{ transform: "translateZ(20px)" }}>
         <img
           src={getOptimizedImageUrl(src, 800)}
           alt={localizedAlt}
@@ -114,6 +123,19 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
         >
           {num}
         </div>
+
+        {/* Overlay en modo editable */}
+        {editable && (
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/card:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-3 text-center z-20">
+            <div className="w-8 h-8 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-lg">
+              📷
+            </div>
+            <span className="font-sans text-[11px] font-semibold text-brand-cream tracking-wider uppercase">
+              Cambiar Obra #{index + 1}
+            </span>
+          </div>
+        )}
+
         {/* Blush corner accent on hover */}
         <div
           className="absolute bottom-0 left-0 right-0 bg-brand-blush transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]"
@@ -124,13 +146,25 @@ function GalleryCard({ src, altKey, index }: { src: string; altKey: string; inde
   );
 }
 
-export function HorizontalGallery() {
+interface HorizontalGalleryProps {
+  images?: Array<{ src: string; category?: string; altKey?: string }>;
+  onImageClick?: (index: number) => void;
+  editable?: boolean;
+}
+
+export function HorizontalGallery({ images, onImageClick, editable = false }: HorizontalGalleryProps = {}) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const stripRef   = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [category, setCategory] = useState<string>("all");
-  const [galleryImages, setGalleryImages] = useState(IMAGES);
+  const [galleryImages, setGalleryImages] = useState(images || IMAGES);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (images && images.length > 0) {
+      setGalleryImages(images);
+    }
+  }, [images]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -286,7 +320,14 @@ export function HorizontalGallery() {
       {isMobile ? (
         <div className="flex overflow-x-auto gap-3 px-5 pb-8" style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}>
           {filteredImages.map((img, i) => (
-            <GalleryCard key={`${category}-${i}`} src={img.src} altKey={img.altKey} index={i} />
+            <GalleryCard
+              key={`${category}-${i}`}
+              src={img.src}
+              altKey={img.altKey}
+              index={i}
+              editable={editable}
+              onImageClick={onImageClick ? () => onImageClick(i) : undefined}
+            />
           ))}
         </div>
       ) : (
@@ -300,7 +341,14 @@ export function HorizontalGallery() {
             className="flex flex-nowrap items-center will-change-transform px-[5vw]"
           >
             {filteredImages.map((img, i) => (
-              <GalleryCard key={`${category}-${i}`} src={img.src} altKey={img.altKey} index={i} />
+              <GalleryCard
+                key={`${category}-${i}`}
+                src={img.src}
+                altKey={img.altKey}
+                index={i}
+                editable={editable}
+                onImageClick={onImageClick ? () => onImageClick(i) : undefined}
+              />
             ))}
           </div>
         </div>

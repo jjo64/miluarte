@@ -184,7 +184,7 @@ function FeaturedProject() {
         onTouchEnd={() => setImgTap(false)}
       >
         <img
-          src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1200)}
+          src={getOptimizedImageUrl(t("featured.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1200)}
           alt={t("gallery.alts.obra4")}
           loading="lazy"
           style={{
@@ -374,8 +374,8 @@ export function HomePage() {
       <ClientsMarquee />
       <HorizontalGallery />
       <SketchSlider
-        sketchImg={animasSketch}
-        finalImg={animasFinal}
+        sketchImg={t("process.sketchImg") || animasSketch}
+        finalImg={t("process.finalImg") || animasFinal}
         sketchImgPos="50% 17%"
         finalImgPos="50% 12%"
         title={t("process.title")}

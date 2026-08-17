@@ -10,6 +10,9 @@ interface SketchSliderProps {
   hint: string;
   sketchImgPos?: string;
   finalImgPos?: string;
+  editable?: boolean;
+  onSketchClick?: () => void;
+  onFinalClick?: () => void;
 }
 
 export function SketchSlider({ 
@@ -19,7 +22,10 @@ export function SketchSlider({
   subtitle, 
   hint,
   sketchImgPos = "50% 12%",
-  finalImgPos = "50% 12%"
+  finalImgPos = "50% 12%",
+  editable = false,
+  onSketchClick,
+  onFinalClick,
 }: SketchSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const containerRect = useRef<DOMRect | null>(null);
@@ -235,13 +241,44 @@ export function SketchSlider({
             ↔
           </div>
 
-          {/* Labels */}
-          <span style={{ position: "absolute", bottom: 12, left: 12, fontFamily: SANS, fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.cream, background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: 4, pointerEvents: "none" }}>
-            Boceto
-          </span>
-          <span style={{ position: "absolute", bottom: 12, right: 12, fontFamily: SANS, fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.cream, background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: 4, pointerEvents: "none" }}>
-            Arte Final
-          </span>
+          {/* Labels & Edit overlays */}
+          <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 10 }}>
+            {editable ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onSketchClick) onSketchClick();
+                }}
+                className="bg-brand-blush text-brand-ink hover:bg-brand-cream text-[10px] font-sans font-semibold tracking-wider uppercase px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                <span>📷 Cambiar Boceto</span>
+              </button>
+            ) : (
+              <span style={{ fontFamily: SANS, fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.cream, background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: 4, pointerEvents: "none" }}>
+                Boceto
+              </span>
+            )}
+          </div>
+
+          <div style={{ position: "absolute", bottom: 12, right: 12, zIndex: 10 }}>
+            {editable ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onFinalClick) onFinalClick();
+                }}
+                className="bg-brand-blush text-brand-ink hover:bg-brand-cream text-[10px] font-sans font-semibold tracking-wider uppercase px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                <span>📷 Cambiar Arte Final</span>
+              </button>
+            ) : (
+              <span style={{ fontFamily: SANS, fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.cream, background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: 4, pointerEvents: "none" }}>
+                Arte Final
+              </span>
+            )}
+          </div>
 
         </motion.div>
       </div>

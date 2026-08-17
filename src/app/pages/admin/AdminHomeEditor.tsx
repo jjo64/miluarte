@@ -11,12 +11,10 @@ import {
   Check,
   ExternalLink,
   Camera,
-  UploadCloud,
-  X,
-  Plus,
+  Layers,
+  Image as ImageIcon,
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
-import { ImageUploader } from "../../components/admin/ImageUploader";
 import { Toast } from "../../components/admin/Toast";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { useUpload } from "../../hooks/useUpload";
@@ -31,8 +29,21 @@ import { SharedFooter } from "../../components/SharedFooter";
 type Lang = "es" | "en";
 type DeviceView = "desktop" | "tablet" | "mobile";
 
-const animasSketch = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
-const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
+const DEFAULT_ANIMAS_SKETCH = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
+const DEFAULT_ANIMAS_FINAL  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
+const DEFAULT_FEATURED_IMG  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg";
+const DEFAULT_HERO_IMG      = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg";
+
+const DEFAULT_GALLERY_IMAGES = [
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", category: "ilustracion", altKey: "obra1" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", category: "concept", altKey: "obra2" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/719099666_18085459703434740_3604615127722183027_n_apifn2.jpg", category: "ilustracion", altKey: "obra3" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", category: "musica", altKey: "obra4" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798273/Captura_de_pantalla_2026-06-18_175704_agpitt.png", category: "concept", altKey: "obra5" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/656747786_18083218367600656_3599812440241416906_n_f8npa1.jpg", category: "joyeria", altKey: "obra6" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg", category: "concept", altKey: "obra7" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg", category: "ilustracion", altKey: "obra8" },
+];
 
 function deepMerge(target: any, source: any): any {
   if (typeof target !== "object" || target === null) return source;
@@ -63,27 +74,28 @@ export function AdminHomeEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Modal para cambiar foto del Hero
-  const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
-  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  // Subida de imagen activa
+  const [activeImageTarget, setActiveImageTarget] = useState<string | null>(null);
+  const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Textos originales en servidor
+  // Textos y configuraciones
   const [serverTexts, setServerTexts] = useState({
     es: defaultTranslations.es,
     en: defaultTranslations.en,
   });
 
-  // Textos en borrador interactivo
   const [draftTexts, setDraftTexts] = useState({
     es: defaultTranslations.es,
     en: defaultTranslations.en,
   });
 
-  // Imagen del hero
-  const [heroImage, setHeroImage] = useState<string>(
-    "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg"
-  );
+  // Imágenes del Inicio editables
+  const [heroImage, setHeroImage] = useState<string>(DEFAULT_HERO_IMG);
+  const [featuredImage, setFeaturedImage] = useState<string>(DEFAULT_FEATURED_IMG);
+  const [sketchImg, setSketchImg] = useState<string>(DEFAULT_ANIMAS_SKETCH);
+  const [finalImg, setFinalImg] = useState<string>(DEFAULT_ANIMAS_FINAL);
+  const [galleryImages, setGalleryImages] = useState(DEFAULT_GALLERY_IMAGES);
 
   // Toast
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
@@ -107,7 +119,14 @@ export function AdminHomeEditor() {
         };
         setServerTexts(merged);
         setDraftTexts(merged);
+
         if (res.heroImage) setHeroImage(res.heroImage);
+        if (res.featuredImage) setFeaturedImage(res.featuredImage);
+        if (res.sketchImg) setSketchImg(res.sketchImg);
+        if (res.finalImg) setFinalImg(res.finalImg);
+        if (Array.isArray(res.galleryImages) && res.galleryImages.length > 0) {
+          setGalleryImages(res.galleryImages);
+        }
       }
     } catch (err: any) {
       console.warn("Usando textos base:", err);
@@ -146,19 +165,50 @@ export function AdminHomeEditor() {
 
   const t = (path: string) => getDraftValue(path);
 
-  // Manejar subida directa de foto desde archivo local
-  const handleDirectPhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Disparar selector de archivo para una imagen específica
+  const triggerImageUpload = (target: string) => {
+    setActiveImageTarget(target);
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // Subir imagen a Cloudinary y asignarla al target correspondiente
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !activeImageTarget) return;
 
     try {
-      setIsUploadingPhoto(true);
-      const uploadRes = await uploadImage(file, "miluarte/hero");
-      setHeroImage(uploadRes.secureUrl);
+      setUploadingTarget(activeImageTarget);
+      const folder = activeImageTarget.startsWith("gallery_") ? "miluarte/gallery" : "miluarte/home";
+      const res = await uploadImage(file, folder);
+
+      if (activeImageTarget === "hero") {
+        setHeroImage(res.secureUrl);
+        updateDraft("hero.image", res.secureUrl);
+      } else if (activeImageTarget === "featured") {
+        setFeaturedImage(res.secureUrl);
+        updateDraft("featured.image", res.secureUrl);
+      } else if (activeImageTarget === "sketch") {
+        setSketchImg(res.secureUrl);
+        updateDraft("process.sketchImg", res.secureUrl);
+      } else if (activeImageTarget === "final") {
+        setFinalImg(res.secureUrl);
+        updateDraft("process.finalImg", res.secureUrl);
+      } else if (activeImageTarget.startsWith("gallery_")) {
+        const idx = parseInt(activeImageTarget.replace("gallery_", ""), 10);
+        setGalleryImages((prev) => {
+          const next = [...prev];
+          if (next[idx]) {
+            next[idx] = { ...next[idx], src: res.secureUrl };
+          }
+          return next;
+        });
+      }
+
       setHasChanges(true);
-      setIsPhotoModalOpen(false);
       setToast({
-        message: "¡Foto del Hero subida y actualizada con éxito en el borrador!",
+        message: "¡Imagen subida y actualizada con éxito en la vista previa!",
         type: "success",
         open: true,
       });
@@ -169,7 +219,8 @@ export function AdminHomeEditor() {
         open: true,
       });
     } finally {
-      setIsUploadingPhoto(false);
+      setUploadingTarget(null);
+      setActiveImageTarget(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -182,13 +233,17 @@ export function AdminHomeEditor() {
         body: JSON.stringify({
           ...draftTexts,
           heroImage,
+          featuredImage,
+          sketchImg,
+          finalImg,
+          galleryImages,
         }),
       });
 
       setServerTexts(JSON.parse(JSON.stringify(draftTexts)));
       setHasChanges(false);
       setToast({
-        message: "¡Página de inicio guardada y publicada en la web!",
+        message: "¡Página de inicio y todas las imágenes guardadas en el sitio web!",
         type: "success",
         open: true,
       });
@@ -324,14 +379,14 @@ export function AdminHomeEditor() {
   return (
     <AdminLayout
       title="Editor Visual del Inicio (WYSIWYG)"
-      subtitle={`Haz clic sobre cualquier texto o foto para editar en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
+      subtitle={`Haz clic en cualquier texto o imagen para editar en tiempo real en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
       actions={headerActions}
     >
-      {/* Input de archivo oculto para subida directa con 1 clic */}
+      {/* Input de archivo oculto para selector nativo */}
       <input
         type="file"
         ref={fileInputRef}
-        onChange={handleDirectPhotoSelect}
+        onChange={handleFileSelected}
         accept="image/jpeg,image/png,image/webp,image/avif"
         className="hidden"
       />
@@ -342,7 +397,7 @@ export function AdminHomeEditor() {
           <div className="flex items-center gap-2.5">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-medium text-brand-cream">
-              Modo Lienzo Completo: Clica sobre cualquier texto para editarlo o sobre la foto para cambiarla.
+              Lienzo Completo: Clica sobre cualquier texto o sobre cualquier foto para reemplazarla al instante.
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -361,7 +416,7 @@ export function AdminHomeEditor() {
           </div>
         </div>
 
-        {/* Viewport a Pantalla Completa (o escalado según dispositivo seleccionado) */}
+        {/* Viewport a Pantalla Completa o Responsivo */}
         <div
           className={`w-full transition-all duration-300 border-x border-b border-brand-cream/10 rounded-b-2xl overflow-hidden shadow-2xl bg-brand-bg text-brand-cream ${
             device === "mobile"
@@ -443,11 +498,7 @@ export function AdminHomeEditor() {
               {/* Right: Foto enmarcada interactiva con subida al clic */}
               <div className="flex flex-col justify-start order-2 gap-4 items-center">
                 <div
-                  onClick={() => {
-                    if (fileInputRef.current) {
-                      fileInputRef.current.click();
-                    }
-                  }}
+                  onClick={() => triggerImageUpload("hero")}
                   className="group/photo relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] bg-brand-dark max-w-[340px] w-full border-2 border-brand-cream/15 hover:border-brand-blush transition-all cursor-pointer"
                   title="Haz clic para subir y cambiar la foto del Hero"
                 >
@@ -472,7 +523,7 @@ export function AdminHomeEditor() {
                   {/* Overlay interactivo de cambio de foto */}
                   <div className="absolute inset-0 bg-black/70 backdrop-blur-xs opacity-0 group-hover/photo:opacity-100 transition-opacity flex flex-col items-center justify-center p-6 text-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-xl">
-                      {isUploadingPhoto ? (
+                      {uploadingTarget === "hero" ? (
                         <div className="w-5 h-5 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
                       ) : (
                         <Camera className="w-6 h-6" />
@@ -480,7 +531,7 @@ export function AdminHomeEditor() {
                     </div>
                     <div>
                       <p className="font-sans text-xs font-semibold text-brand-cream uppercase tracking-wider">
-                        {isUploadingPhoto ? "Subiendo a Cloudinary..." : "Cambiar Foto del Hero"}
+                        {uploadingTarget === "hero" ? "Subiendo a Cloudinary..." : "Cambiar Foto del Hero"}
                       </p>
                       <p className="font-sans text-[11px] text-brand-cream/60 mt-1">
                         Haz clic para seleccionar una foto de tu ordenador
@@ -506,14 +557,33 @@ export function AdminHomeEditor() {
                 className="font-sans text-brand-blush text-[10px] tracking-[0.15em] uppercase flex items-center gap-2 font-medium"
               />
 
-              <div className="relative rounded-xl overflow-hidden my-4 shadow-2xl">
+              {/* Imagen panorámica de Diggin interactiva con subida al clic */}
+              <div
+                onClick={() => triggerImageUpload("featured")}
+                className="group/featured relative rounded-xl overflow-hidden my-4 shadow-2xl border-2 border-transparent hover:border-brand-blush transition-all cursor-pointer"
+                title="Haz clic para cambiar la imagen del Proyecto Destacado"
+              >
                 <img
-                  src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1200)}
+                  src={getOptimizedImageUrl(featuredImage, 1200)}
                   alt="Diggin"
-                  className="w-full h-64 md:h-96 object-cover"
+                  className="w-full h-64 md:h-96 object-cover transition-transform duration-500 group-hover/featured:scale-105"
                 />
-                <div className="absolute top-3.5 left-3.5 bg-brand-blush text-brand-ink font-sans text-[9px] tracking-wider uppercase font-semibold px-3 py-1 rounded">
+                <div className="absolute top-3.5 left-3.5 bg-brand-blush text-brand-ink font-sans text-[9px] tracking-wider uppercase font-semibold px-3 py-1 rounded shadow-md pointer-events-none">
                   {t("featured.tag") || "DIRECCIÓN DE ARTE · IDENTIDAD VISUAL"}
+                </div>
+
+                {/* Overlay de edición al hover */}
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-xs opacity-0 group-hover/featured:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 text-center">
+                  <div className="w-10 h-10 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-lg">
+                    {uploadingTarget === "featured" ? (
+                      <div className="w-4 h-4 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Camera className="w-5 h-5" />
+                    )}
+                  </div>
+                  <span className="font-sans text-xs font-semibold text-brand-cream tracking-wider uppercase">
+                    {uploadingTarget === "featured" ? "Subiendo a Cloudinary..." : "Cambiar Imagen de Proyecto Destacado"}
+                  </span>
                 </div>
               </div>
 
@@ -548,12 +618,16 @@ export function AdminHomeEditor() {
             <ClientsMarquee />
           </div>
 
-          {/* ── 4. Galería Horizontal de Obras Destacadas ── */}
+          {/* ── 4. Galería Horizontal de Obras Destacadas Interactiva ── */}
           <div className="py-10 bg-brand-bg">
-            <HorizontalGallery />
+            <HorizontalGallery
+              images={galleryImages}
+              editable={true}
+              onImageClick={(idx) => triggerImageUpload(`gallery_${idx}`)}
+            />
           </div>
 
-          {/* ── 5. El Proceso Creativo (Sketch Slider) ── */}
+          {/* ── 5. El Proceso Creativo (Sketch Slider) Interactivo ── */}
           <div className="bg-brand-dark/40 py-16 border-y border-brand-cream/10">
             <div className="max-w-xl mx-auto px-6 mb-8 text-center">
               <EditableField
@@ -578,13 +652,16 @@ export function AdminHomeEditor() {
             </div>
 
             <SketchSlider
-              sketchImg={animasSketch}
-              finalImg={animasFinal}
+              sketchImg={sketchImg}
+              finalImg={finalImg}
               sketchImgPos="50% 17%"
               finalImgPos="50% 12%"
               title={t("process.title")}
               subtitle={t("process.subtitle")}
               hint={t("process.hint")}
+              editable={true}
+              onSketchClick={() => triggerImageUpload("sketch")}
+              onFinalClick={() => triggerImageUpload("final")}
             />
           </div>
 
