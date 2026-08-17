@@ -127,11 +127,21 @@ export default async function handler(req: any, res: any) {
     }
   }
 
-  // 3. PUT: Actualizar obra o reordenar
+  // 3. PUT: Actualizar obra, guardar lote completo o reordenar
   if (req.method === "PUT") {
     try {
-      const { id, ids, reorder, ...updates } = req.body || {};
+      const { id, ids, reorder, works: batchWorks, ...updates } = req.body || {};
       const works = await getWorksForGallery(gallerySlug);
+
+      // Modo Guardar lote completo (Diseño interactivo de puzzle)
+      if (Array.isArray(batchWorks)) {
+        const preSnapId = await createPreSnapshot();
+        if (isKvConfigured()) {
+          await kv.set(`miluarte:gallery:${gallerySlug}`, JSON.stringify(batchWorks));
+        }
+        await recordChangelog(`Actualizó el diseño y tamaños de la galería "${gallerySlug}"`, "works", preSnapId);
+        return res.status(200).json(batchWorks);
+      }
 
       // Modo Reordenar
       if (reorder && Array.isArray(ids)) {
