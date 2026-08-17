@@ -218,6 +218,7 @@ export function AdminGalleries() {
           renderItem={(g) => (
             <GalleryCard
               gallery={g}
+              worksCount={(g as any).worksCount ?? 0}
               onOpen={() => navigate(`/admin/galerias/${g.slug}`)}
               onEditMeta={() => handleOpenEdit(g)}
               onDelete={() => setDeletingGallery(g)}

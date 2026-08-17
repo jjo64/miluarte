@@ -1,7 +1,7 @@
 import { kv, isKvConfigured } from "./_lib/kv.js";
 import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
 import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
-import { GalleryMeta, getBaseGalleries, BASE_GALLERY_SLUGS } from "./_lib/initialData.js";
+import { GalleryMeta, getBaseGalleries, BASE_GALLERY_SLUGS, WORKS_BY_SLUG } from "./_lib/initialData.js";
 
 // Helper para obtener las galerías actuales
 async function getGalleries(): Promise<GalleryMeta[]> {
@@ -45,15 +45,39 @@ export default async function handler(req: any, res: any) {
     return res.status(200).end();
   }
 
-  // 1. GET: Listar todas las galerías (público / frontend & admin)
+  // 1. GET: Listar todas las galerías con conteo de obras real
   if (req.method === "GET") {
     try {
       const galleries = await getGalleries();
       galleries.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-      return res.status(200).json(galleries);
+
+      const enriched = await Promise.all(
+        galleries.map(async (g) => {
+          let count = (WORKS_BY_SLUG[g.slug] || []).length;
+          if (isKvConfigured()) {
+            try {
+              const raw = await kv.get(`miluarte:gallery:${g.slug}`);
+              if (raw) {
+                const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+                if (Array.isArray(parsed)) count = parsed.length;
+              }
+            } catch (e) {}
+          }
+          return {
+            ...g,
+            worksCount: count,
+          };
+        })
+      );
+
+      return res.status(200).json(enriched);
     } catch (error: any) {
       console.warn("Fallback to static galleries on GET /api/admin/galleries:", error);
-      return res.status(200).json(getBaseGalleries());
+      const fallback = getBaseGalleries().map((g) => ({
+        ...g,
+        worksCount: (WORKS_BY_SLUG[g.slug] || []).length,
+      }));
+      return res.status(200).json(fallback);
     }
   }
 

@@ -351,7 +351,10 @@ function AnimasBibleSection() {
           className="flex gap-4 overflow-x-auto px-6 md:px-10 pb-4 scrollbar-none"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {ANIMAS_SLIDES.map((src, i) => (
+          {(((t("animasSlides") as any) && Array.isArray(t("animasSlides") as any) && (t("animasSlides") as any).length > 0)
+            ? (t("animasSlides") as any)
+            : ANIMAS_SLIDES
+          ).map((src: string, i: number, arr: string[]) => (
             <div
               key={i}
               className="flex-shrink-0 relative overflow-hidden rounded group"
@@ -365,7 +368,7 @@ function AnimasBibleSection() {
               />
               <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/70 to-transparent" />
               <span className="absolute bottom-3 left-4 font-sans text-[9px] tracking-widest text-brand-cream/50 uppercase">
-                {String(i + 1).padStart(2, "0")} / 31
+                {String(i + 1).padStart(2, "0")} / {arr.length}
               </span>
             </div>
           ))}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -22,6 +22,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  EyeOff,
+  Monitor,
+  Tablet,
+  Smartphone,
+  Camera,
+  Layers,
+  BookOpen,
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { WorkCard } from "../../components/admin/WorkCard";
@@ -34,6 +41,40 @@ import { GalleryMeta, Work } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { useUpload } from "../../hooks/useUpload";
 import { getOptimizedImageUrl } from "../../utils/cloudinary";
+
+const DEFAULT_ANIMAS_SLIDES = [
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820013/01_Portada_ljcbrq.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820014/02_Introducci%C3%B3n_vopmvs.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820016/03_Introducci%C3%B3n_rpdjrc.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820017/04_Veive_cgvvbf.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820018/05_Veive_rftpr5.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820019/06_Veive_pqy387.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820020/07_Veive_vee6mz.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820022/08_Melisa_crsc5e.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820023/09_Melisa_alxiqu.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820024/10_Melisa_teoite.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820025/11_Melisa_yf3wfk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820026/12_Osceola_fsumn6.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820027/13_Osceola_fqorrq.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820028/14_Osceola_gp4zuk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820029/15_Mania_ehtvh0.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820030/16_Mania_zbpatm.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820031/17_Feronia_ww6zmk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820032/18_Feronia_qmleha.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820033/19_Atum_y_Satres_myxu2c.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820034/20_Gran_Espiritu_gnfaxn.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820036/21_Abuela_Ara%C3%B1a_dja5v6.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820037/22_Vesta_ynqsgg.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820038/23_Nethus_notptk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820039/24_Usil_y_Losna_nib3my.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820040/25_Nortia_y_Vant_kblzdr.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820041/26_Nortia_y_Vant_niuvw7.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820042/27_Line_Up_nhbloe.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820043/28_Props_sttvlg.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820045/29_Arte_final_1_nkseuc.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820044/30_Arte_final_2_ns9rdp.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820046/31_Resumen_w5ipcb.jpg"
+];
 
 const COL_OPTIONS = [
   { value: "md:col-span-1", span: 1, label: "1 Col" },
@@ -48,18 +89,28 @@ const ASPECT_OPTIONS = [
   { value: "16/9", label: "16:9", icon: Maximize2 },
 ];
 
+type DeviceView = "desktop" | "tablet" | "mobile";
+
 export function AdminGalleryEditor() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { request } = useAdminApi();
+  const { uploadImage } = useUpload();
 
   const [gallery, setGallery] = useState<GalleryMeta | null>(null);
   const [works, setWorks] = useState<Work[]>([]);
   const [serverWorks, setServerWorks] = useState<Work[]>([]);
+  const [animasSlides, setAnimasSlides] = useState<string[]>(DEFAULT_ANIMAS_SLIDES);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"puzzle" | "list">("puzzle");
+  const [device, setDevice] = useState<DeviceView>("desktop");
+  const [cleanPreview, setCleanPreview] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [isSavingBatch, setIsSavingBatch] = useState(false);
+
+  // Subida de diapositiva de Ánimas
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number | null>(null);
+  const slideFileInputRef = useRef<HTMLInputElement>(null);
 
   // Panel lateral de edición / creación
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -91,9 +142,10 @@ export function AdminGalleryEditor() {
     if (!slug) return;
     try {
       setLoading(true);
-      const [allGalleries, worksData] = await Promise.all([
+      const [allGalleries, worksData, textsData] = await Promise.all([
         request<GalleryMeta[]>("/api/admin/galleries"),
         request<Work[]>(`/api/admin/works?slug=${slug}`),
+        slug === "animas" ? request<any>("/api/admin/texts") : Promise.resolve(null),
       ]);
 
       const current = allGalleries.find((g) => g.slug === slug);
@@ -101,6 +153,11 @@ export function AdminGalleryEditor() {
       const safeWorks = Array.isArray(worksData) ? worksData : [];
       setWorks(safeWorks);
       setServerWorks(safeWorks);
+
+      if (textsData?.animasSlides && Array.isArray(textsData.animasSlides)) {
+        setAnimasSlides(textsData.animasSlides);
+      }
+
       setHasChanges(false);
     } catch (err: any) {
       setToast({
@@ -130,7 +187,48 @@ export function AdminGalleryEditor() {
     setHasChanges(true);
   };
 
-  // Guardar todo el diseño del puzzle en la base de datos
+  // Disparar cambio de diapositiva de Ánimas
+  const handleTriggerSlideUpload = (index: number) => {
+    setActiveSlideIndex(index);
+    if (slideFileInputRef.current) {
+      slideFileInputRef.current.click();
+    }
+  };
+
+  // Subir nueva diapositiva a Cloudinary
+  const handleSlideFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || activeSlideIndex === null) return;
+
+    try {
+      setToast({ message: "Subiendo diapositiva a Cloudinary...", type: "success", open: true });
+      const res = await uploadImage(file, "miluarte/animas-bible");
+      setAnimasSlides((prev) => {
+        const next = [...prev];
+        if (activeSlideIndex === -1) {
+          next.push(res.secureUrl);
+        } else {
+          next[activeSlideIndex] = res.secureUrl;
+        }
+        return next;
+      });
+      setHasChanges(true);
+      setToast({ message: "Diapositiva actualizada en la Biblia de Ánimas", type: "success", open: true });
+    } catch (err: any) {
+      setToast({ message: err.message || "Error al subir diapositiva", type: "error", open: true });
+    } finally {
+      setActiveSlideIndex(null);
+      if (slideFileInputRef.current) slideFileInputRef.current.value = "";
+    }
+  };
+
+  const handleDeleteSlide = (index: number) => {
+    setAnimasSlides((prev) => prev.filter((_, i) => i !== index));
+    setHasChanges(true);
+    setToast({ message: `Diapositiva #${index + 1} eliminada`, type: "success", open: true });
+  };
+
+  // Guardar todo el diseño del puzzle y diapositivas en la base de datos
   const handleSaveBatchLayout = async () => {
     if (!slug) return;
     try {
@@ -139,6 +237,14 @@ export function AdminGalleryEditor() {
         method: "PUT",
         body: JSON.stringify({ works }),
       });
+
+      if (slug === "animas") {
+        await request("/api/admin/texts", {
+          method: "PUT",
+          body: JSON.stringify({ animasSlides }),
+        });
+      }
+
       setServerWorks(JSON.parse(JSON.stringify(works)));
       setHasChanges(false);
       setToast({
@@ -170,7 +276,6 @@ export function AdminGalleryEditor() {
 
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const { uploadImage } = useUpload();
 
   const handleOpenAdd = () => {
     setEditingWork(null);
@@ -285,7 +390,7 @@ export function AdminGalleryEditor() {
   };
 
   const headerActions = (
-    <div className="flex items-center gap-2.5 flex-wrap justify-end">
+    <div className="flex items-center gap-2 flex-wrap justify-end">
       <button
         onClick={() => navigate("/admin/galerias")}
         className="px-3 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -306,7 +411,7 @@ export function AdminGalleryEditor() {
           }`}
         >
           <LayoutGrid className="w-3.5 h-3.5" />
-          <span>Muro Puzzle (Live)</span>
+          <span>Muro Puzzle</span>
         </button>
         <button
           type="button"
@@ -318,9 +423,58 @@ export function AdminGalleryEditor() {
           }`}
         >
           <ArrowUpDown className="w-3.5 h-3.5" />
-          <span>Lista / Reordenar</span>
+          <span>Lista</span>
         </button>
       </div>
+
+      {/* Selector de dispositivo */}
+      <div className="hidden lg:flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
+        <button
+          type="button"
+          onClick={() => setDevice("desktop")}
+          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+            device === "desktop" ? "bg-brand-cream/15 text-brand-blush" : "text-brand-cream/50 hover:text-brand-cream"
+          }`}
+          title="Vista Desktop (3 columnas)"
+        >
+          <Monitor className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => setDevice("tablet")}
+          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+            device === "tablet" ? "bg-brand-cream/15 text-brand-blush" : "text-brand-cream/50 hover:text-brand-cream"
+          }`}
+          title="Vista Tablet (2 columnas)"
+        >
+          <Tablet className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => setDevice("mobile")}
+          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+            device === "mobile" ? "bg-brand-cream/15 text-brand-blush" : "text-brand-cream/50 hover:text-brand-cream"
+          }`}
+          title="Vista Móvil (1 columna)"
+        >
+          <Smartphone className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Botón Vista Limpia (Ocultar Controles) */}
+      <button
+        type="button"
+        onClick={() => setCleanPreview(!cleanPreview)}
+        className={`px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
+          cleanPreview
+            ? "bg-brand-cream/20 border-brand-cream text-brand-cream font-semibold shadow-xs"
+            : "border-brand-cream/15 text-brand-cream/70 hover:text-brand-cream"
+        }`}
+        title={cleanPreview ? "Mostrar controles de edición" : "Ocultar controles para ver resultado limpio"}
+      >
+        {cleanPreview ? <EyeOff className="w-3.5 h-3.5 text-brand-blush" /> : <Eye className="w-3.5 h-3.5" />}
+        <span className="hidden sm:inline">{cleanPreview ? "Editar" : "Vista Limpia"}</span>
+      </button>
 
       {/* Botón Descartar cambios de tamaño */}
       {hasChanges && (
@@ -348,7 +502,7 @@ export function AdminGalleryEditor() {
           </>
         ) : (
           <>
-            <Save className="w-3.5 h-3.5" />
+            <Save className="w-4 h-4" />
             <span>{hasChanges ? "Guardar Mosaico" : "Diseño Al Día"}</span>
           </>
         )}
@@ -358,7 +512,7 @@ export function AdminGalleryEditor() {
         href={`/coleccion/${slug}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="px-3 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 flex items-center gap-1.5 transition-colors no-underline hidden md:flex"
+        className="px-3 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 flex items-center gap-1.5 transition-colors no-underline hidden xl:flex"
       >
         <ExternalLink className="w-3.5 h-3.5" />
         <span>Ver pública</span>
@@ -380,195 +534,313 @@ export function AdminGalleryEditor() {
       subtitle={`${works.length} obras · Ajusta el tamaño de cada card en vivo como un puzzle`}
       actions={headerActions}
     >
+      {/* Input oculto para subida de diapositivas de Ánimas */}
+      <input
+        type="file"
+        ref={slideFileInputRef}
+        onChange={handleSlideFileSelected}
+        accept="image/jpeg,image/png,image/webp,image/avif"
+        className="hidden"
+      />
+
       {/* Barra informativa de estado interactivo */}
-      <div className="w-full flex items-center justify-between px-5 py-3 mb-6 bg-brand-dark/90 border border-brand-cream/10 rounded-2xl text-xs font-sans text-brand-cream/70 shadow-sm">
-        <div className="flex items-center gap-2.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-medium text-brand-cream">
-            {viewMode === "puzzle"
-              ? "Vista Mosaico Live: Usa los controles de cada obra para cambiar su ancho (1, 2 o 3 col) y proporción (3:4, 1:1, 3:2, 16:9) en tiempo real."
-              : "Vista Lista: Arrastra las tarjetas para ordenar la secuencia de las obras."}
-          </span>
+      {!cleanPreview && (
+        <div className="w-full flex items-center justify-between px-5 py-3 mb-6 bg-brand-dark/90 border border-brand-cream/10 rounded-2xl text-xs font-sans text-brand-cream/70 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-medium text-brand-cream">
+              {viewMode === "puzzle"
+                ? "Vista Mosaico Live: Usa los controles de cada obra para cambiar su ancho (1, 2 o 3 col) y proporción (3:4, 1:1, 3:2, 16:9) en tiempo real."
+                : "Vista Lista: Arrastra las tarjetas para ordenar la secuencia de las obras."}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            {hasChanges && (
+              <span className="px-2.5 py-0.5 rounded-full bg-brand-orange/20 text-brand-orange text-[11px] font-mono border border-brand-orange/30">
+                ● Cambios sin guardar
+              </span>
+            )}
+            <span className="font-mono text-[11px] text-brand-blush bg-brand-blush/10 px-2 py-0.5 rounded border border-brand-blush/20">
+              Dispositivo: {device.toUpperCase()}
+            </span>
+          </div>
         </div>
-        {hasChanges && (
-          <span className="px-2.5 py-0.5 rounded-full bg-brand-orange/20 text-brand-orange text-[11px] font-mono border border-brand-orange/30">
-            ● Cambios sin guardar
-          </span>
-        )}
-      </div>
+      )}
 
-      {/* Loading Skeleton */}
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="aspect-[3/4] rounded-2xl bg-brand-dark/50 border border-brand-cream/5 animate-pulse" />
-          ))}
-        </div>
-      ) : works.length === 0 ? (
-        <div className="text-center py-20 bg-brand-dark/50 border border-dashed border-brand-cream/10 rounded-2xl p-8">
-          <p className="font-serif italic text-brand-wall text-lg mb-4">Esta galería no tiene obras todavía</p>
-          <button
-            onClick={handleOpenAdd}
-            className="px-5 py-2.5 rounded-xl bg-brand-blush text-brand-ink text-xs font-semibold uppercase tracking-wider cursor-pointer"
+      {/* Contenedor Responsivo según Dispositivo */}
+      <div
+        className={`w-full mx-auto transition-all duration-300 ${
+          device === "mobile"
+            ? "max-w-[420px]"
+            : device === "tablet"
+            ? "max-w-[768px]"
+            : "w-full"
+        }`}
+      >
+        {/* Loading Skeleton */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="aspect-[3/4] rounded-2xl bg-brand-dark/50 border border-brand-cream/5 animate-pulse" />
+            ))}
+          </div>
+        ) : works.length === 0 ? (
+          <div className="text-center py-20 bg-brand-dark/50 border border-dashed border-brand-cream/10 rounded-2xl p-8">
+            <p className="font-serif italic text-brand-wall text-lg mb-4">Esta galería no tiene obras todavía</p>
+            <button
+              onClick={handleOpenAdd}
+              className="px-5 py-2.5 rounded-xl bg-brand-blush text-brand-ink text-xs font-semibold uppercase tracking-wider cursor-pointer"
+            >
+              Subir primera obra
+            </button>
+          </div>
+        ) : viewMode === "puzzle" ? (
+          /* ── MODO 1: Muro Interactivo (Puzzle Live Grid Exacto) ── */
+          <div
+            className={`grid gap-6 auto-rows-auto ${
+              device === "mobile"
+                ? "grid-cols-1"
+                : device === "tablet"
+                ? "grid-cols-2"
+                : "grid-cols-1 md:grid-cols-3"
+            }`}
           >
-            Subir primera obra
-          </button>
-        </div>
-      ) : viewMode === "puzzle" ? (
-        /* ── MODO 1: Muro Interactivo (Puzzle Live Grid Exacto) ── */
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto">
-          {works.map((work) => {
-            const currentGridCol = work.gridCol || "md:col-span-1";
-            const currentAspect = work.aspect || "3/4";
+            {works.map((work) => {
+              const currentGridCol = work.gridCol || "md:col-span-1";
+              const currentAspect = work.aspect || "3/4";
 
-            return (
-              <motion.div
-                key={work.id}
-                layout
-                transition={{ type: "spring", stiffness: 280, damping: 28 }}
-                className={`relative rounded-2xl bg-brand-dark border-2 border-brand-cream/15 hover:border-brand-blush/60 shadow-xl overflow-hidden flex flex-col group/puzzle col-span-1 ${currentGridCol}`}
-              >
-                {/* Barra de Controles Superiores de la Card */}
-                <div className="p-3 bg-brand-dark/95 border-b border-brand-cream/10 flex items-center justify-between gap-2 flex-wrap z-20">
-                  {/* Selector de Ancho de Columna */}
-                  <div className="flex items-center gap-1 bg-brand-bg px-2 py-1 rounded-lg border border-brand-cream/10">
-                    <span className="text-[10px] uppercase font-sans text-brand-cream/50 mr-1">Ancho:</span>
-                    {COL_OPTIONS.map((c) => {
-                      const active = c.value === currentGridCol;
-                      return (
+              return (
+                <motion.div
+                  key={work.id}
+                  layout
+                  transition={{ type: "spring", stiffness: 280, damping: 28 }}
+                  className={`relative rounded-2xl bg-brand-dark border-2 border-brand-cream/15 hover:border-brand-blush/60 shadow-xl overflow-hidden flex flex-col group/puzzle col-span-1 ${
+                    device === "desktop" ? currentGridCol : ""
+                  }`}
+                >
+                  {/* Barra de Controles Superiores de la Card (Ocultable con Vista Limpia) */}
+                  {!cleanPreview && (
+                    <div className="p-2.5 bg-brand-dark/95 border-b border-brand-cream/10 flex items-center justify-between gap-1.5 flex-wrap z-20">
+                      {/* Selector de Ancho de Columna */}
+                      <div className="flex items-center gap-1 bg-brand-bg px-2 py-1 rounded-lg border border-brand-cream/10">
+                        <span className="text-[9px] uppercase font-sans text-brand-cream/50 mr-0.5">Ancho:</span>
+                        {COL_OPTIONS.map((c) => {
+                          const active = c.value === currentGridCol;
+                          return (
+                            <button
+                              key={c.value}
+                              type="button"
+                              onClick={() => handleUpdateWorkLayout(work.id, { gridCol: c.value })}
+                              className={`px-1.5 py-0.5 rounded text-[9px] font-sans font-semibold transition-all cursor-pointer ${
+                                active
+                                  ? "bg-brand-blush text-brand-ink shadow-xs"
+                                  : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                              }`}
+                            >
+                              {c.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Selector de Proporción */}
+                      <div className="flex items-center gap-1 bg-brand-bg px-2 py-1 rounded-lg border border-brand-cream/10">
+                        <span className="text-[9px] uppercase font-sans text-brand-cream/50 mr-0.5">Ratio:</span>
+                        {ASPECT_OPTIONS.map((a) => {
+                          const active = a.value === currentAspect;
+                          return (
+                            <button
+                              key={a.value}
+                              type="button"
+                              onClick={() => handleUpdateWorkLayout(work.id, { aspect: a.value })}
+                              className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-medium transition-all cursor-pointer ${
+                                active
+                                  ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
+                                  : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                              }`}
+                            >
+                              {a.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Acciones de Edición & Borrado */}
+                      <div className="flex items-center gap-1">
                         <button
-                          key={c.value}
                           type="button"
-                          onClick={() => handleUpdateWorkLayout(work.id, { gridCol: c.value })}
-                          className={`px-2 py-0.5 rounded text-[10px] font-sans font-semibold transition-all cursor-pointer ${
-                            active
-                              ? "bg-brand-blush text-brand-ink shadow-xs"
-                              : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                          onClick={() => handleUpdateWorkLayout(work.id, { featured: !work.featured })}
+                          className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                            work.featured
+                              ? "bg-brand-blush/20 border-brand-blush text-brand-blush"
+                              : "border-brand-cream/10 text-brand-cream/40 hover:text-brand-cream"
                           }`}
+                          title={work.featured ? "Destacada en Inicio" : "Marcar como destacada"}
                         >
-                          {c.label}
+                          <Star className={`w-3.5 h-3.5 ${work.featured ? "fill-brand-blush" : ""}`} />
                         </button>
-                      );
-                    })}
-                  </div>
 
-                  {/* Selector de Proporción */}
-                  <div className="flex items-center gap-1 bg-brand-bg px-2 py-1 rounded-lg border border-brand-cream/10">
-                    <span className="text-[10px] uppercase font-sans text-brand-cream/50 mr-1">Ratio:</span>
-                    {ASPECT_OPTIONS.map((a) => {
-                      const active = a.value === currentAspect;
-                      return (
                         <button
-                          key={a.value}
                           type="button"
-                          onClick={() => handleUpdateWorkLayout(work.id, { aspect: a.value })}
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-medium transition-all cursor-pointer ${
-                            active
-                              ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
-                              : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
-                          }`}
+                          onClick={() => handleOpenEdit(work)}
+                          className="p-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink transition-colors cursor-pointer"
+                          title="Editar título y medidas"
                         >
-                          {a.label}
+                          <Edit3 className="w-3.5 h-3.5" />
                         </button>
-                      );
-                    })}
+
+                        <button
+                          type="button"
+                          onClick={() => setDeletingWork(work)}
+                          className="p-1.5 rounded-lg bg-brand-orange/10 hover:bg-brand-orange text-brand-orange hover:text-white transition-colors cursor-pointer"
+                          title="Eliminar obra"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Contenedor de Imagen con el aspect ratio real */}
+                  <div
+                    className="relative overflow-hidden w-full bg-brand-bg group/img"
+                    style={{
+                      aspectRatio:
+                        currentAspect === "3/4"
+                          ? "3/4"
+                          : currentAspect === "1/1"
+                          ? "1/1"
+                          : currentAspect === "3/2"
+                          ? "3/2"
+                          : "16/9",
+                    }}
+                  >
+                    <img
+                      src={getOptimizedImageUrl(work.img, 800)}
+                      alt={work.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                      style={{ objectPosition: work.imgPos || "50% 30%" }}
+                    />
+
+                    {/* Ficha artística overlay en la base */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-bg/95 via-brand-bg/30 to-transparent flex flex-col justify-end p-5 select-none pointer-events-none">
+                      <p className="font-sans text-[9px] tracking-widest uppercase text-brand-blush mb-1">
+                        {work.technique || "Digital"} · {work.year}
+                      </p>
+                      <p className="font-serif text-brand-cream text-base font-light truncate">
+                        {work.title || "Sin título"}
+                      </p>
+                      <p className="font-sans text-brand-cream/50 text-[11px] tracking-wide">
+                        {work.size || "Medidas N/A"}
+                      </p>
+                    </div>
+
+                    {/* Badge en esquina */}
+                    {!cleanPreview && (
+                      <div className="absolute top-3 left-3 bg-brand-dark/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-brand-blush/40 text-[9px] font-mono text-brand-blush">
+                        {currentGridCol.replace("md:col-span-", "")} col · {currentAspect}
+                      </div>
+                    )}
                   </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        ) : (
+          /* ── MODO 2: Lista Compacta con Drag & Drop para Reordenar ── */
+          <DragSortableList
+            items={works}
+            enableDrag={true}
+            onReorder={handleReorder}
+            gridClassName="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+            renderItem={(w) => (
+              <WorkCard
+                work={w}
+                onEdit={() => handleOpenEdit(w)}
+                onDelete={() => setDeletingWork(w)}
+                isReorderMode={true}
+              />
+            )}
+          />
+        )}
 
-                  {/* Acciones de Edición & Borrado */}
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateWorkLayout(work.id, { featured: !work.featured })}
-                      className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-                        work.featured
-                          ? "bg-brand-blush/20 border-brand-blush text-brand-blush"
-                          : "border-brand-cream/10 text-brand-cream/40 hover:text-brand-cream"
-                      }`}
-                      title={work.featured ? "Destacada en Inicio" : "Marcar como destacada"}
-                    >
-                      <Star className={`w-3.5 h-3.5 ${work.featured ? "fill-brand-blush" : ""}`} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleOpenEdit(work)}
-                      className="p-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink transition-colors cursor-pointer"
-                      title="Editar título y medidas"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setDeletingWork(work)}
-                      className="p-1.5 rounded-lg bg-brand-orange/10 hover:bg-brand-orange text-brand-orange hover:text-white transition-colors cursor-pointer"
-                      title="Eliminar obra"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+        {/* ── SECCIÓN ESPECIAL: BIBLIA VISUAL DE ÁNIMAS (si slug === "animas") ── */}
+        {slug === "animas" && (
+          <div className="mt-16 pt-12 border-t border-brand-cream/15">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-[#C8A96E] font-sans text-xs uppercase tracking-widest mb-1">
+                  <BookOpen className="w-4 h-4" />
+                  <span>Biblia Visual & Worldbuilding</span>
                 </div>
+                <h3 className="font-serif text-2xl md:text-3xl text-brand-cream font-light">
+                  Diapositivas de la Guía de Ánimas ({animasSlides.length})
+                </h3>
+                <p className="font-sans text-xs text-brand-cream/60 mt-1">
+                  Haz clic sobre cualquier diapositiva para sustituirla o pulsa el botón para añadir una nueva.
+                </p>
+              </div>
 
-                {/* Contenedor de Imagen con el aspect ratio real */}
+              <button
+                type="button"
+                onClick={() => handleTriggerSlideUpload(-1)}
+                className="px-4 py-2 rounded-xl bg-[#C8A96E] hover:bg-brand-cream text-brand-ink text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Añadir Diapositiva</span>
+              </button>
+            </div>
+
+            {/* Grid de diapositivas interactivas */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+              {animasSlides.map((slideUrl, idx) => (
                 <div
-                  className="relative overflow-hidden w-full bg-brand-bg group/img"
-                  style={{
-                    aspectRatio:
-                      currentAspect === "3/4"
-                        ? "3/4"
-                        : currentAspect === "1/1"
-                        ? "1/1"
-                        : currentAspect === "3/2"
-                        ? "3/2"
-                        : "16/9",
-                  }}
+                  key={idx}
+                  className="group/slide relative aspect-[16/9] rounded-xl overflow-hidden bg-brand-dark border border-brand-cream/15 hover:border-[#C8A96E] shadow-md transition-all"
                 >
                   <img
-                    src={getOptimizedImageUrl(work.img, 800)}
-                    alt={work.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
-                    style={{ objectPosition: work.imgPos || "50% 30%" }}
+                    src={getOptimizedImageUrl(slideUrl, 400)}
+                    alt={`Slide ${idx + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/slide:scale-105"
                   />
 
-                  {/* Ficha artística overlay en la base */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-bg/95 via-brand-bg/30 to-transparent flex flex-col justify-end p-5 select-none pointer-events-none">
-                    <p className="font-sans text-[9px] tracking-widest uppercase text-brand-blush mb-1">
-                      {work.technique || "Digital"} · {work.year}
-                    </p>
-                    <p className="font-serif text-brand-cream text-base font-light truncate">
-                      {work.title || "Sin título"}
-                    </p>
-                    <p className="font-sans text-brand-cream/50 text-[11px] tracking-wide">
-                      {work.size || "Medidas N/A"}
-                    </p>
+                  {/* Número de Slide */}
+                  <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-mono text-brand-cream pointer-events-none">
+                    #{String(idx + 1).padStart(2, "0")}
                   </div>
 
-                  {/* Badge en esquina */}
-                  <div className="absolute top-3 left-3 bg-brand-dark/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-brand-blush/40 text-[9px] font-mono text-brand-blush">
-                    {currentGridCol.replace("md:col-span-", "")} col · {currentAspect}
+                  {/* Botón Borrar */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteSlide(idx);
+                    }}
+                    className="absolute top-2 right-2 p-1 rounded bg-brand-orange/80 hover:bg-brand-orange text-white opacity-0 group-hover/slide:opacity-100 transition-opacity cursor-pointer shadow"
+                    title="Eliminar esta diapositiva"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+
+                  {/* Overlay clic para cambiar */}
+                  <div
+                    onClick={() => handleTriggerSlideUpload(idx)}
+                    className="absolute inset-0 bg-black/60 opacity-0 group-hover/slide:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-center gap-1 cursor-pointer"
+                    title="Haz clic para cambiar esta imagen"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-[#C8A96E] text-brand-ink flex items-center justify-center shadow">
+                      <Camera className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-sans text-[10px] font-semibold text-brand-cream uppercase tracking-wider">
+                      Cambiar
+                    </span>
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      ) : (
-        /* ── MODO 2: Lista Compacta con Drag & Drop para Reordenar ── */
-        <DragSortableList
-          items={works}
-          enableDrag={true}
-          onReorder={handleReorder}
-          gridClassName="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
-          renderItem={(w) => (
-            <WorkCard
-              work={w}
-              onEdit={() => handleOpenEdit(w)}
-              onDelete={() => setDeletingWork(w)}
-              isReorderMode={true}
-            />
-          )}
-        />
-      )}
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Panel Lateral Deslizante (Slide-in) para Añadir / Editar Obra */}
       <AnimatePresence>
