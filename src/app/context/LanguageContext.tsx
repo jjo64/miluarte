@@ -82,14 +82,38 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const t = (path: string): any => {
     const parts = path.split(".");
     let current: any = activeTranslations[language];
+    let found = true;
     for (const part of parts) {
       if (current && typeof current === "object" && part in current) {
         current = current[part];
       } else {
-        return path;
+        found = false;
+        break;
       }
     }
-    return current;
+    if (found && current !== undefined && current !== null && current !== "") {
+      return current;
+    }
+
+    // Fallback al español si el idioma actual es inglés
+    if (language !== "es") {
+      let esCurrent: any = activeTranslations.es;
+      let esFound = true;
+      for (const part of parts) {
+        if (esCurrent && typeof esCurrent === "object" && part in esCurrent) {
+          esCurrent = esCurrent[part];
+        } else {
+          esFound = false;
+          break;
+        }
+      }
+      if (esFound && esCurrent !== undefined && esCurrent !== null && esCurrent !== "") {
+        return esCurrent;
+      }
+    }
+
+    // Devolver undefined para permitir fallbacks limpios con ||
+    return undefined;
   };
 
   return (

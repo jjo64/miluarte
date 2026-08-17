@@ -1169,52 +1169,111 @@ export function AdminHomeEditor() {
             </section>
           </div>
 
-          {/* ── 8. FOOTER EDITABLE INLINE ── */}
-          <footer className="bg-brand-dark border-t border-brand-cream/10 pt-20 pb-12 px-6 md:px-12">
-            <div className="max-w-5xl mx-auto">
-              <div className="mb-16">
+          {/* ── 8. FOOTER EXACTO EDITABLE INLINE ── */}
+          <footer className="bg-brand-dark border-t border-brand-cream/10 pt-20 pb-12 px-6 md:px-10 overflow-hidden select-none">
+            <div className="max-w-[1100px] mx-auto">
+              {/* Top Section: Large CTA */}
+              <div className="mb-20">
                 <EditableField
                   label="Eyebrow Footer CTA"
                   value={lang === "es" ? "¿Tienes un proyecto?" : "Have a project?"}
                   onChange={(val) => updateDraft("footer.ctaTagline", val)}
                   cleanPreview={cleanPreview}
-                  className="font-sans text-brand-orange text-[10px] tracking-[0.3em] uppercase mb-3"
+                  className="font-sans text-brand-orange text-[10px] tracking-[0.3em] uppercase mb-4 block"
                 />
-                <h2 className="font-serif text-brand-cream text-3xl md:text-5xl font-light leading-tight">
+                <h2 className="font-serif text-brand-cream text-[2.6rem] md:text-[4.8rem] font-light leading-[1.05] tracking-tight flex flex-wrap items-center gap-x-6">
                   <EditableField
                     label="Título Footer 1"
                     value={lang === "es" ? "¿Necesitas visualizar tu proyecto" : "Need to visualize your project"}
                     onChange={(val) => updateDraft("footer.ctaTitle1", val)}
                     cleanPreview={cleanPreview}
                     className="inline"
-                  />{" "}
-                  <EditableField
-                    label="Título Footer 2 (Cursiva)"
-                    value={lang === "es" ? "antes de construirlo?" : "before building it?"}
-                    onChange={(val) => updateDraft("footer.ctaTitle2", val)}
-                    cleanPreview={cleanPreview}
-                    className="italic text-brand-blush inline"
                   />
+                  <span className="italic text-brand-blush font-light flex items-center gap-3">
+                    <EditableField
+                      label="Título Footer 2 (Cursiva)"
+                      value={lang === "es" ? "antes de construirlo?" : "before building it?"}
+                      onChange={(val) => updateDraft("footer.ctaTitle2", val)}
+                      cleanPreview={cleanPreview}
+                      className="inline"
+                    />
+                    <ArrowUpRight className="w-8 h-8 md:w-14 md:h-14 stroke-[1]" />
+                  </span>
                 </h2>
               </div>
 
-              <div className="pt-10 border-t border-brand-cream/10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-between">
-                <div>
-                  <p className="font-serif text-brand-cream text-2xl font-light mb-2">Miluarte</p>
-                  <EditableField
-                    label="Texto del Estudio en Footer"
-                    value={t("footer.studio") || "Estudio creativo & portafolio artístico de Nerea Lucas Pajares."}
-                    onChange={(val) => updateDraft("footer.studio", val)}
-                    cleanPreview={cleanPreview}
-                    multiline
-                    className="font-sans text-xs text-brand-cream/60 leading-relaxed max-w-sm"
-                  />
+              {/* Middle Grid: 3 Columnas Exactas */}
+              <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-12 mb-16 pt-10 border-t border-brand-cream/5">
+                {/* Col 1: Bio / Brand */}
+                <div className="flex flex-col justify-between gap-6">
+                  <div>
+                    <p className="font-serif text-brand-cream text-2xl font-light tracking-wide mb-4">Miluarte</p>
+                    <EditableField
+                      label="Texto del Estudio / Bio Footer"
+                      value={t("footer.studio") || "Estudio creativo & portafolio artístico de Nerea Lucas Pajares. Ilustración, diseño gráfico, modelado en arcilla y concept art en Madrid y Barcelona."}
+                      onChange={(val) => updateDraft("footer.studio", val)}
+                      cleanPreview={cleanPreview}
+                      multiline
+                      className="font-sans text-brand-cream/65 text-xs leading-relaxed max-w-[280px]"
+                    />
+                  </div>
+
+                  {/* Social Links */}
+                  <div className="flex flex-wrap gap-5 text-xs font-sans text-brand-cream/60">
+                    <span className="hover:text-brand-orange transition-colors">Instagram</span>
+                    <span className="hover:text-brand-orange transition-colors">LinkedIn</span>
+                    <span className="hover:text-brand-orange transition-colors">Behance</span>
+                    <span className="hover:text-brand-orange transition-colors">TikTok</span>
+                  </div>
                 </div>
 
-                <div className="flex flex-col md:items-end gap-2 text-xs font-sans text-brand-cream/40">
-                  <p>© {new Date().getFullYear()} Miluarte · Nerea Lucas Pajares</p>
-                  <p>Todos los derechos reservados.</p>
+                {/* Col 2: Navigation Links */}
+                <div>
+                  <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-6">
+                    {t("footer.work") || "Colecciones"}
+                  </p>
+                  <div className="flex flex-col gap-3.5 items-start text-xs font-sans text-brand-cream/65">
+                    <span>Diseño Gráfico</span>
+                    <span>3D & Stands</span>
+                    <span>Diggin'</span>
+                    <span>Ilustraciones</span>
+                    <span>Concept Art</span>
+                    <span className="text-brand-blush font-semibold pt-1.5">
+                      {lang === "es" ? "Ver todas las colecciones →" : "View all collections →"}
+                    </span>
+                  </div>
                 </div>
+
+                {/* Col 3: Contact details / CTA */}
+                <div className="flex flex-col justify-between items-start gap-8">
+                  <div>
+                    <p className="font-sans text-brand-orange text-[9px] tracking-widest uppercase mb-6">
+                      {t("footer.contact") || "Contacto"}
+                    </p>
+                    <div className="flex flex-col gap-2 font-sans text-xs text-brand-cream/65">
+                      <span>hola@miluartedenara.com</span>
+                      <span className="text-brand-cream/60">Miluartedenara@gmail.com</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3.5 items-start">
+                    <span className="font-sans text-brand-blush text-xs font-medium">
+                      {lang === "es" ? "Ver Currículum (CV) →" : "View Resume / CV →"}
+                    </span>
+                    <div className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3.5 px-6 rounded-lg font-semibold shadow-lg">
+                      {t("footer.budget") || "Pide Presupuesto"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Strip */}
+              <div className="border-t border-brand-cream/5 pt-8 flex flex-col md:flex-row justify-between gap-4 font-sans text-brand-cream/50 text-[10.5px]">
+                <p>{t("footer.rights") || `© ${new Date().getFullYear()} Miluarte · Nerea Lucas Pajares. Todos los derechos reservados.`}</p>
+                <p className="flex items-center gap-1.5">
+                  <span>{t("footer.madeWithCriteria") || "Hecho con criterio y dedicación · España"}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse" />
+                </p>
               </div>
             </div>
           </footer>
