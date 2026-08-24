@@ -33,6 +33,7 @@ const CollectionPage  = lazyWithReload(() => import("./pages/CollectionPage").th
 const CollectionsPage = lazyWithReload(() => import("./pages/CollectionsPage").then(m => ({ default: m.CollectionsPage })));
 const RendersPage     = lazyWithReload(() => import("./pages/RendersPage").then(m => ({ default: m.RendersPage })));
 const ResumePage      = lazyWithReload(() => import("./pages/ResumePage").then(m => ({ default: m.ResumePage })));
+const AboutPage       = lazyWithReload(() => import("./pages/AboutPage").then(m => ({ default: m.AboutPage })));
 const NotFoundPage    = lazyWithReload(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
 const EncargoPage     = lazyWithReload(() => import("./pages/EncargoPage").then(m => ({ default: m.EncargoPage })));
 
@@ -60,6 +61,8 @@ export const router = createBrowserRouter([
     Component: RootLayout,
     children: [
       { index: true,               Component: HomePage },
+      { path: "sobre-mi",          Component: AboutPage },
+      { path: "about",             Component: AboutPage },
       { path: "renders",           Component: RendersPage },
       { path: "colecciones",       Component: CollectionsPage },
       { path: "collections",       Component: CollectionsPage },

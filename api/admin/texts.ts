@@ -22,8 +22,8 @@ function deepMerge(target: any, source: any): any {
   return output;
 }
 
-async function getTexts(): Promise<SiteTexts> {
-  const defaultTexts: SiteTexts = {
+async function getTexts(): Promise<Record<string, any>> {
+  const defaultTexts = {
     es: translations.es,
     en: translations.en,
   };
@@ -33,8 +33,9 @@ async function getTexts(): Promise<SiteTexts> {
       const raw = await kv.get("miluarte:texts");
       if (raw) {
         const parsed = typeof raw === "string" ? JSON.parse(raw) : (raw as any);
-        if (parsed && (parsed.es || parsed.en)) {
+        if (parsed && typeof parsed === "object") {
           return {
+            ...parsed,
             es: deepMerge(defaultTexts.es, parsed.es || {}),
             en: deepMerge(defaultTexts.en, parsed.en || {}),
           };

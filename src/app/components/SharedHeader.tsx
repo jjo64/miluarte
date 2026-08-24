@@ -153,6 +153,8 @@ export function SharedHeader() {
   }, []);
 
   const contactLinks: NavLink[] = [
+    { label: t("nav.about") || (language === "es" ? "Sobre mí" : "About me"), path: "/sobre-mi" },
+    { label: t("nav.resume"), path: "/resume" },
     { 
       label: "Miluartedenara@gmail.com", 
       onClick: () => window.dispatchEvent(new CustomEvent("open-contact-modal")) 
@@ -162,7 +164,6 @@ export function SharedHeader() {
     ...(socialLinks.behance ? [{ label: "Behance", href: socialLinks.behance, external: true as const }] : []),
     ...(socialLinks.tiktok ? [{ label: "TikTok", href: socialLinks.tiktok, external: true as const }] : []),
     ...(socialLinks.twitter ? [{ label: "X (Twitter)", href: socialLinks.twitter, external: true as const }] : []),
-    { label: t("nav.resume"), path: "/resume" },
   ];
 
   const navCards: NavCard[] = [

@@ -51,10 +51,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
           const remoteTexts = await res.json();
           if (remoteTexts && isMounted) {
             const merged = {
+              ...remoteTexts,
               es: deepMerge(translations.es, remoteTexts.es || {}),
               en: deepMerge(translations.en, remoteTexts.en || {}),
             };
-            setActiveTranslations(merged as typeof translations);
+            setActiveTranslations(merged as any);
           }
         }
       } catch (e) {
@@ -81,6 +82,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const t = (path: string): any => {
     const parts = path.split(".");
+
+    // 1. Buscar en el idioma activo (es o en)
     let current: any = activeTranslations[language];
     let found = true;
     for (const part of parts) {
@@ -95,7 +98,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       return current;
     }
 
-    // Fallback al español si el idioma actual es inglés
+    // 2. Fallback al español si el idioma actual es inglés
     if (language !== "es") {
       let esCurrent: any = activeTranslations.es;
       let esFound = true;
@@ -110,6 +113,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       if (esFound && esCurrent !== undefined && esCurrent !== null && esCurrent !== "") {
         return esCurrent;
       }
+    }
+
+    // 3. Buscar en la raíz de activeTranslations (para resumePhoto, heroImage, animasSlides, servicesImages, etc.)
+    let rootCurrent: any = activeTranslations;
+    let rootFound = true;
+    for (const part of parts) {
+      if (rootCurrent && typeof rootCurrent === "object" && part in rootCurrent) {
+        rootCurrent = rootCurrent[part];
+      } else {
+        rootFound = false;
+        break;
+      }
+    }
+    if (rootFound && rootCurrent !== undefined && rootCurrent !== null && rootCurrent !== "") {
+      return rootCurrent;
     }
 
     // Devolver undefined para permitir fallbacks limpios con ||

@@ -3,6 +3,7 @@ export type TranslationKeys = typeof translations.es;
 export const translations = {
   es: {
     nav: {
+      about: "Sobre mí",
       services: "Servicios",
       projects: "Proyectos",
       contact: "Contacto",
@@ -19,7 +20,10 @@ export const translations = {
       bio1: "Me llamo Nerea Lucas Pajares (32 años), artísticamente conocida como Miluartedenara. Con una sólida trayectoria y un Máster en Ilustración y Arte Digital de Trazos, mi principal estilo de firma artística es la serie Musae, fusionando arte tradicional y digital. Creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, joyería artesanal hecha a mano y concept art para proyectos musicales. Cada pieza está hecha con dedicación y amor por los detalles.",
       bio2: "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
       viewWorks: "Ver trabajos",
-      sendInquiry: "Escribir encargo"
+      sendInquiry: "Escribir encargo",
+      aboutNerea: "Sobre mí",
+      exploreWorks: "Explorar obras",
+      image: "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg"
     },
     gallery: {
       title: "Galería",
@@ -342,10 +346,52 @@ export const translations = {
           other: "Otro Asunto"
         }
       }
+    },
+    about: {
+      eyebrow: "Artista visual & ilustradora · Madrid",
+      title: "Nerea Lucas Pajares",
+      artistTag: "Miluartedenara",
+      subtitle: "Transformando ideas y emociones en mundos visuales con alma, detalle y devoción artesanal.",
+      quote: "«El arte no es solo lo que se ve, sino la historia y el latido que cobran vida en cada trazo, escultura o concepto.»",
+      bioTitle: "Sobre Nerea",
+      bioP1: "Me llamo Nerea Lucas Pajares (32 años), artísticamente conocida como Miluartedenara. Con una sólida trayectoria y un Máster en Ilustración y Arte Digital de Trazos, mi principal firma artística se consolida en la serie Musae, fusionando arte tradicional y digital con una identidad visual única.",
+      bioP2: "Mi universo creativo abarca desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, piezas de joyería artesanal hechas a mano y concept art integral para proyectos musicales y audiovisuales.",
+      bioP3: "Cada obra nace de un profundo amor por el detalle, explorando la figura femenina, la naturaleza subvertida y narrativas fantásticas donde lo onírico y lo tangible se encuentran.",
+      disciplinesTitle: "Universos Creativos",
+      disciplines: {
+        musae: {
+          title: "Serie Musae & Ilustración",
+          desc: "Obra de autor y firma personal en tinta, color y técnicas digitales. Personajes con magnetismo y naturaleza fantástica."
+        },
+        concept: {
+          title: "Concept Art & Worldbuilding",
+          desc: "Creación de mundos visuales desde cero: diseño de personajes, fichas técnicas narrativas, escenarios y props."
+        },
+        clay: {
+          title: "Escultura en Arcilla & Joyería",
+          desc: "Arte táctil y tridimensional: muñecas articuladas a medida, figuras modeladas a mano y joyería artesanal exclusiva."
+        },
+        music: {
+          title: "Dirección de Arte & Música",
+          desc: "Diseñadora oficial del sello discográfico Diggin'. Portadas de álbumes, videoclips animados e identidad gráfica musical."
+        }
+      },
+      stats: {
+        master: "Máster en Ilustración y Arte Digital (Trazos)",
+        city: "Madrid / Barcelona",
+        focus: "Arte Tradicional & Digital",
+        specialty: "Serie Musae, Escultura & Concept Art"
+      },
+      viewResume: "Ver Currículum Vitae (CV)",
+      contactPrompt: "¿Tienes una idea o proyecto artístico en mente?",
+      commissionBtn: "Escribir encargo",
+      contactBtn: "Contactar directamente",
+      backHome: "Volver al inicio"
     }
   },
   en: {
     nav: {
+      about: "About me",
       services: "Services",
       projects: "Projects",
       contact: "Contact",
@@ -362,7 +408,10 @@ export const translations = {
       bio1: "I am Nerea Lucas Pajares (32 years old), artistically known as Miluartedenara. With a solid artistic career and a Master's Degree in Illustration and Digital Art, my primary signature style is defined by the Musae series, blending traditional and digital art. I create everything from canvases exhibited in Madrid galleries to custom clay dolls, handmade jewelry, and concept art for music projects. Each piece is crafted with dedication and love for details.",
       bio2: "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
       viewWorks: "View works",
-      sendInquiry: "Send inquiry"
+      sendInquiry: "Send inquiry",
+      aboutNerea: "About me",
+      exploreWorks: "Explore works",
+      image: "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg"
     },
     gallery: {
       title: "Gallery",
@@ -685,6 +734,47 @@ export const translations = {
           other: "Other Inquiries"
         }
       }
+    },
+    about: {
+      eyebrow: "Visual artist & illustrator · Madrid",
+      title: "Nerea Lucas Pajares",
+      artistTag: "Miluartedenara",
+      subtitle: "Transforming ideas and emotions into visual worlds with soul, intricate detail, and artisanal devotion.",
+      quote: "“Art is not just what is seen, but the story and heartbeat that come alive in every stroke, sculpture, or concept.”",
+      bioTitle: "About Nerea",
+      bioP1: "I am Nerea Lucas Pajares (32 years old), artistically known as Miluartedenara. With a solid artistic career and a Master's Degree in Illustration and Digital Art from Trazos, my primary signature style is defined by the Musae series, blending traditional and digital art with a unique visual identity.",
+      bioP2: "My creative universe spans from canvases exhibited in Madrid galleries to custom articulated clay dolls, handcrafted jewelry, and comprehensive concept art for music and audiovisual projects.",
+      bioP3: "Each piece stems from a deep love for detail, exploring the female figure, subverted nature, and fantastical narratives where dreamscapes and tangible textures meet.",
+      disciplinesTitle: "Creative Universes",
+      disciplines: {
+        musae: {
+          title: "Musae Series & Illustration",
+          desc: "Signature artwork in ink, color, and digital mediums. Magnetic characters surrounded by fantastical nature."
+        },
+        concept: {
+          title: "Concept Art & Worldbuilding",
+          desc: "Full visual world design from scratch: character turnarounds, narrative tech sheets, environments, and props."
+        },
+        clay: {
+          title: "Clay Sculpture & Jewelry",
+          desc: "Tactile, three-dimensional art: custom art-dolls, hand-modeled sculptures, and exclusive handcrafted jewelry."
+        },
+        music: {
+          title: "Art Direction & Music",
+          desc: "Official designer for the indie record label Diggin'. Album covers, animated music videos, and musical visual identity."
+        }
+      },
+      stats: {
+        master: "Master's in Illustration & Digital Art (Trazos)",
+        city: "Madrid / Barcelona",
+        focus: "Traditional & Digital Art",
+        specialty: "Musae Series, Sculpture & Concept Art"
+      },
+      viewResume: "View Curriculum Vitae (CV)",
+      contactPrompt: "Do you have an artistic project or commission in mind?",
+      commissionBtn: "Request commission",
+      contactBtn: "Contact directly",
+      backHome: "Back to home"
     }
   }
 };

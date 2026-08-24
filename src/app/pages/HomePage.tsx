@@ -15,138 +15,116 @@ const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822
 
 const vp = { once: true, margin: "-70px" } as const;
 
-// ─── Hero / Sobre mí ─────────────────────────────────────────────────────────
+// ─── Hero / Full-Screen Art Showcase ─────────────────────────────────────────
 
 function Hero() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  const heroBgImage = t("hero.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg";
 
   return (
-    <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-28 pb-16 md:py-24">
-      {/* Content grid — stacks on mobile, two-col on desktop */}
-      <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 px-6 md:px-10 max-w-[1200px] mx-auto">
+    <section className="relative min-h-screen w-full flex items-end overflow-hidden pb-16 md:pb-24 pt-32 bg-brand-bg">
+      {/* ── Background Artwork Full-Screen ── */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <motion.img
+          initial={{ scale: 1.08, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          src={getOptimizedImageUrl(heroBgImage, 1920)}
+          alt="Miluartedenara Art Showcase"
+          className="w-full h-full object-cover object-[center_30%] md:object-[center_25%]"
+          fetchPriority="high"
+        />
 
-        {/* ── Left: Bio ── */}
-        <div className="flex flex-col justify-center order-1">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
+        {/* Cinematic atmospheric overlays for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/65 to-brand-bg/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-bg/90 via-brand-bg/40 to-transparent hidden md:block" />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
+
+      {/* ── Content Foreground ── */}
+      <div className="relative z-10 w-full max-w-[1240px] mx-auto px-6 md:px-12 flex flex-col justify-end">
+        <div className="max-w-[680px]">
+          {/* Eyebrow / Tagline */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.15, ease }}
-            className="font-sans text-brand-blush text-[10px] tracking-[0.34em] uppercase mb-4"
+            transition={{ duration: 0.6, delay: 0.2, ease }}
+            className="flex items-center gap-3 mb-4"
           >
-            {t("hero.tagline")}
-          </motion.p>
+            <span className="w-2 h-2 rounded-full bg-brand-blush animate-pulse" />
+            <p className="font-sans text-brand-blush text-[10.5px] md:text-[11.5px] tracking-[0.32em] uppercase font-semibold">
+              {t("hero.tagline")}
+            </p>
+          </motion.div>
 
+          {/* Heading: Hola, soy Nerea */}
           <motion.h1
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25, ease }}
-            className="font-serif text-brand-cream text-[2.6rem] md:text-[4.6rem] leading-[0.98] font-light tracking-tight mb-4 whitespace-pre-line"
+            transition={{ duration: 0.85, delay: 0.3, ease }}
+            className="font-serif text-brand-cream text-[3.2rem] sm:text-[4.4rem] md:text-[5.4rem] leading-[0.95] font-light tracking-tight mb-5 whitespace-pre-line drop-shadow-md"
           >
             {t("hero.greetingBefore")}
             <br />
-            <em className="italic text-brand-blush">{t("hero.greetingItalic")}</em>
+            <em className="italic font-normal text-brand-blush">{t("hero.greetingItalic")}</em>
           </motion.h1>
 
+          {/* Artline / Slogan */}
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35, ease }}
-            className="font-serif italic text-brand-wall text-[1.15rem] md:text-[1.5rem] font-light leading-relaxed mb-6 max-w-[480px]"
+            transition={{ duration: 0.65, delay: 0.45, ease }}
+            className="font-serif italic text-brand-cream/90 text-[1.25rem] sm:text-[1.5rem] md:text-[1.75rem] font-light leading-snug mb-8 max-w-[560px] drop-shadow"
           >
             {t("hero.artline")}
           </motion.p>
 
+          {/* CTAs */}
           <motion.div
-            initial={{ scaleX: 0, originX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.5, delay: 0.45, ease }}
-            className="w-11 h-0.5 bg-brand-blush mb-7"
-          />
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55, ease }}
-            className="font-sans text-brand-cream/80 text-[13.5px] leading-relaxed mb-4 max-w-[480px]"
-          >
-            {t("hero.bio1")}
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.65, ease }}
-            className="font-sans text-brand-cream/70 text-[13.5px] leading-relaxed mb-10 max-w-[480px]"
-          >
-            {t("hero.bio2")}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.75, ease }}
-            className="flex gap-3.5 items-center flex-wrap"
+            transition={{ duration: 0.65, delay: 0.55, ease }}
+            className="flex flex-wrap items-center gap-3.5 sm:gap-4"
           >
             <button
               onClick={() => {
-                const el = document.getElementById("galeria");
+                const el = document.getElementById("proyecto-destacado") || document.getElementById("galeria");
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }}
-              className="font-sans bg-brand-blush text-brand-ink text-[10px] tracking-widest uppercase py-3.5 px-7 cursor-pointer font-medium hover:bg-brand-cream hover:text-brand-bg transition-colors duration-300"
+              className="font-sans bg-brand-blush hover:bg-brand-cream text-brand-ink text-[11px] tracking-widest uppercase font-semibold py-4 px-8 rounded-lg cursor-pointer transition-all duration-300 shadow-xl hover:shadow-brand-blush/25 border-none"
             >
-              {t("hero.viewWorks")}
+              {t("hero.exploreWorks") || t("hero.viewWorks")} ↓
             </button>
+
             <button
-              onClick={() => window.dispatchEvent(new CustomEvent("open-booking-modal"))}
-              className="font-sans text-brand-blush text-[10px] tracking-widest uppercase border border-brand-blush/45 py-3.5 px-6 cursor-pointer bg-transparent hover:bg-brand-blush hover:text-brand-ink transition-all duration-300"
+              onClick={() => navigate("/sobre-mi")}
+              className="font-sans text-brand-cream border border-brand-cream/35 hover:border-brand-blush hover:text-brand-blush text-[11px] tracking-widest uppercase font-medium py-4 px-7 rounded-lg cursor-pointer bg-brand-bg/50 hover:bg-brand-bg/80 backdrop-blur-md transition-all duration-300"
             >
-              {t("hero.sendInquiry")}
+              {t("hero.aboutNerea") || "Sobre mí"} →
             </button>
           </motion.div>
         </div>
-
-        {/* ── Right: Framed artwork ── */}
-        <motion.div
-          initial={{ opacity: 0, x: 32 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.35, ease }}
-          className="flex flex-col justify-start mt-4 md:mt-0 order-2 gap-5"
-        >
-          {/* Framed Miluarte artwork */}
-          <div className="relative rounded-lg overflow-hidden shadow-2xl aspect-[4/5] bg-brand-dark">
-            <img
-              src={getOptimizedImageUrl(t("hero.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg", 800)}
-              alt={t("gallery.alts.obra3")}
-              className="w-full h-full object-cover block"
-              fetchPriority="high"
-            />
-            {/* Small badge overlay */}
-            <div className="absolute bottom-3.5 left-3.5 flex items-center gap-2 bg-[#180E09]/78 backdrop-blur-sm py-1.5 px-3 rounded-full border border-white/10 select-none pointer-events-none">
-              <img
-                src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg", 80)}
-                alt=""
-                className="w-6 h-6 rounded-full object-cover"
-              />
-              <span className="font-sans text-[#F5EDE0] text-[9px] tracking-widest uppercase">
-                Miluarte
-              </span>
-            </div>
-          </div>
-
-          {/* Email */}
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
-            className="font-sans text-brand-cream/60 hover:text-brand-orange text-[11px] tracking-wider bg-transparent border-none py-2 px-1 cursor-pointer transition-colors duration-200 hover:underline block min-h-[44px] flex items-center"
-          >
-            Miluartedenara@gmail.com
-          </button>
-        </motion.div>
       </div>
 
+      {/* Artwork signature badge (bottom-right desktop) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.7 }}
+        className="absolute bottom-8 right-10 hidden lg:flex items-center gap-3 bg-brand-bg/75 backdrop-blur-md py-2 px-4 rounded-full border border-white/10 select-none pointer-events-none z-10"
+      >
+        <span className="w-1.5 h-1.5 rounded-full bg-brand-blush" />
+        <span className="font-serif italic text-brand-cream/80 text-xs tracking-wider">
+          Miluartedenara · Portfolio Artístico
+        </span>
+      </motion.div>
+
       {/* Scroll indicator */}
-      <div className="absolute bottom-7 right-10 flex flex-col items-center gap-2.5 opacity-65 z-10 hidden md:flex select-none">
-        <span className="font-sans text-[9px] tracking-widest uppercase text-brand-cream [writing-mode:vertical-rl]">Scroll</span>
-        <div className="w-[1px] h-12 bg-brand-cream" />
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-10 select-none animate-bounce">
+        <span className="font-sans text-[9px] tracking-[0.25em] uppercase text-brand-cream">Scroll</span>
+        <div className="w-[1px] h-6 bg-brand-cream" />
       </div>
     </section>
   );
