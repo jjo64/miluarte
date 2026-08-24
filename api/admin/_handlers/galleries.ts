@@ -20,7 +20,7 @@ async function getGalleries(): Promise<GalleryMeta[]> {
               parsed.push(bg);
             }
           }
-          return parsed;
+          return parsed.filter((g) => g.slug !== "ilustracion");
         }
       }
     } catch (e) {

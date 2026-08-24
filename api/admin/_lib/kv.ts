@@ -1,6 +1,7 @@
 import { createClient } from "@vercel/kv";
 import * as fs from "fs";
 import * as path from "path";
+import { getBaseGalleries, WORKS_BY_SLUG, DEFAULT_SOCIAL_LINKS } from "./initialData.js";
 
 // Memoria global compartida durante el ciclo de vida del contenedor serverless
 declare global {
@@ -13,79 +14,91 @@ if (!globalThis.__CMS_MEMORY_STORE__) {
 
 // Rutas seguras para local y /tmp en Serverless
 const isVercelServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
-const localDbPath = isVercelServerless
-  ? path.resolve("/tmp", "cms-local-db.json")
-  : path.resolve(process.cwd(), "cms-local-db.json");
-
+const tmpDbPath = path.resolve("/tmp", "cms-local-db.json");
+const bundledDbPath = path.resolve(process.cwd(), "cms-local-db.json");
 const seedPath = path.resolve(process.cwd(), "cms-seed-backup.json");
 
 function getLocalStore(): Record<string, any> {
-  // 1. Intentar leer de archivo local primero si existe en disco
-  try {
-    if (fs.existsSync(localDbPath)) {
-      const data = JSON.parse(fs.readFileSync(localDbPath, "utf-8"));
-      globalThis.__CMS_MEMORY_STORE__ = data;
-      return data;
-    }
-  } catch (e) {
-    // Ignorar si no se puede leer el archivo
-  }
-
-  // 2. Intentar memoria RAM si estamos en Serverless read-only
+  // 1. En Serverless, si ya tenemos datos en memoria RAM, usarlos
   const mem = globalThis.__CMS_MEMORY_STORE__ || {};
   if (Object.keys(mem).length > 0) {
     return mem;
   }
 
-  // 3. Inicializar desde el seed backup si existe
+  // 2. Intentar leer de /tmp en serverless si ya se escribió antes
+  try {
+    if (isVercelServerless && fs.existsSync(tmpDbPath)) {
+      const data = JSON.parse(fs.readFileSync(tmpDbPath, "utf-8"));
+      if (data && Object.keys(data).length > 0) {
+        globalThis.__CMS_MEMORY_STORE__ = data;
+        return data;
+      }
+    }
+  } catch {}
+
+  // 3. Leer de cms-local-db.json empaquetado en el despliegue
+  try {
+    if (fs.existsSync(bundledDbPath)) {
+      const data = JSON.parse(fs.readFileSync(bundledDbPath, "utf-8"));
+      if (data && Object.keys(data).length > 0) {
+        globalThis.__CMS_MEMORY_STORE__ = data;
+        return data;
+      }
+    }
+  } catch {}
+
+  // 4. Leer de cms-seed-backup.json
   try {
     if (fs.existsSync(seedPath)) {
-      const seed = JSON.parse(fs.readFileSync(seedPath, "utf-8"));
-      const store: Record<string, any> = {
-        "miluarte:galleries": seed.galleries || [],
-        "miluarte:renders": seed.renders || [],
-        "miluarte:texts": seed.texts || { es: {}, en: {} },
-        "miluarte:social": seed.social || {},
-        "miluarte:changelog": seed.changelog || [],
-        "miluarte:messages:contact": seed.messages?.contact || [],
-        "miluarte:messages:booking": seed.messages?.booking || [],
-      };
-
-      if (seed.works) {
-        for (const [slug, works] of Object.entries(seed.works)) {
-          store[`miluarte:gallery:${slug}`] = works;
+      const data = JSON.parse(fs.readFileSync(seedPath, "utf-8"));
+      if (data && Object.keys(data).length > 0) {
+        const store: Record<string, any> = { ...data };
+        if (data.galleries) store["miluarte:galleries"] = data.galleries;
+        if (data.renders) store["miluarte:renders"] = data.renders;
+        if (data.texts) store["miluarte:texts"] = data.texts;
+        if (data.social) store["miluarte:social"] = data.social;
+        if (data.works) {
+          for (const [slug, works] of Object.entries(data.works)) {
+            store[`miluarte:gallery:${slug}`] = works;
+          }
         }
+        globalThis.__CMS_MEMORY_STORE__ = store;
+        return store;
       }
-
-      globalThis.__CMS_MEMORY_STORE__ = store;
-
-      try {
-        fs.writeFileSync(localDbPath, JSON.stringify(store, null, 2), "utf-8");
-      } catch {
-        // Ignorar si filesystem es read-only
-      }
-
-      return store;
     }
-  } catch (e) {
-    // Ignorar
+  } catch {}
+
+  // 5. Fallback final usando initialData
+  const fallbackStore: Record<string, any> = {
+    "miluarte:galleries": getBaseGalleries(),
+    "miluarte:renders": [],
+    "miluarte:texts": { es: {}, en: {} },
+    "miluarte:social": DEFAULT_SOCIAL_LINKS,
+    "miluarte:changelog": [],
+    "miluarte:messages:contact": [],
+    "miluarte:messages:booking": [],
+  };
+  for (const [slug, works] of Object.entries(WORKS_BY_SLUG)) {
+    fallbackStore[`miluarte:gallery:${slug}`] = works;
   }
 
-  return globalThis.__CMS_MEMORY_STORE__ || {};
+  globalThis.__CMS_MEMORY_STORE__ = fallbackStore;
+  return fallbackStore;
 }
 
 function saveLocalStore(store: Record<string, any>) {
   globalThis.__CMS_MEMORY_STORE__ = store;
+  const targetPath = isVercelServerless ? tmpDbPath : bundledDbPath;
   try {
-    fs.writeFileSync(localDbPath, JSON.stringify(store, null, 2), "utf-8");
-  } catch {
-    // En Vercel Serverless `/tmp` suele ser escribible, pero si falla no crashea
+    fs.writeFileSync(targetPath, JSON.stringify(store, null, 2), "utf-8");
+  } catch (e) {
+    // Si falla el filesystem en serverless, la memoria RAM retiene el estado
   }
 }
 
 let cachedRemoteClient: any = null;
-let lastUrl: string | undefined = undefined;
-let lastToken: string | undefined = undefined;
+let lastUrl: string | null = null;
+let lastToken: string | null = null;
 
 function getRemoteClient() {
   const url =
@@ -130,27 +143,24 @@ export const kv = {
         console.warn(`Remote KV error on get(${key}), falling back to local:`, e);
       }
     }
+
     const store = getLocalStore();
-    const val = store[key];
-    return val !== undefined ? val : null;
+    return (store[key] as T) ?? null;
   },
 
-  async set(key: string, value: any): Promise<any> {
-    const stringified = typeof value === "string" ? value : JSON.stringify(value);
+  async set(key: string, value: any): Promise<string | null> {
     const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
-        await remoteClient.set(key, stringified);
+        const payload = typeof value === "string" ? value : JSON.stringify(value);
+        await remoteClient.set(key, payload);
       } catch (e) {
-        console.warn(`Remote KV error on set(${key}), falling back to local:`, e);
+        console.warn(`Remote KV error on set(${key}), saving to local:`, e);
       }
     }
+
     const store = getLocalStore();
-    try {
-      store[key] = typeof value === "string" ? JSON.parse(value) : value;
-    } catch {
-      store[key] = value;
-    }
+    store[key] = value;
     saveLocalStore(store);
     return "OK";
   },
@@ -161,9 +171,10 @@ export const kv = {
       try {
         await remoteClient.del(key);
       } catch (e) {
-        console.warn(`Remote KV error on del(${key}), falling back to local:`, e);
+        console.warn(`Remote KV error on del(${key}), deleting from local:`, e);
       }
     }
+
     const store = getLocalStore();
     if (key in store) {
       delete store[key];
@@ -203,5 +214,5 @@ export const kv = {
 };
 
 export function isKvConfigured(): boolean {
-  return true; // Siempre activo gracias al fallback local/memoria y KV remoto
+  return true;
 }

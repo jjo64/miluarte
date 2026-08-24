@@ -6,9 +6,10 @@ import { nanoid } from "nanoid";
 
 // Helper para obtener las obras actuales de una galería
 async function getWorksForGallery(slug: string): Promise<Work[]> {
+  const activeSlug = slug === "ilustracion" ? "musae" : slug;
   if (isKvConfigured()) {
     try {
-      const raw = await kv.get(`miluarte:gallery:${slug}`);
+      const raw = await kv.get(`miluarte:gallery:${activeSlug}`);
       if (raw) {
         return typeof raw === "string" ? JSON.parse(raw) : (raw as any);
       }
@@ -18,7 +19,7 @@ async function getWorksForGallery(slug: string): Promise<Work[]> {
   }
 
   // Fallback estático
-  const staticWorks = WORKS_BY_SLUG[slug] || [];
+  const staticWorks = WORKS_BY_SLUG[activeSlug] || [];
   return staticWorks.map((w, index) => ({
     ...w,
     order: index,
