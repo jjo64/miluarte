@@ -354,9 +354,9 @@ export const translations = {
       subtitle: "Transformando ideas y emociones en mundos visuales con alma, detalle y devoción artesanal.",
       quote: "«El arte no es solo lo que se ve, sino la historia y el latido que cobran vida en cada trazo, escultura o concepto.»",
       bioTitle: "Sobre Nerea",
-      bioP1: "Me llamo Nerea Lucas Pajares (32 años), artísticamente conocida como Miluartedenara. Con una sólida trayectoria y un Máster en Ilustración y Arte Digital de Trazos, mi principal firma artística se consolida en la serie Musae, fusionando arte tradicional y digital con una identidad visual única.",
-      bioP2: "Mi universo creativo abarca desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, piezas de joyería artesanal hechas a mano y concept art integral para proyectos musicales y audiovisuales.",
-      bioP3: "Cada obra nace de un profundo amor por el detalle, explorando la figura femenina, la naturaleza subvertida y narrativas fantásticas donde lo onírico y lo tangible se encuentran.",
+      bioP1: "¡Hola! Soy Nerea, una apasionada ilustradora y artista digital con un Máster en Ilustración y Arte Digital de Trazos. Resido en Madrid, donde he tenido el privilegio de exponer mis lienzos en diversas galerías, compartiendo mi visión, sensibilidad y creatividad con el mundo.",
+      bioP2: "Mi carrera artística se expande más allá del lienzo tradicional. Dirijo una tienda de merchandising (Miluarte de Nara) donde doy vida a muñecas personalizadas modeladas a mano y creo una amplia variedad de arte en arcilla y joyería artesanal exclusiva. Cada pieza que diseño está hecha con dedicación y un profundo amor por los detalles, buscando siempre capturar la esencia y la personalidad de cada cliente.",
+      bioP3: "Además, cuento con una sólida experiencia en diseño gráfico, especialmente en la creación de logotipos, concept art y desarrollo de personajes. He trabajado en proyectos de merchandising musical y colaborado con marcas de ropa, llevando mis habilidades y creatividad a nuevas fronteras, siempre buscando fusionar arte y funcionalidad para crear piezas significativas e inconfundibles. Hacer realidad cualquier idea de la mente es la mejor sensación de este mundo, ¡así que si tienes alguna petición de encargo no dudes en contactar conmigo!",
       disciplinesTitle: "Universos Creativos",
       disciplines: {
         musae: {
@@ -742,9 +742,9 @@ export const translations = {
       subtitle: "Transforming ideas and emotions into visual worlds with soul, intricate detail, and artisanal devotion.",
       quote: "“Art is not just what is seen, but the story and heartbeat that come alive in every stroke, sculpture, or concept.”",
       bioTitle: "About Nerea",
-      bioP1: "I am Nerea Lucas Pajares (32 years old), artistically known as Miluartedenara. With a solid artistic career and a Master's Degree in Illustration and Digital Art from Trazos, my primary signature style is defined by the Musae series, blending traditional and digital art with a unique visual identity.",
-      bioP2: "My creative universe spans from canvases exhibited in Madrid galleries to custom articulated clay dolls, handcrafted jewelry, and comprehensive concept art for music and audiovisual projects.",
-      bioP3: "Each piece stems from a deep love for detail, exploring the female figure, subverted nature, and fantastical narratives where dreamscapes and tangible textures meet.",
+      bioP1: "Hello! I am Nerea, a passionate illustrator and digital artist with a Master's degree in Illustration and Digital Art from Trazos. Based in Madrid, I have had the privilege of exhibiting my canvases in various galleries, sharing my vision, sensitivity, and creativity with the world.",
+      bioP2: "My artistic career expands far beyond the traditional canvas. I run a merchandising shop (Miluarte de Nara) where I bring custom hand-modeled dolls to life and create a wide variety of clay art and exclusive handcrafted jewelry. Each piece I design is crafted with dedication and a deep love for detail, always seeking to capture the essence and personality of each client.",
+      bioP3: "Additionally, I have solid experience in graphic design, logo creation, concept art, and character design. I have worked on musical merchandising projects and collaborated with clothing brands, taking my skills and creativity to new horizons, always seeking to merge art and functionality to create meaningful and unique pieces. Bringing any idea from the mind to reality is the best feeling in this world, so if you have any custom commission requests, feel free to contact me!",
       disciplinesTitle: "Creative Universes",
       disciplines: {
         musae: {
