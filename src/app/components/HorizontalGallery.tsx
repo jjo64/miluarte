@@ -10,42 +10,42 @@ gsap.registerPlugin(ScrollTrigger);
 
 const IMAGES = [
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg",
     category: "ilustracion",
     altKey: "obra1",
   },
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
     category: "concept",
     altKey: "obra2",
   },
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/719099666_18085459703434740_3604615127722183027_n_apifn2.jpg",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/miluarte/archivo/719099666_18085459703434740_3604615127722183027_n_apifn2.jpg",
     category: "ilustracion",
     altKey: "obra3",
   },
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg",
     category: "musica",
     altKey: "obra4",
   },
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798273/Captura_de_pantalla_2026-06-18_175704_agpitt.png",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798273/miluarte/archivo/Captura_de_pantalla_2026-06-18_175704_agpitt.png",
     category: "concept",
     altKey: "obra5",
   },
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/656747786_18083218367600656_3599812440241416906_n_f8npa1.jpg",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/miluarte/archivo/656747786_18083218367600656_3599812440241416906_n_f8npa1.jpg",
     category: "joyeria",
     altKey: "obra6",
   },
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/archivo/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg",
     category: "concept",
     altKey: "obra7",
   },
   {
-    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/favicon_xih1kk.jpg",
+    src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/miluarte/archivo/favicon_xih1kk.jpg",
     category: "ilustracion",
     altKey: "obra8",
   },

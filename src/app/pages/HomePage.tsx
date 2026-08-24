@@ -10,8 +10,8 @@ import { useLanguage } from "../context/LanguageContext";
 import { ClientsMarquee } from "../components/ClientsMarquee";
 import { getOptimizedImageUrl } from "../utils/cloudinary";
 
-const animasSketch = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
-const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
+const animasSketch = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/miluarte/archivo/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
+const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/miluarte/archivo/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
 
 const vp = { once: true, margin: "-70px" } as const;
 
@@ -21,7 +21,7 @@ function Hero() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const heroBgImage = t("hero.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg";
+  const heroBgImage = t("hero.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/axtt8y6owprqrjralpyy.jpg";
 
   return (
     <section className="relative min-h-screen w-full flex items-end overflow-hidden pb-16 md:pb-24 pt-32 bg-brand-bg">
@@ -162,7 +162,7 @@ function FeaturedProject() {
         onTouchEnd={() => setImgTap(false)}
       >
         <img
-          src={getOptimizedImageUrl(t("featured.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1200)}
+          src={getOptimizedImageUrl(t("featured.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/miluarte/renders/Doke_Red_Flag_u1njsw.jpg", 1200)}
           alt={t("gallery.alts.obra4")}
           loading="lazy"
           style={{

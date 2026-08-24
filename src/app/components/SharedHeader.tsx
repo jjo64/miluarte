@@ -174,7 +174,7 @@ export function SharedHeader() {
         { label: t("services.items.diseno-grafico.label"),  path: "/coleccion/diseno-grafico" },
         { label: t("services.items.3d-stands.label"),     path: "/renders" },
         { label: "Diggin'",         path: "/coleccion/diggin" },
-        { label: t("services.items.ilustracion.label"),     path: "/coleccion/ilustracion" },
+        { label: t("services.items.ilustracion.label"),     path: "/coleccion/musae" },
         { label: t("services.items.concept-art.label"),   path: "/coleccion/concept-art" },
       ],
     },
@@ -184,28 +184,28 @@ export function SharedHeader() {
       links: [
         { 
           label: "Serie Musae", 
-          path: "/coleccion/ilustracion",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg" 
+          path: "/coleccion/musae",
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg" 
         },
         { 
           label: "Diggin' label", 
           path: "/coleccion/diggin",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811474/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg" 
         },
         { 
           label: "Animas", 
           path: "/coleccion/animas",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820062/1_Melisa_Completo_nwlyro.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/1_Melisa_Completo_nwlyro.jpg" 
         },
         { 
           label: "Retratos y más", 
           path: "/coleccion/retratos",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820993/2-Retrato-Anna-Karina_cb505e.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/2-Retrato-Anna-Karina_cb505e.jpg" 
         },
         { 
           label: "Pasta Ya", 
           path: "/coleccion/pasta-ya",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821171/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg" 
         },
         { 
           label: language === "es" ? "Ver más colecciones →" : "View more collections →", 
@@ -436,7 +436,7 @@ export function SharedHeader() {
         <div 
           className="mobile-controls-row flex md:hidden items-center justify-between gap-3 px-4 pb-4 pt-1"
           style={{ display: expanded ? undefined : "none" }}
-          inert={!expanded}
+          inert={!expanded ? "" : undefined}
         >
           <span className="font-sans text-[10px] font-bold tracking-[0.12em] uppercase text-brand-cream/40">
             {language === "es" ? "Preferencias" : "Preferences"}
@@ -457,7 +457,7 @@ export function SharedHeader() {
             display: expanded ? "grid" : "none"
           }}
           aria-hidden={!expanded}
-          inert={!expanded}
+          inert={!expanded ? "" : undefined}
         >
           {navCards.map((card, idx) => (
             <div

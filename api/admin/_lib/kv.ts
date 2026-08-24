@@ -20,13 +20,7 @@ const localDbPath = isVercelServerless
 const seedPath = path.resolve(process.cwd(), "cms-seed-backup.json");
 
 function getLocalStore(): Record<string, any> {
-  // 1. Intentar memoria RAM primero
-  const mem = globalThis.__CMS_MEMORY_STORE__ || {};
-  if (Object.keys(mem).length > 0) {
-    return mem;
-  }
-
-  // 2. Intentar leer de archivo local
+  // 1. Intentar leer de archivo local primero si existe en disco
   try {
     if (fs.existsSync(localDbPath)) {
       const data = JSON.parse(fs.readFileSync(localDbPath, "utf-8"));
@@ -35,6 +29,12 @@ function getLocalStore(): Record<string, any> {
     }
   } catch (e) {
     // Ignorar si no se puede leer el archivo
+  }
+
+  // 2. Intentar memoria RAM si estamos en Serverless read-only
+  const mem = globalThis.__CMS_MEMORY_STORE__ || {};
+  if (Object.keys(mem).length > 0) {
+    return mem;
   }
 
   // 3. Inicializar desde el seed backup si existe

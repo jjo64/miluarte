@@ -91,7 +91,7 @@ export function ResumePage() {
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 items-end">
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
               <img
-                src={getOptimizedImageUrl(t("resumePhoto") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png", 300)}
+                src={getOptimizedImageUrl(t("resumePhoto") || "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/curriculum/z0h8pkxct5vsgvmfscui.jpg", 300)}
                 alt="Nerea Lucas Pajares"
                 className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover border border-brand-cream/15 shadow-sm shrink-0 print:w-20 print:h-20"
               />

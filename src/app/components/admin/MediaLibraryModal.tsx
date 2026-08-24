@@ -41,7 +41,7 @@ const FOLDER_NAMES: Record<string, { label: string; icon?: string }> = {
   "miluarte/sobre-mi": { label: "Sobre Mí" },
   "miluarte/curriculum": { label: "Currículum" },
   "miluarte/galerias/animas": { label: "Galería Ánimas" },
-  "miluarte/galerias/ilustraciones": { label: "Galería Ilustraciones" },
+  "miluarte/musae": { label: "Galería Ilustraciones" },
   "miluarte/galerias/pasta-ya": { label: "Galería Pasta Ya" },
   "miluarte/galerias/retratos": { label: "Galería Retratos" },
   "miluarte/galerias/diggin": { label: "Galería Diggin" },

@@ -51,7 +51,7 @@ export function AdminResumeEditor() {
   const [mediaModalOpen, setMediaModalOpen] = useState(false);
 
   // Foto de perfil del CV
-  const [photo, setPhoto] = useState("https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png");
+  const [photo, setPhoto] = useState("https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/curriculum/z0h8pkxct5vsgvmfscui.jpg");
 
   // Textos y datos del CV
   const [resumeData, setResumeData] = useState<{
@@ -109,7 +109,7 @@ export function AdminResumeEditor() {
     try {
       setLoading(true);
       const res = await request<any>("/api/admin/texts");
-      let curPhoto = "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png";
+      let curPhoto = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/curriculum/z0h8pkxct5vsgvmfscui.jpg";
       let curResume = {
         subtitleEs: defaultTranslations.es.resume.subtitle,
         subtitleEn: defaultTranslations.en.resume.subtitle,

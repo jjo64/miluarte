@@ -56,3 +56,4 @@ Thumbs.db
 # Iconos/
 animas/
 *-backup.json
+backup-pre-migration/

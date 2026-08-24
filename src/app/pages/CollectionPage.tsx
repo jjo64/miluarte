@@ -194,37 +194,37 @@ function WorkCard({
 // ─── Animas Bible Section ─────────────────────────────────────────────────────
 
 const ANIMAS_SLIDES = [
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820013/01_Portada_ljcbrq.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820014/02_Introducci%C3%B3n_vopmvs.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820016/03_Introducci%C3%B3n_rpdjrc.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820017/04_Veive_cgvvbf.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820018/05_Veive_rftpr5.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820019/06_Veive_pqy387.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820020/07_Veive_vee6mz.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820022/08_Melisa_crsc5e.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820023/09_Melisa_alxiqu.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820024/10_Melisa_teoite.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820025/11_Melisa_yf3wfk.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820026/12_Osceola_fsumn6.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820027/13_Osceola_fqorrq.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820028/14_Osceola_gp4zuk.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820029/15_Mania_ehtvh0.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820030/16_Mania_zbpatm.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820031/17_Feronia_ww6zmk.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820032/18_Feronia_qmleha.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820033/19_Atum_y_Satres_myxu2c.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820034/20_Gran_Espiritu_gnfaxn.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820036/21_Abuela_Ara%C3%B1a_dja5v6.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820037/22_Vesta_ynqsgg.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820038/23_Nethus_notptk.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820039/24_Usil_y_Losna_nib3my.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820040/25_Nortia_y_Vant_kblzdr.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820041/26_Nortia_y_Vant_niuvw7.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820042/27_Line_Up_nhbloe.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820043/28_Props_sttvlg.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820045/29_Arte_final_1_nkseuc.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820044/30_Arte_final_2_ns9rdp.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820046/31_Resumen_w5ipcb.jpg"
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/01_Portada_ljcbrq.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/02_Introducci%C3%B3n_vopmvs.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/03_Introducci%C3%B3n_rpdjrc.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/04_Veive_cgvvbf.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/05_Veive_rftpr5.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/06_Veive_pqy387.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/07_Veive_vee6mz.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/08_Melisa_crsc5e.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/09_Melisa_alxiqu.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/10_Melisa_teoite.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/11_Melisa_yf3wfk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/12_Osceola_fsumn6.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/13_Osceola_fqorrq.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/14_Osceola_gp4zuk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/15_Mania_ehtvh0.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/16_Mania_zbpatm.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/17_Feronia_ww6zmk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/18_Feronia_qmleha.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/19_Atum_y_Satres_myxu2c.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/20_Gran_Espiritu_gnfaxn.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/21_Abuela_Ara%C3%B1a_dja5v6.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/22_Vesta_ynqsgg.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/23_Nethus_notptk.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/24_Usil_y_Losna_nib3my.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/25_Nortia_y_Vant_kblzdr.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/26_Nortia_y_Vant_niuvw7.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/27_Line_Up_nhbloe.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/28_Props_sttvlg.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/29_Arte_final_1_nkseuc.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/30_Arte_final_2_ns9rdp.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/galerias/animas/31_Resumen_w5ipcb.jpg"
 ];
 
 function AnimasBibleSection() {
@@ -428,7 +428,7 @@ export function getEditorialLayout(index: number, isTwoColumns: boolean = false,
 // ─── Collection Page ──────────────────────────────────────────────────────────
 
 export function CollectionPage() {
-  const { slug = "ilustracion" } = useParams<{ slug: string }>();
+  const { slug = "musae" } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   
@@ -450,11 +450,18 @@ export function CollectionPage() {
   const [ctaH, setCtaH] = useState(false);
 
   useEffect(() => {
+    if (slug === "ilustracion") {
+      navigate("/coleccion/musae", { replace: true });
+      return;
+    }
+
     let isMounted = true;
 
-    if (META[slug]) {
-      setDynamicMeta(META[slug]);
-      setDynamicWorks(WORKS_BY_SLUG[slug] ?? []);
+    const activeSlug = slug === "ilustracion" ? "musae" : slug;
+
+    if (META[activeSlug]) {
+      setDynamicMeta(META[activeSlug]);
+      setDynamicWorks(WORKS_BY_SLUG[activeSlug] ?? []);
       setIsNotFound(false);
       setIsLoading(false);
     } else {

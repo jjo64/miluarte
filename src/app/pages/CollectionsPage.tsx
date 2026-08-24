@@ -10,16 +10,16 @@ import { META, WORKS_BY_SLUG } from "./CollectionPage";
 import { GalleryMeta } from "../types/cms";
 
 // Fallback por si la galería no tiene obras todavía
-const DEFAULT_COVER = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg";
+const DEFAULT_COVER = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg";
 
 const STATIC_THUMBNAILS: Record<string, string> = {
-  ilustracion: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg",
-  diggin: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811474/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
-  animas: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820062/1_Melisa_Completo_nwlyro.jpg",
-  retratos: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820993/2-Retrato-Anna-Karina_cb505e.jpg",
-  "pasta-ya": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821171/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
-  "concept-art": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
-  "diseno-grafico": "https://res.cloudinary.com/doznr2qm4/image/upload/v1781819798/Kreativit%C3%A4t_Schreibkunst_mzvltr.jpg",
+  musae: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg",
+  diggin: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
+  animas: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/1_Melisa_Completo_nwlyro.jpg",
+  retratos: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/2-Retrato-Anna-Karina_cb505e.jpg",
+  "pasta-ya": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
+  "concept-art": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
+  "diseno-grafico": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/Kreativit%C3%A4t_Schreibkunst_mzvltr.jpg",
 };
 
 interface GalleryWithCount extends GalleryMeta {

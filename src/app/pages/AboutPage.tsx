@@ -20,8 +20,8 @@ export function AboutPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const profileImg = t("aboutPhoto") || t("resumePhoto") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png";
-  const musaeArtwork = t("aboutMusaeImg") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg";
+  const profileImg = t("aboutPhoto") || t("resumePhoto") || "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/curriculum/z0h8pkxct5vsgvmfscui.jpg";
+  const musaeArtwork = t("aboutMusaeImg") || "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg";
 
   const disciplines = [
     {
@@ -29,7 +29,7 @@ export function AboutPage() {
       icon: Palette,
       title: t("about.disciplines.musae.title"),
       desc: t("about.disciplines.musae.desc"),
-      link: "/coleccion/ilustracion",
+      link: "/coleccion/musae",
     },
     {
       key: "concept",
@@ -252,7 +252,7 @@ export function AboutPage() {
                 <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
                   <span className="font-serif italic text-brand-cream text-sm">Serie Musae · Expresión libre y firma de autor</span>
                   <button
-                    onClick={() => navigate("/coleccion/ilustracion")}
+                    onClick={() => navigate("/coleccion/musae")}
                     className="font-sans text-[10px] tracking-wider uppercase text-brand-blush hover:text-brand-cream flex items-center gap-1 bg-brand-bg/70 px-3 py-1.5 rounded-md backdrop-blur-sm transition-colors cursor-pointer border-none"
                   >
                     Ver colección <ArrowUpRight size={12} />

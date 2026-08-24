@@ -561,7 +561,7 @@ export function RendersPage() {
                 muted
                 loop
                 playsInline
-                poster={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/Doke_Red_Flag_u1njsw.jpg", 1000)}
+                poster={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/miluarte/renders/Doke_Red_Flag_u1njsw.jpg", 1000)}
                 className="w-full h-full object-cover"
               >
                 <source src="/videos/sample-bbb.mp4" type="video/mp4" />

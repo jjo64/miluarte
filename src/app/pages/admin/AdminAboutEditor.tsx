@@ -26,8 +26,8 @@ import { getOptimizedImageUrl } from "../../utils/cloudinary";
 type Lang = "es" | "en";
 type DeviceView = "desktop" | "tablet" | "mobile";
 
-const DEFAULT_ABOUT_PHOTO = "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png";
-const DEFAULT_MUSAE_IMG = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg";
+const DEFAULT_ABOUT_PHOTO = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/curriculum/z0h8pkxct5vsgvmfscui.jpg";
+const DEFAULT_MUSAE_IMG = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg";
 
 export function AdminAboutEditor() {
   const { request } = useAdminApi();
