@@ -25,17 +25,22 @@ const routes: Record<string, (req: any, res: any) => Promise<any> | any> = {
 };
 
 export default async function handler(req: any, res: any) {
-  // Extract route name from req.url (e.g. /api/admin/works?slug=musae -> "works")
+  // 1. Extraer el nombre del endpoint directamente del pathname de la URL para evitar que query params como ?slug=musae lo colisionen
   let endpoint = "";
   if (req.url) {
     const pathname = req.url.split("?")[0];
     const match = pathname.match(/\/api\/admin\/([^\/]+)/);
-    if (match) endpoint = match[1];
+    if (match) {
+      endpoint = match[1];
+    }
   }
 
+  // 2. Fallback a req.query.slug si no se pudo parsear de req.url
   if (!endpoint && req.query?.slug) {
     const s = Array.isArray(req.query.slug) ? req.query.slug[0] : req.query.slug;
-    if (routes[s]) endpoint = s;
+    if (routes[s]) {
+      endpoint = s;
+    }
   }
 
   const routeHandler = routes[endpoint];
@@ -43,5 +48,5 @@ export default async function handler(req: any, res: any) {
     return routeHandler(req, res);
   }
 
-  return res.status(404).json({ error: `Ruta no encontrada: ${req.url}` });
+  return res.status(404).json({ error: `Ruta de administración no encontrada: ${req.url}` });
 }
