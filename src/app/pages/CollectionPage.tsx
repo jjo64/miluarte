@@ -385,6 +385,14 @@ function AnimasBibleSection() {
   );
 }
 
+export function getGridColClass(gridCol: string | undefined): string {
+  if (!gridCol) return "md:col-span-4";
+  if (gridCol === "md:col-span-1") return "md:col-span-4";
+  if (gridCol === "md:col-span-2") return "md:col-span-8";
+  if (gridCol === "md:col-span-3") return "md:col-span-12";
+  return gridCol;
+}
+
 // Helper para calcular diseño editorial armónico que nunca se rompe al reordenar
 export function getEditorialLayout(index: number, isTwoColumns: boolean = false, customGridCol?: string, customAspect?: string) {
   if (isTwoColumns) {
@@ -395,16 +403,23 @@ export function getEditorialLayout(index: number, isTwoColumns: boolean = false,
   }
 
   // Si tiene custom y no queremos forzar patrón:
-  // Patrón editorial armónico cíclico de 8 piezas que siempre completa filas de 3 columnas
+  if (customGridCol && customAspect) {
+    return {
+      gridCol: getGridColClass(customGridCol),
+      aspect: customAspect,
+    };
+  }
+
+  // Patrón editorial armónico cíclico de 8 piezas adaptado al grid de 12 columnas
   const pattern = [
-    { gridCol: "md:col-span-2", aspect: "3/2" }, // 0: Ancha
-    { gridCol: "md:col-span-1", aspect: "3/4" }, // 1: Vertical (Fila 1 completa)
-    { gridCol: "md:col-span-1", aspect: "3/4" }, // 2: Vertical
-    { gridCol: "md:col-span-2", aspect: "3/2" }, // 3: Ancha (Fila 2 completa)
-    { gridCol: "md:col-span-1", aspect: "1/1" }, // 4: Cuadrada
-    { gridCol: "md:col-span-1", aspect: "1/1" }, // 5: Cuadrada
-    { gridCol: "md:col-span-1", aspect: "1/1" }, // 6: Cuadrada (Fila 3 completa)
-    { gridCol: "md:col-span-3", aspect: "16/9" }, // 7: Panorámica completa (Fila 4 completa)
+    { gridCol: "md:col-span-8", aspect: "3/2" },  // 0: Ancha (2/3)
+    { gridCol: "md:col-span-4", aspect: "3/4" },  // 1: Vertical (1/3) -> Fila 1 completa
+    { gridCol: "md:col-span-4", aspect: "3/4" },  // 2: Vertical (1/3)
+    { gridCol: "md:col-span-8", aspect: "3/2" },  // 3: Ancha (2/3) -> Fila 2 completa
+    { gridCol: "md:col-span-4", aspect: "1/1" },  // 4: Cuadrada (1/3)
+    { gridCol: "md:col-span-4", aspect: "1/1" },  // 5: Cuadrada (1/3)
+    { gridCol: "md:col-span-4", aspect: "1/1" },  // 6: Cuadrada (1/3) -> Fila 3 completa
+    { gridCol: "md:col-span-12", aspect: "16/9" }, // 7: Panorámica completa (3/3) -> Fila 4 completa
   ];
 
   return pattern[index % pattern.length];
@@ -739,7 +754,9 @@ export function CollectionPage() {
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} md:grid-cols-3 gap-2 md:gap-0.5 mb-1`}
+          className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} ${
+            isTwoColumns ? "" : "md:grid-cols-12"
+          } gap-4 md:gap-4 mb-1`}
         >
           {localizedWorks.map((w, idx) => (
             <WorkCard 

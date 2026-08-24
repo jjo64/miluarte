@@ -76,10 +76,19 @@ const DEFAULT_ANIMAS_SLIDES = [
   "https://res.cloudinary.com/doznr2qm4/image/upload/v1781820046/31_Resumen_w5ipcb.jpg"
 ];
 
+export function getGridColClass(gridCol: string | undefined): string {
+  if (!gridCol) return "md:col-span-4";
+  if (gridCol === "md:col-span-1") return "md:col-span-4";
+  if (gridCol === "md:col-span-2") return "md:col-span-8";
+  if (gridCol === "md:col-span-3") return "md:col-span-12";
+  return gridCol;
+}
+
 const COL_OPTIONS = [
-  { value: "md:col-span-1", span: 1, label: "1 Col" },
-  { value: "md:col-span-2", span: 2, label: "2 Col" },
-  { value: "md:col-span-3", span: 3, label: "3 Col" },
+  { value: "md:col-span-4", span: 4, label: "1/3" },
+  { value: "md:col-span-6", span: 6, label: "1/2" },
+  { value: "md:col-span-8", span: 8, label: "2/3" },
+  { value: "md:col-span-12", span: 12, label: "1/1" },
 ];
 
 const ASPECT_OPTIONS = [
@@ -642,11 +651,11 @@ export function AdminGalleryEditor() {
                 ? "grid-cols-1"
                 : device === "tablet"
                 ? "grid-cols-2"
-                : "grid-cols-1 md:grid-cols-3"
+                : "grid-cols-1 md:grid-cols-12"
             }`}
           >
             {works.map((work) => {
-              const currentGridCol = work.gridCol || "md:col-span-1";
+              const currentGridCol = getGridColClass(work.gridCol);
               const currentAspect = work.aspect || "3/4";
 
               return (

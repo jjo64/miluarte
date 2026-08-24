@@ -25,9 +25,10 @@ interface CardResizerProps {
 }
 
 const COL_OPTIONS = [
-  { value: "md:col-span-1", span: 1, label: "1 Columna", desc: "Estrecho / Vertical" },
-  { value: "md:col-span-2", span: 2, label: "2 Columnas", desc: "Normal / Destacado" },
-  { value: "md:col-span-3", span: 3, label: "3 Columnas", desc: "Ancho completo / Panorama" },
+  { value: "md:col-span-4", span: 4, label: "1/3 Ancho", desc: "Estrecho (3 por fila)" },
+  { value: "md:col-span-6", span: 6, label: "1/2 Ancho (Mitad)", desc: "Mitad (2 por fila)" },
+  { value: "md:col-span-8", span: 8, label: "2/3 Ancho", desc: "Ancho (1 y otro estrecho)" },
+  { value: "md:col-span-12", span: 12, label: "Ancho Completo", desc: "Completo (1 por fila)" },
 ];
 
 const ASPECT_OPTIONS = [
@@ -46,7 +47,13 @@ export function CardResizer({
   year,
   onChange,
 }: CardResizerProps) {
-  const currentSpanIndex = Math.max(0, COL_OPTIONS.findIndex((c) => c.value === gridCol));
+  const resolvedGridCol = 
+    gridCol === "md:col-span-1" ? "md:col-span-4" :
+    gridCol === "md:col-span-2" ? "md:col-span-8" :
+    gridCol === "md:col-span-3" ? "md:col-span-12" :
+    gridCol || "md:col-span-4";
+
+  const currentSpanIndex = Math.max(0, COL_OPTIONS.findIndex((c) => c.value === resolvedGridCol));
   const currentAspectIndex = Math.max(0, ASPECT_OPTIONS.findIndex((a) => a.value === aspect));
 
   const handlePrevCol = () => {
@@ -149,7 +156,11 @@ export function CardResizer({
           transition={{ type: "spring", stiffness: 300, damping: 28 }}
           style={{
             aspectRatio: currentAspect.value === "3/4" ? "3/4" : currentAspect.value === "1/1" ? "1/1" : currentAspect.value === "3/2" ? "3/2" : "16/9",
-            width: currentSpan.span === 1 ? "140px" : currentSpan.span === 2 ? "220px" : "310px",
+            width:
+              currentSpan.span === 4 ? "140px" :
+              currentSpan.span === 6 ? "200px" :
+              currentSpan.span === 8 ? "260px" :
+              "320px",
             maxWidth: "85%",
           }}
           className="relative rounded-xl overflow-hidden bg-brand-bg border-2 border-brand-blush shadow-2xl shadow-brand-blush/20 z-10 flex flex-col justify-end group transition-all"
@@ -190,9 +201,10 @@ export function CardResizer({
           <label className="font-sans text-brand-cream/60 text-[10px] uppercase tracking-wider font-semibold">
             Ancho en el Grid
           </label>
-          <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-brand-dark border border-brand-cream/10">
+          <div className="grid grid-cols-4 gap-1.5 p-1 rounded-xl bg-brand-dark border border-brand-cream/10">
             {COL_OPTIONS.map((c) => {
-              const active = c.value === gridCol;
+              const active = c.value === resolvedGridCol;
+              const barCount = c.span === 4 ? 1 : c.span === 6 ? 2 : c.span === 8 ? 3 : 4;
               return (
                 <button
                   key={c.value}
@@ -205,7 +217,7 @@ export function CardResizer({
                   }`}
                 >
                   <div className="flex gap-0.5">
-                    {Array.from({ length: c.span }).map((_, i) => (
+                    {Array.from({ length: barCount }).map((_, i) => (
                       <div
                         key={i}
                         className={`w-2 h-3 rounded-xs ${
@@ -214,7 +226,7 @@ export function CardResizer({
                       />
                     ))}
                   </div>
-                  <span>{c.span} Col</span>
+                  <span>{c.label}</span>
                 </button>
               );
             })}
