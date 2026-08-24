@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { ArrowUpRight, Sparkles } from "lucide-react";
 import { C, SERIF, SANS, ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
 import { HorizontalGallery } from "../components/HorizontalGallery";
 import { ServiceSections } from "../components/ServiceSections";
@@ -16,90 +15,78 @@ const animasFinal  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822
 
 const vp = { once: true, margin: "-70px" } as const;
 
-// ─── Hero / Opción C: Split Asimétrico 100vh (Editorial Art Gallery) ─────────
+// ─── Hero / Full-Screen Art Showcase ─────────────────────────────────────────
 
 function Hero() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const heroArtwork = t("hero.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg";
-
-  const disciplineTags = [
-    "Serie Musae",
-    "Concept Art",
-    "Joyería & Arcilla",
-    "Música & Diggin'",
-  ];
+  const heroBgImage = t("hero.image") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg";
 
   return (
-    <section className="relative min-h-screen bg-brand-bg flex items-center overflow-hidden pt-28 pb-16 md:py-0">
-      {/* Subtle ambient lighting backdrop */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-brand-blush/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-brand-orange/5 rounded-full blur-3xl pointer-events-none" />
+    <section className="relative min-h-screen w-full flex items-end overflow-hidden pb-16 md:pb-24 pt-32 bg-brand-bg">
+      {/* ── Background Artwork Full-Screen ── */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <motion.img
+          initial={{ scale: 1.08, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          src={getOptimizedImageUrl(heroBgImage, 1920)}
+          alt="Miluartedenara Art Showcase"
+          className="w-full h-full object-cover object-[center_30%] md:object-[center_25%]"
+          fetchPriority="high"
+        />
 
-      {/* Main Split Grid */}
-      <div className="relative z-10 w-full max-w-[1380px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center min-h-[calc(100vh-110px)] md:min-h-screen py-8 md:py-16">
-        
-        {/* ── Left Column: Editorial & Identity ── */}
-        <div className="flex flex-col justify-center order-2 lg:order-1">
-          {/* Eyebrow */}
+        {/* Cinematic atmospheric overlays for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/65 to-brand-bg/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-bg/90 via-brand-bg/40 to-transparent hidden md:block" />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
+
+      {/* ── Content Foreground ── */}
+      <div className="relative z-10 w-full max-w-[1240px] mx-auto px-6 md:px-12 flex flex-col justify-end">
+        <div className="max-w-[680px]">
+          {/* Eyebrow / Tagline */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15, ease }}
+            transition={{ duration: 0.6, delay: 0.2, ease }}
             className="flex items-center gap-3 mb-4"
           >
             <span className="w-2 h-2 rounded-full bg-brand-blush animate-pulse" />
-            <p className="font-sans text-brand-blush text-[10.5px] md:text-[11.5px] tracking-[0.34em] uppercase font-semibold">
+            <p className="font-sans text-brand-blush text-[10.5px] md:text-[11.5px] tracking-[0.32em] uppercase font-semibold">
               {t("hero.tagline")}
             </p>
           </motion.div>
 
-          {/* Heading */}
+          {/* Heading: Hola, soy Nerea */}
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25, ease }}
-            className="font-serif text-brand-cream text-[3.2rem] sm:text-[4.4rem] lg:text-[5rem] leading-[0.96] font-light tracking-tight mb-5"
+            transition={{ duration: 0.85, delay: 0.3, ease }}
+            className="font-serif text-brand-cream text-[3.2rem] sm:text-[4.4rem] md:text-[5.4rem] leading-[0.95] font-light tracking-tight mb-5 whitespace-pre-line drop-shadow-md"
           >
             {t("hero.greetingBefore")}
             <br />
             <em className="italic font-normal text-brand-blush">{t("hero.greetingItalic")}</em>
           </motion.h1>
 
-          {/* Slogan */}
+          {/* Artline / Slogan */}
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.35, ease }}
-            className="font-serif italic text-brand-cream/80 text-[1.25rem] sm:text-[1.45rem] font-light leading-relaxed mb-6 max-w-[500px]"
+            transition={{ duration: 0.65, delay: 0.45, ease }}
+            className="font-serif italic text-brand-cream/90 text-[1.25rem] sm:text-[1.5rem] md:text-[1.75rem] font-light leading-snug mb-8 max-w-[560px] drop-shadow"
           >
             {t("hero.artline")}
           </motion.p>
 
-          {/* Discipline Badges */}
+          {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.45, ease }}
-            className="flex flex-wrap gap-2 mb-8"
-          >
-            {disciplineTags.map((tag) => (
-              <span
-                key={tag}
-                className="font-sans text-[10px] tracking-[0.16em] uppercase text-brand-cream/70 bg-brand-cream/[0.04] border border-brand-cream/10 px-3 py-1.5 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-          </motion.div>
-
-          {/* Action CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55, ease }}
-            className="flex flex-wrap items-center gap-3.5 sm:gap-4 mb-10"
+            transition={{ duration: 0.65, delay: 0.55, ease }}
+            className="flex flex-wrap items-center gap-3.5 sm:gap-4"
           >
             <button
               onClick={() => {
@@ -118,60 +105,26 @@ function Hero() {
               {t("hero.aboutNerea") || "Sobre mí"} →
             </button>
           </motion.div>
-
-          {/* Location & Studio Info */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.65 }}
-            className="flex items-center gap-4 text-brand-cream/40 font-sans text-[11px] tracking-wider pt-4 border-t border-brand-cream/10"
-          >
-            <span>Madrid / Barcelona</span>
-            <span>•</span>
-            <span>Estudio Creativo Miluartedenara</span>
-          </motion.div>
         </div>
-
-        {/* ── Right Column: Monumental Artwork Canvas ── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96, x: 24 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 0.9, delay: 0.25, ease }}
-          className="order-1 lg:order-2 flex justify-center items-center w-full"
-        >
-          <div className="relative w-full max-w-[540px] lg:max-w-none h-[55vh] sm:h-[65vh] lg:h-[78vh] rounded-3xl overflow-hidden border border-brand-cream/20 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.8)] bg-brand-card group">
-            <img
-              src={getOptimizedImageUrl(heroArtwork, 1400)}
-              alt="Miluartedenara Art Showcase"
-              className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-700 ease-out"
-              fetchPriority="high"
-            />
-
-            {/* Inner subtle vignette gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-bg/90 via-transparent to-transparent opacity-85 pointer-events-none" />
-
-            {/* Glassmorphism bottom overlay */}
-            <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-brand-bg/80 backdrop-blur-md border border-brand-cream/15 flex items-center justify-between shadow-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-brand-blush" />
-                <div>
-                  <p className="font-serif text-sm text-brand-cream leading-tight mb-0.5">Miluartedenara</p>
-                  <p className="font-sans text-[10px] text-brand-cream/60 tracking-wider">Ilustración & Arte Visual</p>
-                </div>
-              </div>
-              <span className="font-sans text-[10px] uppercase text-brand-blush tracking-widest font-semibold px-2.5 py-1 bg-brand-blush/10 rounded-md">
-                Portada
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
       </div>
 
+      {/* Artwork signature badge (bottom-right desktop) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.7 }}
+        className="absolute bottom-8 right-10 hidden lg:flex items-center gap-3 bg-brand-bg/75 backdrop-blur-md py-2 px-4 rounded-full border border-white/10 select-none pointer-events-none z-10"
+      >
+        <span className="w-1.5 h-1.5 rounded-full bg-brand-blush" />
+        <span className="font-serif italic text-brand-cream/80 text-xs tracking-wider">
+          Miluartedenara · Portfolio Artístico
+        </span>
+      </motion.div>
+
       {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-50 z-10 select-none animate-bounce hidden md:flex">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-10 select-none animate-bounce">
         <span className="font-sans text-[9px] tracking-[0.25em] uppercase text-brand-cream">Scroll</span>
-        <div className="w-[1px] h-5 bg-brand-cream" />
+        <div className="w-[1px] h-6 bg-brand-cream" />
       </div>
     </section>
   );
