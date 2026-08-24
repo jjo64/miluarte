@@ -17,7 +17,7 @@ export const translations = {
       greetingBefore: "Hola,\nsoy ",
       greetingItalic: "Nerea",
       artline: "Transformo ideas en mundos visuales con alma.",
-      bio1: "Me llamo Nerea Lucas Pajares (32 años), artísticamente conocida como Miluartedenara. Con una sólida trayectoria y un Máster en Ilustración y Arte Digital de Trazos, mi principal estilo de firma artística es la serie Musae, fusionando arte tradicional y digital. Creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, joyería artesanal hecha a mano y concept art para proyectos musicales. Cada pieza está hecha con dedicación y amor por los detalles.",
+      bio1: "Me llamo Nerea Lucas Pajares (32 años), artísticamente conocida como Miluartedenara o naraneko. Con una sólida trayectoria y un Máster en Ilustración y Arte Digital de Trazos, mi principal estilo de firma artística es la serie Musae, fusionando arte tradicional y digital. Creo desde lienzos expuestos en galerías de Madrid hasta muñecas personalizadas en arcilla, joyería artesanal hecha a mano y concept art para proyectos musicales. Cada pieza está hecha con dedicación y amor por los detalles.",
       bio2: "Realizo cualquier tipo de encargo artístico. Si tienes una idea, puedo darle vida.",
       viewWorks: "Ver trabajos",
       sendInquiry: "Escribir encargo",
@@ -172,7 +172,7 @@ export const translations = {
         skills: "Habilidades",
         languages: "Idiomas"
       },
-      profileText: "Artista visual multidisciplinar de 32 años (nacida en Madrid) con un Máster en Arte e Ilustración Digital y una destacada trayectoria profesional. Su estilo de firma principal es la serie Musae, que combina elementos pop con naturaleza. Especializada en la dirección de arte para proyectos musicales, diseño tridimensional de stands comerciales y modelado físico de muñecas personalizadas y joyería. Combino técnicas tradicionales con herramientas digitales de última generación para crear narrativas visuales coherentes y espacios físicos impactantes.",
+      profileText: "Artista visual multidisciplinar de 32 años (nacida en Madrid) con un Máster en Arte e Ilustración Digital y una destacada trayectoria profesional. Conocida también en internet como naraneko o Miluartedenara, su estilo de firma principal es la serie Musae, que combina elementos pop con naturaleza. Especializada en la dirección de arte para proyectos musicales, diseño tridimensional de stands comerciales y modelado físico de muñecas personalizadas y joyería. Combino técnicas tradicionales con herramientas digitales de última generación para crear narrativas visuales coherentes y espacios físicos impactantes.",
       experienceItems: [
         {
           role: "Ilustradora Creativa",
@@ -405,7 +405,7 @@ export const translations = {
       greetingBefore: "Hello,\nI'm ",
       greetingItalic: "Nerea",
       artline: "I transform ideas into visual worlds with soul.",
-      bio1: "I am Nerea Lucas Pajares (32 years old), artistically known as Miluartedenara. With a solid artistic career and a Master's Degree in Illustration and Digital Art, my primary signature style is defined by the Musae series, blending traditional and digital art. I create everything from canvases exhibited in Madrid galleries to custom clay dolls, handmade jewelry, and concept art for music projects. Each piece is crafted with dedication and love for details.",
+      bio1: "I am Nerea Lucas Pajares (32 years old), artistically known as Miluartedenara or naraneko. With a solid artistic career and a Master's Degree in Illustration and Digital Art, my primary signature style is defined by the Musae series, blending traditional and digital art. I create everything from canvases exhibited in Madrid galleries to custom clay dolls, handmade jewelry, and concept art for music projects. Each piece is crafted with dedication and love for details.",
       bio2: "I take all kinds of artistic commissions. If you have an idea, I can bring it to life.",
       viewWorks: "View works",
       sendInquiry: "Send inquiry",
@@ -560,7 +560,7 @@ export const translations = {
         skills: "Skills",
         languages: "Languages"
       },
-      profileText: "32-year-old multidisciplinary visual artist (born in Madrid, Spain) with a Master's in Digital Art and Illustration and a distinguished professional career. Her primary signature style is the Musae series, blending pop elements with nature. Specialized in art direction for music projects, 3D stand design for commercial fairs, and custom ball-jointed clay doll and jewelry creation. I combine traditional techniques with cutting-edge digital tools to create cohesive visual stories and impactful physical spaces.",
+      profileText: "32-year-old multidisciplinary visual artist (born in Madrid, Spain) with a Master's in Digital Art and Illustration and a distinguished professional career. Known online as naraneko or Miluartedenara, her primary signature style is the Musae series, blending pop elements with nature. Specialized in art direction for music projects, 3D stand design for commercial fairs, and custom ball-jointed clay doll and jewelry creation. I combine traditional techniques with cutting-edge digital tools to create cohesive visual stories and impactful physical spaces.",
       experienceItems: [
         {
           role: "Creative Illustrator",
