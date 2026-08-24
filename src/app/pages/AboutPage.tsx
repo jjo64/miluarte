@@ -20,9 +20,8 @@ export function AboutPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const profileImg = "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png";
-  const heroArtwork = "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg";
-  const musaeArtwork = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg";
+  const profileImg = t("aboutPhoto") || t("resumePhoto") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png";
+  const musaeArtwork = t("aboutMusaeImg") || "https://res.cloudinary.com/doznr2qm4/image/upload/v1781821775/musae_dkbruz.jpg";
 
   const disciplines = [
     {
@@ -132,7 +131,7 @@ export function AboutPage() {
             </div>
           </motion.div>
 
-          {/* Visual Showcase (Photo + Artwork Composition) */}
+          {/* Visual Showcase (Photo Only) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -161,15 +160,6 @@ export function AboutPage() {
                   Artista
                 </span>
               </div>
-            </div>
-
-            {/* Floating Decorative Art Card */}
-            <div className="hidden sm:block absolute -bottom-6 -left-6 w-36 h-48 rounded-xl overflow-hidden border-2 border-brand-bg shadow-2xl z-20 pointer-events-none">
-              <img
-                src={getOptimizedImageUrl(heroArtwork, 400)}
-                alt=""
-                className="w-full h-full object-cover"
-              />
             </div>
           </motion.div>
         </section>

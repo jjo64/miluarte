@@ -12,6 +12,7 @@ import {
   LogOut,
   Sparkles,
   GraduationCap,
+  User,
   X,
 } from "lucide-react";
 import { useAdminApi } from "../../hooks/useAdminApi";
@@ -58,6 +59,7 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const navItems = [
     { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
     { to: "/admin/inicio", label: "Editar Inicio (Live)", icon: Sparkles },
+    { to: "/admin/sobre-mi", label: "Sobre Mí (Biografía)", icon: User },
     { to: "/admin/cv", label: "Currículum (CV)", icon: GraduationCap },
     { to: "/admin/galerias", label: "Galerías y Obras", icon: Images },
     { to: "/admin/renders", label: "Renders 3D & Stands", icon: Box },
