@@ -1,7 +1,7 @@
-import { kv, isKvConfigured } from "./_lib/kv.js";
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
-import { createPreSnapshot, recordChangelog } from "./_lib/changelog.js";
-import { SocialLinks } from "./_lib/initialData.js";
+import { kv, isKvConfigured } from "../_lib/kv.js";
+import { extractTokenFromHeader, verifyToken } from "../_lib/auth.js";
+import { createPreSnapshot, recordChangelog } from "../_lib/changelog.js";
+import { SocialLinks } from "../_lib/initialData.js";
 
 async function getSocialLinks(): Promise<SocialLinks> {
   if (isKvConfigured()) {

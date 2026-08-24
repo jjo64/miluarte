@@ -71,50 +71,17 @@ function localApiDevServer() {
             return res;
           };
 
-          // Route handlers
-          if (pathname === '/api/admin/auth') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/auth.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/galleries') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/galleries.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/works') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/works.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/upload') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/upload.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/export') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/export.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/renders') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/renders.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/texts') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/texts.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/media') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/media.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/social') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/social.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/messages') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/messages.ts');
-            return handler(req, res);
-          }
-          if (pathname === '/api/admin/changelog') {
-            const { default: handler } = await server.ssrLoadModule('/api/admin/changelog.ts');
-            return handler(req, res);
+          // Dynamic admin router
+          if (pathname.startsWith('/api/admin/')) {
+            const sub = pathname.replace('/api/admin/', '').split('/')[0];
+            const handlerPath = `/api/admin/_handlers/${sub}.ts`;
+            try {
+              const { default: handler } = await server.ssrLoadModule(handlerPath);
+              return handler(req, res);
+            } catch {
+              const { default: handler } = await server.ssrLoadModule('/api/admin/[...slug].ts');
+              return handler(req, res);
+            }
           }
           if (pathname === '/api/send-contact') {
             const { default: handler } = await server.ssrLoadModule('/api/send-contact.ts');

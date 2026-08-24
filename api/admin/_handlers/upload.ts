@@ -1,5 +1,5 @@
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
-import { generateUploadSignature } from "./_lib/cloudinary.js";
+import { extractTokenFromHeader, verifyToken } from "../_lib/auth.js";
+import { generateUploadSignature } from "../_lib/cloudinary.js";
 
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Credentials", "true");

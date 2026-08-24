@@ -1,7 +1,7 @@
-import { kv, isKvConfigured } from "./_lib/kv.js";
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
-import { addChangelogEntry } from "./_lib/changelog.js";
-import { ContactMessage } from "./_lib/initialData.js";
+import { kv, isKvConfigured } from "../_lib/kv.js";
+import { extractTokenFromHeader, verifyToken } from "../_lib/auth.js";
+import { addChangelogEntry } from "../_lib/changelog.js";
+import { ContactMessage } from "../_lib/initialData.js";
 
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Credentials", "true");

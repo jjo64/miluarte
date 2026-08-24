@@ -1,6 +1,6 @@
-import { extractTokenFromHeader, verifyToken } from "./_lib/auth.js";
-import { kv, isKvConfigured } from "./_lib/kv.js";
-import { WORKS_BY_SLUG, RENDERS, getBaseGalleries, translations } from "./_lib/initialData.js";
+import { extractTokenFromHeader, verifyToken } from "../_lib/auth.js";
+import { kv, isKvConfigured } from "../_lib/kv.js";
+import { WORKS_BY_SLUG, RENDERS, getBaseGalleries, translations } from "../_lib/initialData.js";
 
 export interface MediaAsset {
   publicId: string;
