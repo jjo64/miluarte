@@ -144,7 +144,7 @@ export default async function handler(req: any, res: any) {
   try {
     const urlsToHarvest = new Set<string>();
 
-    // A. Galerías y obras
+    // A. Galerías y obras de base de datos y fallback
     const galleries = getBaseGalleries();
     for (const g of galleries) {
       let works: any[] = [];
@@ -154,35 +154,41 @@ export default async function handler(req: any, res: any) {
           if (raw) works = typeof raw === "string" ? JSON.parse(raw) : raw;
         } catch {}
       }
-      if (!works || works.length === 0) {
-        works = WORKS_BY_SLUG[g.slug] || [];
+      if (Array.isArray(works)) {
+        for (const w of works) {
+          if (w.img && typeof w.img === "string") urlsToHarvest.add(w.img);
+        }
       }
-      for (const w of works) {
+    }
+
+    // Incluir todas las obras base de initialData
+    for (const slug of Object.keys(WORKS_BY_SLUG)) {
+      const defaultWorks = WORKS_BY_SLUG[slug] || [];
+      for (const w of defaultWorks) {
         if (w.img && typeof w.img === "string") urlsToHarvest.add(w.img);
       }
     }
 
-    // B. Renders
-    let renders: any[] = [];
+    // B. Renders de base de datos y fallback
+    let dbRenders: any[] = [];
     if (isKvConfigured()) {
       try {
         const raw = await kv.get("miluarte:renders");
-        if (raw) renders = typeof raw === "string" ? JSON.parse(raw) : raw;
+        if (raw) dbRenders = typeof raw === "string" ? JSON.parse(raw) : raw;
       } catch {}
     }
-    if (!renders || renders.length === 0) {
-      renders = RENDERS;
-    }
-    for (const r of renders) {
+    const allRenders = [...(Array.isArray(dbRenders) ? dbRenders : []), ...RENDERS];
+    for (const r of allRenders) {
       if (r.img && typeof r.img === "string") urlsToHarvest.add(r.img);
       if (Array.isArray(r.process)) {
         for (const p of r.process) {
+          if (p.src && typeof p.src === "string") urlsToHarvest.add(p.src);
           if (p.img && typeof p.img === "string") urlsToHarvest.add(p.img);
         }
       }
     }
 
-    // C. Textos (Hero, Slider, Servicios, CV, Sobre Mí)
+    // C. Textos (Hero, Slider, Servicios, CV, Sobre Mí) y Traducciones
     let texts: any = {};
     if (isKvConfigured()) {
       try {
@@ -204,9 +210,40 @@ export default async function handler(req: any, res: any) {
     }
     if (Array.isArray(texts.animasSlides)) {
       for (const s of texts.animasSlides) {
-        if (s.img) urlsToHarvest.add(s.img);
+        if (typeof s === "string") urlsToHarvest.add(s);
+        else if (s?.img) urlsToHarvest.add(s.img);
       }
     }
+
+    // Recursivo sobre traducciones por defecto
+    const findUrlsInObject = (obj: any) => {
+      if (!obj) return;
+      if (typeof obj === "string" && obj.startsWith("http")) {
+        urlsToHarvest.add(obj);
+      } else if (Array.isArray(obj)) {
+        for (const item of obj) findUrlsInObject(item);
+      } else if (typeof obj === "object") {
+        for (const val of Object.values(obj)) findUrlsInObject(val);
+      }
+    };
+    findUrlsInObject(translations);
+
+    // D. Escaneo de archivos locales de backup y base de datos (cms-seed-backup.json, cms-local-db.json)
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const filesToCheck = ["cms-seed-backup.json", "cms-local-db.json"];
+      for (const f of filesToCheck) {
+        const fullPath = path.resolve(process.cwd(), f);
+        if (fs.existsSync(fullPath)) {
+          const content = fs.readFileSync(fullPath, "utf-8");
+          const matches = content.match(/https:\/\/res\.cloudinary\.com\/[^\s"',]+/g);
+          if (matches) {
+            for (const m of matches) urlsToHarvest.add(m);
+          }
+        }
+      }
+    } catch {}
 
     // Convertir URLs recolectadas en assets
     for (const u of urlsToHarvest) {

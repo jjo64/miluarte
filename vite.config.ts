@@ -100,6 +100,10 @@ function localApiDevServer() {
             const { default: handler } = await server.ssrLoadModule('/api/admin/texts.ts');
             return handler(req, res);
           }
+          if (pathname === '/api/admin/media') {
+            const { default: handler } = await server.ssrLoadModule('/api/admin/media.ts');
+            return handler(req, res);
+          }
           if (pathname === '/api/admin/social') {
             const { default: handler } = await server.ssrLoadModule('/api/admin/social.ts');
             return handler(req, res);
