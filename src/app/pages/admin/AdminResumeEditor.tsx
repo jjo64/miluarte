@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { Toast } from "../../components/admin/Toast";
+import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { useUpload } from "../../hooks/useUpload";
 import { translations as defaultTranslations } from "../../locales/translations";
@@ -46,10 +47,11 @@ export function AdminResumeEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [serverSnapshot, setServerSnapshot] = useState<string | null>(null);
 
+  // Modal Biblioteca de Medios
+  const [mediaModalOpen, setMediaModalOpen] = useState(false);
+
   // Foto de perfil del CV
   const [photo, setPhoto] = useState("https://res.cloudinary.com/doznr2qm4/image/upload/v1785683173/image_cv_nara_xb0v9d.png");
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Textos y datos del CV
   const [resumeData, setResumeData] = useState<{
@@ -161,21 +163,9 @@ export function AdminResumeEditor() {
     }
   };
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setUploadingPhoto(true);
-      const res = await uploadImage(file, "miluarte/cv");
-      setPhoto(res.secureUrl);
-      setToast({ message: "Foto de perfil actualizada en el borrador", type: "success", open: true });
-    } catch (err: any) {
-      setToast({ message: err.message || "Error al subir la foto", type: "error", open: true });
-    } finally {
-      setUploadingPhoto(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
+  const handleMediaSelect = (selectedUrl: string) => {
+    setPhoto(selectedUrl);
+    setToast({ message: "Foto de perfil del CV actualizada en el borrador", type: "success", open: true });
   };
 
   const handleSave = async () => {
@@ -350,19 +340,11 @@ export function AdminResumeEditor() {
       subtitle={`Gestiona la experiencia, formación y habilidades de Nerea en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
       actions={headerActions}
     >
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handlePhotoUpload}
-        accept="image/*"
-        className="hidden"
-      />
-
       <div className="max-w-4xl mx-auto flex flex-col gap-8 select-none">
         {/* ── 1. Encabezado y Foto de Perfil ── */}
         <div className="p-6 md:p-8 rounded-2xl bg-brand-dark border border-brand-cream/15 shadow-xl flex flex-col sm:flex-row gap-8 items-start sm:items-center">
           <div
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setMediaModalOpen(true)}
             className="group/photo relative w-28 h-28 rounded-2xl overflow-hidden bg-brand-bg border-2 border-dashed border-brand-cream/20 hover:border-brand-blush cursor-pointer shadow-md shrink-0"
             title="Haz clic para cambiar la foto del CV"
           >
@@ -374,7 +356,7 @@ export function AdminResumeEditor() {
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/photo:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 text-center p-2">
               <Camera className="w-5 h-5 text-brand-blush" />
               <span className="text-[9px] font-sans font-semibold uppercase text-brand-cream">
-                {uploadingPhoto ? "Subiendo..." : "Cambiar Foto"}
+                Biblioteca / Cambiar
               </span>
             </div>
           </div>
@@ -668,6 +650,16 @@ export function AdminResumeEditor() {
           </div>
         </div>
       </div>
+
+      {/* Modal Biblioteca de Medios */}
+      <MediaLibraryModal
+        isOpen={mediaModalOpen}
+        onClose={() => setMediaModalOpen(false)}
+        onSelect={handleMediaSelect}
+        initialSelectedUrl={photo}
+        uploadFolder="miluarte/cv"
+        title="Biblioteca"
+      />
 
       <Toast
         isOpen={toast.open}

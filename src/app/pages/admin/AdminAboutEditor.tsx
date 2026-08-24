@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { Toast } from "../../components/admin/Toast";
+import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { useUpload } from "../../hooks/useUpload";
 import { translations as defaultTranslations } from "../../locales/translations";
@@ -39,13 +40,13 @@ export function AdminAboutEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [serverSnapshot, setServerSnapshot] = useState<string | null>(null);
 
+  // Modal Biblioteca de Medios
+  const [mediaModalOpen, setMediaModalOpen] = useState(false);
+  const [mediaTarget, setMediaTarget] = useState<"photo" | "musae">("photo");
+
   // Imágenes editables
   const [aboutPhoto, setAboutPhoto] = useState(DEFAULT_ABOUT_PHOTO);
   const [musaeImg, setMusaeImg] = useState(DEFAULT_MUSAE_IMG);
-  const [uploadingTarget, setUploadingTarget] = useState<"photo" | "musae" | null>(null);
-  
-  const photoInputRef = useRef<HTMLInputElement>(null);
-  const musaeInputRef = useRef<HTMLInputElement>(null);
 
   // Textos bilingües de Sobre Mí
   const [aboutData, setAboutData] = useState<{
@@ -110,26 +111,13 @@ export function AdminAboutEditor() {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: "photo" | "musae") => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setUploadingTarget(target);
-      const res = await uploadImage(file, "miluarte/about");
-      if (target === "photo") {
-        setAboutPhoto(res.secureUrl);
-        setToast({ message: "Foto de perfil actualizada en el borrador", type: "success", open: true });
-      } else {
-        setMusaeImg(res.secureUrl);
-        setToast({ message: "Imagen de la Serie Musae actualizada", type: "success", open: true });
-      }
-    } catch (err: any) {
-      setToast({ message: err.message || "Error al subir la imagen", type: "error", open: true });
-    } finally {
-      setUploadingTarget(null);
-      if (target === "photo" && photoInputRef.current) photoInputRef.current.value = "";
-      if (target === "musae" && musaeInputRef.current) musaeInputRef.current.value = "";
+  const handleMediaSelect = (selectedUrl: string) => {
+    if (mediaTarget === "photo") {
+      setAboutPhoto(selectedUrl);
+      setToast({ message: "Retrato de Nerea actualizado en el borrador", type: "success", open: true });
+    } else {
+      setMusaeImg(selectedUrl);
+      setToast({ message: "Imagen Serie Musae actualizada en el borrador", type: "success", open: true });
     }
   };
 
@@ -316,21 +304,6 @@ export function AdminAboutEditor() {
       subtitle={`Gestiona los textos, biografía y fotografías de Nerea en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
       actions={headerActions}
     >
-      <input
-        type="file"
-        ref={photoInputRef}
-        onChange={(e) => handleImageUpload(e, "photo")}
-        accept="image/*"
-        className="hidden"
-      />
-      <input
-        type="file"
-        ref={musaeInputRef}
-        onChange={(e) => handleImageUpload(e, "musae")}
-        accept="image/*"
-        className="hidden"
-      />
-
       <div
         className={`w-full mx-auto transition-all duration-300 flex flex-col gap-8 select-none ${
           device === "mobile"
@@ -343,7 +316,10 @@ export function AdminAboutEditor() {
         {/* ── 1. Encabezado y Retrato Principal de Nerea ── */}
         <div className="p-6 md:p-8 rounded-2xl bg-brand-dark border border-brand-cream/15 shadow-xl flex flex-col sm:flex-row gap-8 items-start">
           <div
-            onClick={() => photoInputRef.current?.click()}
+            onClick={() => {
+              setMediaTarget("photo");
+              setMediaModalOpen(true);
+            }}
             className="group/photo relative w-36 h-44 rounded-2xl overflow-hidden bg-brand-bg border-2 border-dashed border-brand-cream/20 hover:border-brand-blush cursor-pointer shadow-md shrink-0 mx-auto sm:mx-0"
             title="Haz clic para cambiar el retrato de Nerea"
           >
@@ -355,7 +331,7 @@ export function AdminAboutEditor() {
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/photo:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 text-center p-2">
               <Camera className="w-5 h-5 text-brand-blush" />
               <span className="text-[9px] font-sans font-semibold uppercase text-brand-cream">
-                {uploadingTarget === "photo" ? "Subiendo..." : "Cambiar Foto"}
+                Biblioteca / Cambiar
               </span>
             </div>
           </div>
@@ -529,7 +505,10 @@ export function AdminAboutEditor() {
                 Imagen Destacada (Serie Musae)
               </label>
               <div
-                onClick={() => musaeInputRef.current?.click()}
+                onClick={() => {
+                  setMediaTarget("musae");
+                  setMediaModalOpen(true);
+                }}
                 className="group/musae relative w-full h-48 rounded-xl overflow-hidden bg-brand-bg border-2 border-dashed border-brand-cream/20 hover:border-brand-blush cursor-pointer shadow-md"
               >
                 <img
@@ -540,7 +519,7 @@ export function AdminAboutEditor() {
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/musae:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 text-center p-2">
                   <Camera className="w-5 h-5 text-brand-blush" />
                   <span className="text-[10px] font-sans font-semibold uppercase text-brand-cream">
-                    {uploadingTarget === "musae" ? "Subiendo..." : "Cambiar Imagen Serie Musae"}
+                    Biblioteca / Cambiar Imagen Serie Musae
                   </span>
                 </div>
               </div>
@@ -672,6 +651,16 @@ export function AdminAboutEditor() {
           </div>
         </div>
       </div>
+
+      {/* Modal Biblioteca de Medios */}
+      <MediaLibraryModal
+        isOpen={mediaModalOpen}
+        onClose={() => setMediaModalOpen(false)}
+        onSelect={handleMediaSelect}
+        initialSelectedUrl={mediaTarget === "photo" ? aboutPhoto : musaeImg}
+        uploadFolder="miluarte/about"
+        title="Biblioteca"
+      />
 
       <Toast
         isOpen={toast.open}

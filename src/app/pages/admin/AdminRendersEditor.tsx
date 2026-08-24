@@ -27,6 +27,7 @@ import { DragSortableList } from "../../components/admin/DragSortableList";
 import { ImageUploader } from "../../components/admin/ImageUploader";
 import { TagEditor } from "../../components/admin/TagEditor";
 import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
+import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
 import { Toast } from "../../components/admin/Toast";
 import { RenderItem, RenderProcessStep } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
@@ -48,6 +49,8 @@ export function AdminRendersEditor() {
   // Modal Crear / Editar
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRender, setEditingRender] = useState<RenderItem | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [stepMediaModalIndex, setStepMediaModalIndex] = useState<number | null>(null);
   const [renderForm, setRenderForm] = useState<Partial<RenderItem>>({
     title: "",
     client: "",
@@ -74,7 +77,6 @@ export function AdminRendersEditor() {
 
   const { request } = useAdminApi();
   const { uploadImage } = useUpload();
-  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
   const fetchRenders = async () => {
@@ -741,17 +743,26 @@ export function AdminRendersEditor() {
                               placeholder="Nombre del paso (ej: Modelado 3D de la estructura)"
                               className="bg-brand-dark px-3 py-1.5 rounded-lg border border-brand-cream/10 text-xs text-brand-cream outline-none focus:border-brand-blush"
                             />
-                            <input
-                              type="url"
-                              value={step.src}
-                              onChange={(e) => {
-                                const next = [...(renderForm.process || [])];
-                                next[idx] = { ...next[idx], src: e.target.value };
-                                setRenderForm({ ...renderForm, process: next });
-                              }}
-                              placeholder="URL de la imagen del paso en Cloudinary"
-                              className="bg-brand-dark px-3 py-1.5 rounded-lg border border-brand-cream/10 text-xs text-brand-cream/70 outline-none focus:border-brand-blush font-mono"
-                            />
+                            <div className="flex gap-2 items-center">
+                              <input
+                                type="url"
+                                value={step.src}
+                                onChange={(e) => {
+                                  const next = [...(renderForm.process || [])];
+                                  next[idx] = { ...next[idx], src: e.target.value };
+                                  setRenderForm({ ...renderForm, process: next });
+                                }}
+                                placeholder="URL de la imagen del paso en Cloudinary"
+                                className="flex-1 bg-brand-dark px-3 py-1.5 rounded-lg border border-brand-cream/10 text-xs text-brand-cream/70 outline-none focus:border-brand-blush font-mono"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setStepMediaModalIndex(idx)}
+                                className="px-2.5 py-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink text-[10.5px] font-sans font-medium shrink-0 cursor-pointer transition-colors"
+                              >
+                                Biblioteca
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -798,6 +809,22 @@ export function AdminRendersEditor() {
         description={`¿Estás segura de que deseas eliminar permanentemente "${deletingRender?.title || "este proyecto"}" del catálogo de renders?`}
         confirmText="Eliminar Proyecto"
         destructive={true}
+      />
+
+      {/* Modal Biblioteca para Pasos de Proceso */}
+      <MediaLibraryModal
+        isOpen={stepMediaModalIndex !== null}
+        onClose={() => setStepMediaModalIndex(null)}
+        onSelect={(selectedUrl) => {
+          if (stepMediaModalIndex !== null) {
+            const next = [...(renderForm.process || [])];
+            next[stepMediaModalIndex] = { ...next[stepMediaModalIndex], src: selectedUrl };
+            setRenderForm({ ...renderForm, process: next });
+            setStepMediaModalIndex(null);
+          }
+        }}
+        uploadFolder="miluarte/renders"
+        title="Biblioteca"
       />
 
       <Toast

@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { UploadCloud, Image as ImageIcon, AlertCircle, RefreshCw } from "lucide-react";
+import { UploadCloud, Image as ImageIcon, AlertCircle, RefreshCw, Images } from "lucide-react";
 import { motion } from "motion/react";
 import { useUpload, UploadResult } from "../../hooks/useUpload";
 import { getOptimizedImageUrl } from "../../utils/cloudinary";
+import { MediaLibraryModal } from "./MediaLibraryModal";
 
 interface ImageUploaderProps {
   currentImageUrl?: string;
@@ -26,6 +27,7 @@ export function ImageUploader({
   const [isDragOver, setIsDragOver] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadImage, uploading, progress, error } = useUpload();
 
@@ -86,16 +88,40 @@ export function ImageUploader({
     }
   };
 
+  const handleMediaSelect = (selectedUrl: string, publicId?: string) => {
+    setPreviewUrl(selectedUrl);
+    if (onUploadSuccess) {
+      onUploadSuccess({
+        secureUrl: selectedUrl,
+        publicId: publicId || selectedUrl,
+        width: 0,
+        height: 0,
+        format: "webp",
+        bytes: 0,
+      });
+    }
+  };
+
   const displayImage = previewUrl || currentImageUrl;
   const activeError = localError || error;
 
   return (
     <div className="flex flex-col gap-2 w-full select-none">
-      {label && (
-        <span className="font-sans text-brand-cream/70 text-[11px] tracking-wider uppercase font-medium">
-          {label}
-        </span>
-      )}
+      <div className="flex items-center justify-between">
+        {label && (
+          <span className="font-sans text-brand-cream/70 text-[11px] tracking-wider uppercase font-medium">
+            {label}
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={() => setIsMediaModalOpen(true)}
+          className="text-brand-blush hover:text-brand-cream text-[10.5px] font-sans font-medium flex items-center gap-1 cursor-pointer bg-transparent border-none p-0 transition-colors"
+        >
+          <Images className="w-3.5 h-3.5" />
+          <span>Elegir de Biblioteca</span>
+        </button>
+      </div>
 
       <div
         onDragOver={(e) => {
@@ -104,7 +130,7 @@ export function ImageUploader({
         }}
         onDragLeave={() => setIsDragOver(false)}
         onDrop={handleDrop}
-        onClick={() => !uploading && fileInputRef.current?.click()}
+        onClick={() => !uploading && setIsMediaModalOpen(true)}
         className={`relative overflow-hidden rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center ${
           compact ? "p-4 min-h-[140px]" : "p-6 min-h-[190px]"
         } ${
@@ -132,7 +158,7 @@ export function ImageUploader({
             />
             <div className="absolute inset-0 bg-black/60 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex flex-col items-center justify-center gap-2 text-white">
               <RefreshCw className="w-5 h-5 text-brand-blush" />
-              <span className="font-sans text-xs font-medium">Click para cambiar imagen</span>
+              <span className="font-sans text-xs font-medium">Click para cambiar o elegir de Biblioteca</span>
             </div>
           </div>
         ) : uploading ? (
@@ -161,7 +187,7 @@ export function ImageUploader({
             </div>
             <div>
               <p className="font-sans text-xs text-brand-cream font-medium">
-                Arrastra una foto aquí o <span className="text-brand-blush underline">explora</span>
+                Arrastra una foto aquí o haz clic para <span className="text-brand-blush underline">abrir la Biblioteca</span>
               </p>
               <p className="font-sans text-[10px] text-brand-cream/50 mt-1">{aspectHint}</p>
             </div>
@@ -175,6 +201,16 @@ export function ImageUploader({
           <span>{activeError}</span>
         </div>
       )}
+
+      {/* Modal Biblioteca de Medios */}
+      <MediaLibraryModal
+        isOpen={isMediaModalOpen}
+        onClose={() => setIsMediaModalOpen(false)}
+        onSelect={handleMediaSelect}
+        initialSelectedUrl={currentImageUrl}
+        uploadFolder={folder}
+        title="Biblioteca"
+      />
     </div>
   );
 }

@@ -36,6 +36,7 @@ import { DragSortableList } from "../../components/admin/DragSortableList";
 import { ImageUploader } from "../../components/admin/ImageUploader";
 import { CardResizer } from "../../components/admin/CardResizer";
 import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
+import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
 import { Toast } from "../../components/admin/Toast";
 import { GalleryMeta, Work } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
@@ -210,13 +211,27 @@ export function AdminGalleryEditor() {
       })
     );
   };
+  const [isSlideMediaModalOpen, setIsSlideMediaModalOpen] = useState(false);
 
-  // Disparar cambio de diapositiva de Ánimas
+  // Disparar selector de diapositiva
   const handleTriggerSlideUpload = (index: number) => {
     setActiveSlideIndex(index);
-    if (slideFileInputRef.current) {
-      slideFileInputRef.current.click();
-    }
+    setIsSlideMediaModalOpen(true);
+  };
+
+  const handleSlideMediaSelect = (selectedUrl: string) => {
+    if (activeSlideIndex === null) return;
+    setAnimasSlides((prev) => {
+      const next = [...prev];
+      if (activeSlideIndex === -1) {
+        next.push(selectedUrl);
+      } else {
+        next[activeSlideIndex] = selectedUrl;
+      }
+      return next;
+    });
+    setToast({ message: "Diapositiva actualizada en la Biblia de Ánimas", type: "success", open: true });
+    setActiveSlideIndex(null);
   };
 
   // Subir nueva diapositiva a Cloudinary
@@ -1102,6 +1117,18 @@ export function AdminGalleryEditor() {
         description={`¿Estás segura de que deseas eliminar permanentemente "${deletingWork?.title || "esta obra"}" de la galería?`}
         confirmText="Eliminar Obra"
         destructive={true}
+      />
+
+      {/* Modal Biblioteca para Diapositivas de Ánimas */}
+      <MediaLibraryModal
+        isOpen={isSlideMediaModalOpen}
+        onClose={() => {
+          setIsSlideMediaModalOpen(false);
+          setActiveSlideIndex(null);
+        }}
+        onSelect={handleSlideMediaSelect}
+        uploadFolder="miluarte/animas-bible"
+        title="Biblioteca"
       />
 
       <Toast

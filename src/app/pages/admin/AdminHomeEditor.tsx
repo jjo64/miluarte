@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { Toast } from "../../components/admin/Toast";
+import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { useUpload } from "../../hooks/useUpload";
 import { translations as defaultTranslations } from "../../locales/translations";
@@ -87,6 +88,8 @@ export function AdminHomeEditor() {
   // Estado de referencia guardado en servidor
   const [serverSnapshot, setServerSnapshot] = useState<string | null>(null);
 
+  // Modal Biblioteca de Medios
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   // Subida de imagen activa
   const [activeImageTarget, setActiveImageTarget] = useState<string | null>(null);
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
@@ -253,66 +256,46 @@ export function AdminHomeEditor() {
     updateDraft(path, currentBullets);
   };
 
-  // Disparar selector de archivo para una imagen específica
+  // Disparar selector de archivo / biblioteca para una imagen específica
   const triggerImageUpload = (target: string) => {
     setActiveImageTarget(target);
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    setIsMediaModalOpen(true);
   };
 
-  // Subir imagen a Cloudinary y asignarla al target correspondiente
-  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !activeImageTarget) return;
+  const handleMediaSelect = (selectedUrl: string) => {
+    if (!activeImageTarget) return;
 
-    try {
-      setUploadingTarget(activeImageTarget);
-      const folder = activeImageTarget.startsWith("gallery_") ? "miluarte/gallery" : "miluarte/home";
-      const res = await uploadImage(file, folder);
-
-      if (activeImageTarget === "hero") {
-        setHeroImage(res.secureUrl);
-        updateDraft("hero.image", res.secureUrl);
-      } else if (activeImageTarget === "featured") {
-        setFeaturedImage(res.secureUrl);
-        updateDraft("featured.image", res.secureUrl);
-      } else if (activeImageTarget === "sketch") {
-        setSketchImg(res.secureUrl);
-        updateDraft("process.sketchImg", res.secureUrl);
-      } else if (activeImageTarget === "final") {
-        setFinalImg(res.secureUrl);
-        updateDraft("process.finalImg", res.secureUrl);
-      } else if (activeImageTarget.startsWith("gallery_")) {
-        const idx = parseInt(activeImageTarget.replace("gallery_", ""), 10);
-        setGalleryImages((prev) => {
-          const next = [...prev];
-          if (next[idx]) {
-            next[idx] = { ...next[idx], src: res.secureUrl };
-          }
-          return next;
-        });
-      } else if (activeImageTarget.startsWith("services_")) {
-        const key = activeImageTarget.replace("services_", "") as keyof typeof servicesImages;
-        setServicesImages((prev) => ({ ...prev, [key]: res.secureUrl }));
-      }
-
-      setToast({
-        message: "¡Imagen subida y actualizada con éxito en la vista previa!",
-        type: "success",
-        open: true,
+    if (activeImageTarget === "hero") {
+      setHeroImage(selectedUrl);
+      updateDraft("hero.image", selectedUrl);
+    } else if (activeImageTarget === "featured") {
+      setFeaturedImage(selectedUrl);
+      updateDraft("featured.image", selectedUrl);
+    } else if (activeImageTarget === "sketch") {
+      setSketchImg(selectedUrl);
+      updateDraft("process.sketchImg", selectedUrl);
+    } else if (activeImageTarget === "final") {
+      setFinalImg(selectedUrl);
+      updateDraft("process.finalImg", selectedUrl);
+    } else if (activeImageTarget.startsWith("gallery_")) {
+      const idx = parseInt(activeImageTarget.replace("gallery_", ""), 10);
+      setGalleryImages((prev) => {
+        const next = [...prev];
+        if (next[idx]) {
+          next[idx] = { ...next[idx], src: selectedUrl };
+        }
+        return next;
       });
-    } catch (err: any) {
-      setToast({
-        message: err.message || "Error al subir la imagen a Cloudinary",
-        type: "error",
-        open: true,
-      });
-    } finally {
-      setUploadingTarget(null);
-      setActiveImageTarget(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+    } else if (activeImageTarget.startsWith("services_")) {
+      const key = activeImageTarget.replace("services_", "") as keyof typeof servicesImages;
+      setServicesImages((prev) => ({ ...prev, [key]: selectedUrl }));
     }
+
+    setToast({
+      message: "¡Imagen actualizada con éxito en la vista previa!",
+      type: "success",
+      open: true,
+    });
   };
 
   const handleSave = async () => {
@@ -487,15 +470,6 @@ export function AdminHomeEditor() {
       subtitle={`Haz clic en cualquier texto o imagen para editar en tiempo real en ${lang === "es" ? "Español 🇪🇸" : "Inglés 🇬🇧"}`}
       actions={headerActions}
     >
-      {/* Input de archivo oculto para selector nativo */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileSelected}
-        accept="image/jpeg,image/png,image/webp,image/avif"
-        className="hidden"
-      />
-
       <div className="w-full flex flex-col items-center select-none">
         {/* Barra superior de guía interactiva */}
         {!cleanPreview && (
@@ -1326,6 +1300,18 @@ export function AdminHomeEditor() {
           </footer>
         </div>
       </div>
+
+      {/* Modal Biblioteca de Medios */}
+      <MediaLibraryModal
+        isOpen={isMediaModalOpen}
+        onClose={() => {
+          setIsMediaModalOpen(false);
+          setActiveImageTarget(null);
+        }}
+        onSelect={handleMediaSelect}
+        uploadFolder={activeImageTarget?.startsWith("gallery_") ? "miluarte/gallery" : "miluarte/home"}
+        title="Biblioteca"
+      />
 
       <Toast
         isOpen={toast.open}
