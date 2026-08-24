@@ -43,42 +43,100 @@ export default async function handler(req: any, res: any) {
 
   const assetsMap = new Map<string, MediaAsset>();
 
-  // 1. Intentar consultar la API Admin de Cloudinary si las credenciales están configuradas
+  // 1. Intentar consultar la API de Cloudinary si las credenciales están configuradas
   if (apiKey && apiSecret) {
     try {
       const authHeader = `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`;
-      const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?max_results=500&prefix=miluarte`;
       
-      const cRes = await fetch(url, {
-        headers: {
-          Authorization: authHeader,
-        },
-      });
+      // A. Consultar Cloudinary Search API (trae todos los recursos de la cuenta ordenados por fecha)
+      try {
+        const searchRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/search`, {
+          method: "POST",
+          headers: {
+            Authorization: authHeader,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            expression: "resource_type:image",
+            max_results: 500,
+            sort_by: [{ created_at: "desc" }],
+          }),
+        });
 
-      if (cRes.ok) {
-        const cData = await cRes.json();
-        if (Array.isArray(cData?.resources)) {
-          for (const item of cData.resources) {
-            const secureUrl = item.secure_url || item.url;
-            if (secureUrl) {
-              const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "miluarte");
-              assetsMap.set(secureUrl, {
-                publicId: item.public_id,
-                url: item.url,
-                secureUrl: item.secure_url,
-                width: item.width,
-                height: item.height,
-                format: item.format,
-                createdAt: item.created_at,
-                folder,
-                source: "cloudinary",
-              });
+        if (searchRes.ok) {
+          const sData = await searchRes.json();
+          if (Array.isArray(sData?.resources)) {
+            for (const item of sData.resources) {
+              const secureUrl = item.secure_url || item.url;
+              if (secureUrl) {
+                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "general");
+                assetsMap.set(secureUrl, {
+                  publicId: item.public_id,
+                  url: item.url,
+                  secureUrl: item.secure_url,
+                  width: item.width,
+                  height: item.height,
+                  format: item.format,
+                  createdAt: item.created_at,
+                  folder,
+                  source: "cloudinary",
+                });
+              }
             }
           }
         }
+      } catch (searchErr) {
+        console.warn("Cloudinary search API error, intentando Admin API:", searchErr);
       }
+
+      // B. Consultar Admin API para todas las imágenes (con paginación para traer todas las carpetas)
+      let nextCursor: string | undefined = undefined;
+      let iterations = 0;
+      do {
+        iterations++;
+        const params = new URLSearchParams({
+          max_results: "500",
+        });
+        if (nextCursor) {
+          params.set("next_cursor", nextCursor);
+        }
+
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?${params.toString()}`;
+        const cRes = await fetch(url, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
+
+        if (cRes.ok) {
+          const cData = await cRes.json();
+          if (Array.isArray(cData?.resources)) {
+            for (const item of cData.resources) {
+              const secureUrl = item.secure_url || item.url;
+              if (secureUrl && !assetsMap.has(secureUrl)) {
+                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "general");
+                assetsMap.set(secureUrl, {
+                  publicId: item.public_id,
+                  url: item.url,
+                  secureUrl: item.secure_url,
+                  width: item.width,
+                  height: item.height,
+                  format: item.format,
+                  createdAt: item.created_at,
+                  folder,
+                  source: "cloudinary",
+                });
+              }
+            }
+          }
+          nextCursor = cData.next_cursor;
+        } else {
+          break;
+        }
+      } while (nextCursor && iterations < 5);
+
     } catch (err) {
-      console.warn("No se pudo consultar la API Admin de Cloudinary, usando base de datos:", err);
+      console.warn("No se pudo consultar la API de Cloudinary, usando base de datos:", err);
     }
   }
 

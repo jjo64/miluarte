@@ -113,10 +113,13 @@ export function MediaLibraryModal({
 
   // Filtrar activos
   const filteredAssets = assets.filter((item) => {
+    const q = searchQuery.toLowerCase().trim();
+    const filename = (item.secureUrl || item.url || "").split("/").pop() || "";
     const matchesSearch =
-      searchQuery === "" ||
-      item.publicId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.folder && item.folder.toLowerCase().includes(searchQuery.toLowerCase()));
+      q === "" ||
+      item.publicId.toLowerCase().includes(q) ||
+      filename.toLowerCase().includes(q) ||
+      (item.folder && item.folder.toLowerCase().includes(q));
 
     const matchesFolder =
       selectedFolder === "all" || (item.folder || "general") === selectedFolder;
