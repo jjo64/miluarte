@@ -54,13 +54,13 @@ export function CollectionsPage() {
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
-            remoteGalleries = data;
+            remoteGalleries = data.filter((g: any) => g.slug !== "ilustracion");
           }
         }
 
         // Si no hay datos de la API, fallback estático
         if (remoteGalleries.length === 0) {
-          remoteGalleries = Object.entries(META).map(([slug, meta], idx) => ({
+          remoteGalleries = Object.entries(META).filter(([slug]) => slug !== "ilustracion").map(([slug, meta], idx) => ({
             slug,
             title: meta.title,
             label: meta.label,
@@ -82,11 +82,14 @@ export function CollectionsPage() {
               const worksRes = await fetch(`/api/admin/works?slug=${g.slug}`);
               if (worksRes.ok) {
                 const worksData = await worksRes.json();
-                if (Array.isArray(worksData)) {
+                if (Array.isArray(worksData) && worksData.length > 0) {
                   count = worksData.length;
-                  if (worksData.length > 0 && worksData[0].img) {
+                  if (worksData[0].img) {
                     cover = worksData[0].img;
                   }
+                } else if (WORKS_BY_SLUG[g.slug]) {
+                  count = WORKS_BY_SLUG[g.slug].length;
+                  cover = WORKS_BY_SLUG[g.slug][0]?.img || cover;
                 }
               }
             } catch {

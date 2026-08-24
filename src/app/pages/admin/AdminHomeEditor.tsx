@@ -38,7 +38,7 @@ type DeviceView = "desktop" | "tablet" | "mobile";
 const DEFAULT_ANIMAS_SKETCH = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/miluarte/archivo/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
 const DEFAULT_ANIMAS_FINAL  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/miluarte/archivo/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
 const DEFAULT_FEATURED_IMG  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/miluarte/renders/Doke_Red_Flag_u1njsw.jpg";
-const DEFAULT_HERO_IMG      = "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/archivo/axtt8y6owprqrjralpyy.jpg";
+const DEFAULT_HERO_IMG      = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/axtt8y6owprqrjralpyy.jpg";
 
 const DEFAULT_STAND_BEFORE = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/miluarte/renders/Captura_de_pantalla_2026-06-18_224728_qvosll.png";
 const DEFAULT_STAND_AFTER  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/miluarte/renders/Doke_Red_Flag_u1njsw.jpg";
