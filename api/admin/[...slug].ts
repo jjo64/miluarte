@@ -25,21 +25,23 @@ const routes: Record<string, (req: any, res: any) => Promise<any> | any> = {
 };
 
 export default async function handler(req: any, res: any) {
-  let slug = req.query?.slug;
-  if (Array.isArray(slug)) {
-    slug = slug[0];
-  } else if (!slug && req.url) {
-    const parts = req.url.split("?")[0].split("/").filter(Boolean);
-    const adminIdx = parts.indexOf("admin");
-    if (adminIdx !== -1 && parts[adminIdx + 1]) {
-      slug = parts[adminIdx + 1];
-    }
+  // Extract route name from req.url (e.g. /api/admin/works?slug=musae -> "works")
+  let endpoint = "";
+  if (req.url) {
+    const pathname = req.url.split("?")[0];
+    const match = pathname.match(/\/api\/admin\/([^\/]+)/);
+    if (match) endpoint = match[1];
   }
 
-  const routeHandler = slug ? routes[slug] : null;
+  if (!endpoint && req.query?.slug) {
+    const s = Array.isArray(req.query.slug) ? req.query.slug[0] : req.query.slug;
+    if (routes[s]) endpoint = s;
+  }
+
+  const routeHandler = routes[endpoint];
   if (routeHandler) {
     return routeHandler(req, res);
   }
 
-  return res.status(404).json({ error: `Ruta de administracion no encontrada: /api/admin/${slug || ""}` });
+  return res.status(404).json({ error: `Ruta no encontrada: ${req.url}` });
 }

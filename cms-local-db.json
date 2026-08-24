@@ -343,7 +343,49 @@
     "aboutPhoto": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/curriculum/z0h8pkxct5vsgvmfscui.jpg",
     "aboutMusaeImg": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg",
     "resumePhoto": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/curriculum/z0h8pkxct5vsgvmfscui.jpg",
-    "heroImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/axtt8y6owprqrjralpyy.jpg"
+    "heroImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/axtt8y6owprqrjralpyy.jpg",
+    "horizontalGallery": [
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/TELL_ME_A_JOKE_mq8n1l.jpg",
+        "category": "ilustracion",
+        "altKey": "obra1"
+      },
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/Paranoia_ieurx1.jpg",
+        "category": "concept",
+        "altKey": "obra2"
+      },
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg",
+        "category": "ilustracion",
+        "altKey": "obra3"
+      },
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
+        "category": "musica",
+        "altKey": "obra4"
+      },
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/1_Melisa_Completo_nwlyro.jpg",
+        "category": "concept",
+        "altKey": "obra5"
+      },
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/2-Retrato-Anna-Karina_cb505e.jpg",
+        "category": "joyeria",
+        "altKey": "obra6"
+      },
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
+        "category": "concept",
+        "altKey": "obra7"
+      },
+      {
+        "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/Cabesa_copia_kak4hg.jpg",
+        "category": "ilustracion",
+        "altKey": "obra8"
+      }
+    ]
   },
   "miluarte:social": {
     "instagram": "https://www.instagram.com/naraneko13/",
