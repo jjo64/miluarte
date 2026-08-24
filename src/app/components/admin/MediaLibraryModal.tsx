@@ -37,22 +37,22 @@ interface MediaLibraryModalProps {
 
 const FOLDER_NAMES: Record<string, { label: string; icon?: string }> = {
   all: { label: "Todas las fotos" },
-  "miluarte/ilustracion": { label: "Ilustración" },
-  "miluarte/concept-art": { label: "Concept Art" },
-  "miluarte/animas": { label: "Serie Ánimas" },
-  "miluarte/animas-bible": { label: "Biblia de Ánimas" },
+  "miluarte/inicio": { label: "Inicio / Portada" },
+  "miluarte/sobre-mi": { label: "Sobre Mí" },
+  "miluarte/curriculum": { label: "Currículum" },
+  "miluarte/galerias/animas": { label: "Galería Ánimas" },
+  "miluarte/galerias/ilustraciones": { label: "Galería Ilustraciones" },
+  "miluarte/galerias/pasta-ya": { label: "Galería Pasta Ya" },
+  "miluarte/galerias/retratos": { label: "Galería Retratos" },
+  "miluarte/galerias/diggin": { label: "Galería Diggin" },
   "miluarte/renders": { label: "Renders 3D" },
-  "miluarte/about": { label: "Sobre Mí" },
-  "miluarte/cv": { label: "Currículum" },
-  "miluarte/home": { label: "Inicio & Hero" },
-  "miluarte/gallery": { label: "Galerías de Arte" },
-  portfolio: { label: "Portafolio General" },
+  "miluarte/archivo": { label: "Archivo / Respaldos" },
   general: { label: "Archivos Generales" },
 };
 
 function formatFolderLabel(folder: string): string {
   if (FOLDER_NAMES[folder]) return FOLDER_NAMES[folder].label;
-  const clean = folder.replace(/^miluarte\//, "");
+  const clean = folder.replace(/^miluarte\/(?:galerias\/)?/, "");
   return clean.charAt(0).toUpperCase() + clean.slice(1);
 }
 

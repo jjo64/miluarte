@@ -658,7 +658,7 @@ export function AdminAboutEditor() {
         onClose={() => setMediaModalOpen(false)}
         onSelect={handleMediaSelect}
         initialSelectedUrl={mediaTarget === "photo" ? aboutPhoto : musaeImg}
-        uploadFolder="miluarte/about"
+        uploadFolder="miluarte/sobre-mi"
         title="Biblioteca"
       />
 

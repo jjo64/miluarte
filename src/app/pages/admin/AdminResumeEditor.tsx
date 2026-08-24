@@ -657,7 +657,7 @@ export function AdminResumeEditor() {
         onClose={() => setMediaModalOpen(false)}
         onSelect={handleMediaSelect}
         initialSelectedUrl={photo}
-        uploadFolder="miluarte/cv"
+        uploadFolder="miluarte/curriculum"
         title="Biblioteca"
       />
 

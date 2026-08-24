@@ -23,7 +23,7 @@ export const translations = {
       sendInquiry: "Escribir encargo",
       aboutNerea: "Sobre mí",
       exploreWorks: "Explorar obras",
-      image: "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg"
+      image: "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/archivo/axtt8y6owprqrjralpyy.jpg"
     },
     gallery: {
       title: "Galería",
@@ -411,7 +411,7 @@ export const translations = {
       sendInquiry: "Send inquiry",
       aboutNerea: "About me",
       exploreWorks: "Explore works",
-      image: "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/ilustracion/axtt8y6owprqrjralpyy.jpg"
+      image: "https://res.cloudinary.com/doznr2qm4/image/upload/v1787504381/miluarte/archivo/axtt8y6owprqrjralpyy.jpg"
     },
     gallery: {
       title: "Gallery",

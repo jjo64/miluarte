@@ -67,9 +67,10 @@ export default async function handler(req: any, res: any) {
           const sData = await searchRes.json();
           if (Array.isArray(sData?.resources)) {
             for (const item of sData.resources) {
+              if (item.public_id?.startsWith("cinevault/")) continue;
               const secureUrl = item.secure_url || item.url;
               if (secureUrl) {
-                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "general");
+                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "miluarte/archivo");
                 assetsMap.set(secureUrl, {
                   publicId: item.public_id,
                   url: item.url,
@@ -112,9 +113,10 @@ export default async function handler(req: any, res: any) {
           const cData = await cRes.json();
           if (Array.isArray(cData?.resources)) {
             for (const item of cData.resources) {
+              if (item.public_id?.startsWith("cinevault/")) continue;
               const secureUrl = item.secure_url || item.url;
               if (secureUrl && !assetsMap.has(secureUrl)) {
-                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "general");
+                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "miluarte/archivo");
                 assetsMap.set(secureUrl, {
                   publicId: item.public_id,
                   url: item.url,

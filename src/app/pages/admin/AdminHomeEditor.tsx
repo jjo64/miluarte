@@ -1309,7 +1309,7 @@ export function AdminHomeEditor() {
           setActiveImageTarget(null);
         }}
         onSelect={handleMediaSelect}
-        uploadFolder={activeImageTarget?.startsWith("gallery_") ? "miluarte/gallery" : "miluarte/home"}
+        uploadFolder="miluarte/inicio"
         title="Biblioteca"
       />
 
