@@ -56,7 +56,7 @@ export default async function handler(req: any, res: any) {
       assetMap[r.public_id] = url;
     }
 
-    const preSnap = await createPreSnapshot("system");
+    const preSnap = await createPreSnapshot();
     let updatedWorksCount = 0;
     let updatedGalleriesCount = 0;
 
@@ -119,12 +119,11 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    await recordChangelog({
-      action: `Sincronización manual con Cloudinary completada (${allResources.length} assets escaneados)`,
-      section: "system",
-      snapshotId: preSnap,
-      canRollback: true,
-    });
+    await recordChangelog(
+      `Sincronización manual con Cloudinary completada (${allResources.length} assets escaneados)`,
+      "system",
+      preSnap
+    );
 
     return res.status(200).json({
       success: true,
