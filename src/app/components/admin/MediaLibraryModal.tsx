@@ -9,6 +9,12 @@ import {
   Folder,
   FolderOpen,
   RefreshCw,
+  Pencil,
+  CornerDownRight,
+  Sparkles,
+  Layers,
+  FileImage,
+  AlertCircle,
 } from "lucide-react";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { useUpload } from "../../hooks/useUpload";
@@ -35,32 +41,46 @@ interface MediaLibraryModalProps {
   title?: string;
 }
 
-const FOLDER_NAMES: Record<string, { label: string; icon?: string }> = {
-  all: { label: "Todas las fotos" },
-  "miluarte/inicio": { label: "Inicio / Portada" },
-  "miluarte/sobre-mi": { label: "Sobre Mí" },
-  "miluarte/curriculum": { label: "Currículum" },
-  "miluarte/musae": { label: "Serie Musae" },
-  "miluarte/diggin": { label: "Galería Diggin" },
-  "miluarte/animas": { label: "Galería Ánimas" },
-  "miluarte/retratos": { label: "Galería Retratos" },
-  "miluarte/pasta-ya": { label: "Galería Pasta Ya" },
-  "miluarte/renders": { label: "Renders 3D" },
-  "miluarte/archivo": { label: "Archivo / Respaldos" },
-  general: { label: "Archivos Generales" },
+const FOLDER_NAMES: Record<string, string> = {
+  all: "Todas las fotos",
+  "miluarte/inicio": "Inicio / Portada",
+  "miluarte/sobre-mi": "Sobre Mí",
+  "miluarte/curriculum": "Currículum",
+  "miluarte/musae": "Serie Musae",
+  "miluarte/diggin": "Galería Diggin",
+  "miluarte/animas": "Serie Ánimas",
+  "miluarte/animas/bocetos": "Ánimas ❯ Bocetos",
+  "miluarte/animas/slides": "Ánimas ❯ Slides",
+  "miluarte/retratos": "Galería Retratos",
+  "miluarte/pasta-ya": "Galería Pasta Ya",
+  "miluarte/renders": "Renders 3D",
+  "miluarte/joyeria": "Joyería & Arcilla",
+  "miluarte/concept-art": "Concept Art",
+  "miluarte/archivo": "Archivo / Respaldos",
+  general: "Archivos Generales",
 };
 
 function formatFolderLabel(folder: string): string {
-  if (FOLDER_NAMES[folder]) return FOLDER_NAMES[folder].label;
+  if (FOLDER_NAMES[folder]) return FOLDER_NAMES[folder];
   if (!folder || folder === "general") return "Archivos Generales";
-  let clean = folder.replace(/^miluarte\/(?:galerias\/)?/i, "").replace(/^miluarte\//i, "");
-  if (!clean) return "Archivos Generales";
-  clean = clean.replace(/[-_/]/g, " ");
-  return clean
-    .split(" ")
-    .filter(Boolean)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(" ");
+  if (folder === "all") return "Todas las fotos";
+
+  const clean = folder.replace(/^miluarte\/(?:galerias\/)?/i, "").replace(/^miluarte\//i, "");
+  if (!clean) return "Miluarte";
+
+  const parts = clean.split("/").filter(Boolean);
+  return parts
+    .map((p) => {
+      const pKey = `miluarte/${p}`;
+      if (FOLDER_NAMES[pKey]) return FOLDER_NAMES[pKey].replace(/^(Galería|Serie)\s+/, "");
+      return p
+        .replace(/[-_]/g, " ")
+        .split(" ")
+        .filter(Boolean)
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(" ");
+    })
+    .join(" ❯ ");
 }
 
 export function MediaLibraryModal({
@@ -81,6 +101,12 @@ export function MediaLibraryModal({
   const [selectedFolder, setSelectedFolder] = useState<string>("all");
   const [selectedAsset, setSelectedAsset] = useState<MediaAsset | null>(null);
 
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [renameInput, setRenameInput] = useState("");
+  const [renameLoading, setRenameLoading] = useState(false);
+  const [renameError, setRenameError] = useState("");
+  const [renameSuccess, setRenameSuccess] = useState(false);
+
   const [isUploading, setIsUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -90,6 +116,16 @@ export function MediaLibraryModal({
       fetchMedia();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (selectedAsset) {
+      const currentName = selectedAsset.publicId.split("/").pop() || "";
+      setRenameInput(currentName);
+      setIsRenaming(false);
+      setRenameError("");
+      setRenameSuccess(false);
+    }
+  }, [selectedAsset]);
 
   const fetchMedia = async () => {
     try {
@@ -134,6 +170,38 @@ export function MediaLibraryModal({
     }
   };
 
+  const handleRename = async () => {
+    if (!selectedAsset || !renameInput.trim()) return;
+    try {
+      setRenameLoading(true);
+      setRenameError("");
+      setRenameSuccess(false);
+
+      const res = await request<{ success: boolean; message?: string; asset: MediaAsset }>("/api/admin/media", {
+        method: "PATCH",
+        body: JSON.stringify({
+          fromPublicId: selectedAsset.publicId,
+          newFilename: renameInput.trim(),
+        }),
+      });
+
+      if (res?.asset) {
+        const updated = res.asset;
+        setAssets((prev) =>
+          prev.map((a) => (a.publicId === selectedAsset.publicId ? { ...a, ...updated } : a))
+        );
+        setSelectedAsset(updated);
+        setIsRenaming(false);
+        setRenameSuccess(true);
+        setTimeout(() => setRenameSuccess(false), 3000);
+      }
+    } catch (err: any) {
+      setRenameError(err.message || "Error al renombrar imagen en Cloudinary");
+    } finally {
+      setRenameLoading(false);
+    }
+  };
+
   const folderCounts = useMemo(() => {
     const counts: Record<string, number> = { all: assets.length };
     for (const a of assets) {
@@ -145,14 +213,14 @@ export function MediaLibraryModal({
 
   const uniqueFolders = useMemo(() => {
     const list = Object.keys(folderCounts).filter((f) => f !== "all");
-    list.sort((a, b) => (folderCounts[b] || 0) - (folderCounts[a] || 0));
+    list.sort((a, b) => a.localeCompare(b));
     return ["all", ...list];
   }, [folderCounts]);
 
   const filteredAssets = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return assets.filter((item) => {
-      const filename = (item.secureUrl || item.url || "").split("/").pop() || "";
+      const filename = item.publicId.split("/").pop() || "";
       const matchesSearch =
         q === "" ||
         item.publicId.toLowerCase().includes(q) ||
@@ -160,7 +228,9 @@ export function MediaLibraryModal({
         (item.folder && item.folder.toLowerCase().includes(q));
 
       const matchesFolder =
-        selectedFolder === "all" || (item.folder || "general") === selectedFolder;
+        selectedFolder === "all" ||
+        (item.folder || "general") === selectedFolder ||
+        (item.folder && item.folder.startsWith(`${selectedFolder}/`));
 
       return matchesSearch && matchesFolder;
     });
@@ -190,11 +260,11 @@ export function MediaLibraryModal({
                   {title}
                 </h2>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-brand-blush/10 text-brand-blush border border-brand-blush/20">
-                  {assets.length} archivos
+                  {assets.length} fotos en Cloudinary
                 </span>
               </div>
               <p className="font-sans text-[11px] text-brand-cream/50">
-                Selecciona cualquier imagen existente del catálogo o sube una nueva
+                Catálogo sincronizado con Cloudinary en tiempo real
               </p>
             </div>
           </div>
@@ -211,7 +281,7 @@ export function MediaLibraryModal({
                 }`}
               >
                 <Images className="w-3.5 h-3.5" />
-                <span>Explorar ({assets.length})</span>
+                <span>Explorar</span>
               </button>
               <button
                 type="button"
@@ -240,7 +310,7 @@ export function MediaLibraryModal({
         {activeTab === "library" ? (
           <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
             
-            <div className="w-full md:w-60 bg-brand-bg/80 border-r border-brand-cream/10 flex flex-col shrink-0 overflow-hidden">
+            <div className="w-full md:w-64 bg-brand-bg/80 border-r border-brand-cream/10 flex flex-col shrink-0 overflow-hidden">
               <div className="p-3.5 border-b border-brand-cream/10 flex items-center justify-between">
                 <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-brand-cream/50 flex items-center gap-1.5">
                   <Folder className="w-3.5 h-3.5 text-brand-blush" />
@@ -250,7 +320,7 @@ export function MediaLibraryModal({
                   onClick={fetchMedia}
                   disabled={loading}
                   className="p-1 text-brand-cream/40 hover:text-brand-cream cursor-pointer rounded hover:bg-brand-cream/5"
-                  title="Recargar archivos"
+                  title="Sincronizar con Cloudinary"
                 >
                   <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin text-brand-blush" : ""}`} />
                 </button>
@@ -261,6 +331,7 @@ export function MediaLibraryModal({
                   const isFolderActive = selectedFolder === f;
                   const count = folderCounts[f] || 0;
                   const label = formatFolderLabel(f);
+                  const isSubfolder = f.replace(/^miluarte\//i, "").includes("/");
 
                   return (
                     <button
@@ -268,13 +339,17 @@ export function MediaLibraryModal({
                       type="button"
                       onClick={() => setSelectedFolder(f)}
                       className={`w-full px-3 py-2 rounded-xl text-left text-xs font-sans transition-all flex items-center justify-between cursor-pointer border ${
+                        isSubfolder ? "pl-5" : ""
+                      } ${
                         isFolderActive
                           ? "bg-brand-blush/15 text-brand-blush border-brand-blush/30 font-semibold shadow-xs"
                           : "text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 border-transparent"
                       }`}
                     >
                       <div className="flex items-center gap-2 truncate">
-                        {isFolderActive ? (
+                        {isSubfolder ? (
+                          <CornerDownRight className="w-3 h-3 text-brand-blush/70 shrink-0" />
+                        ) : isFolderActive ? (
                           <FolderOpen className="w-3.5 h-3.5 text-brand-blush shrink-0" />
                         ) : (
                           <Folder className="w-3.5 h-3.5 text-brand-cream/40 shrink-0" />
@@ -305,13 +380,13 @@ export function MediaLibraryModal({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={`Buscar en ${formatFolderLabel(selectedFolder).toLowerCase()}...`}
+                    placeholder={`Buscar por nombre de obra en ${formatFolderLabel(selectedFolder).toLowerCase()}...`}
                     className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl pl-9 pr-8 py-2 text-xs text-brand-cream focus:border-brand-blush outline-none placeholder:text-brand-cream/30"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-cream/40 hover:text-brand-cream text-xs"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-cream/40 hover:text-brand-cream text-xs cursor-pointer"
                     >
                       ×
                     </button>
@@ -327,7 +402,7 @@ export function MediaLibraryModal({
                 {loading ? (
                   <div className="h-full flex flex-col items-center justify-center gap-3 text-brand-cream/50">
                     <div className="w-7 h-7 border-2 border-brand-blush border-t-transparent rounded-full animate-spin" />
-                    <span className="text-xs font-sans">Cargando biblioteca de imágenes...</span>
+                    <span className="text-xs font-sans">Sincronizando con Cloudinary...</span>
                   </div>
                 ) : filteredAssets.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center gap-3 text-brand-cream/40 p-8 text-center">
@@ -335,7 +410,7 @@ export function MediaLibraryModal({
                     <p className="text-sm font-medium text-brand-cream/70">No se encontraron imágenes</p>
                     <p className="text-xs max-w-xs text-brand-cream/40">
                       {searchQuery
-                        ? "No hay resultados para tu búsqueda. Prueba con otro término."
+                        ? "No hay resultados para tu búsqueda de nombre. Prueba con otro término."
                         : `No hay imágenes en la carpeta "${formatFolderLabel(selectedFolder)}".`}
                     </p>
                     <button
@@ -349,7 +424,7 @@ export function MediaLibraryModal({
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
                     {filteredAssets.map((asset) => {
                       const isSelected = selectedAsset?.secureUrl === asset.secureUrl;
-                      const displayName = asset.publicId.split("/").pop() || asset.publicId;
+                      const rawFilename = asset.publicId.split("/").pop() || asset.publicId;
 
                       return (
                         <div
@@ -360,7 +435,7 @@ export function MediaLibraryModal({
                             onSelect(asset.secureUrl || asset.url, asset.publicId);
                             onClose();
                           }}
-                          className={`group relative rounded-xl overflow-hidden aspect-square border-2 transition-all cursor-pointer bg-brand-bg ${
+                          className={`group relative rounded-xl overflow-hidden aspect-square border-2 transition-all cursor-pointer bg-brand-bg flex flex-col justify-end ${
                             isSelected
                               ? "border-brand-blush ring-2 ring-brand-blush/30 shadow-xl shadow-brand-blush/10 scale-[0.98]"
                               : "border-brand-cream/10 hover:border-brand-cream/30 hover:scale-[1.02]"
@@ -368,7 +443,7 @@ export function MediaLibraryModal({
                         >
                           <img
                             src={getOptimizedImageUrl(asset.secureUrl || asset.url, 280)}
-                            alt={displayName}
+                            alt={rawFilename}
                             onError={(e) => {
                               const target = e.currentTarget;
                               const rawUrl = asset.secureUrl || asset.url;
@@ -376,25 +451,28 @@ export function MediaLibraryModal({
                                 target.src = rawUrl;
                               }
                             }}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             loading="lazy"
                           />
 
                           {isSelected && (
-                            <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-lg">
+                            <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-brand-blush text-brand-ink flex items-center justify-center shadow-lg z-10 animate-scale-in">
                               <Check className="w-3.5 h-3.5 stroke-[3]" />
                             </div>
                           )}
 
                           {asset.folder && (
-                            <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/75 backdrop-blur-xs text-[9px] font-mono text-brand-cream/80 truncate max-w-[85%] border border-white/5">
-                              {formatFolderLabel(asset.folder)}
+                            <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-xs text-[9px] font-mono text-brand-cream/90 truncate max-w-[70%] border border-white/10 z-10">
+                              {asset.folder.split("/").pop()}
                             </span>
                           )}
 
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                            <span className="text-[10px] font-sans font-semibold text-brand-cream bg-black/60 px-2 py-1 rounded-md backdrop-blur-xs">
-                              {isSelected ? "Seleccionada" : "Clic para ver"}
+                          <div className="relative z-10 w-full p-2 bg-gradient-to-t from-black/95 via-black/75 to-transparent flex flex-col">
+                            <span
+                              className="text-[11px] font-sans font-medium text-brand-cream truncate drop-shadow-sm group-hover:text-brand-blush transition-colors"
+                              title={rawFilename}
+                            >
+                              {rawFilename}
                             </span>
                           </div>
                         </div>
@@ -405,7 +483,7 @@ export function MediaLibraryModal({
               </div>
             </div>
 
-            <div className="w-full md:w-72 bg-brand-bg/85 p-5 flex flex-col justify-between shrink-0 overflow-y-auto border-t md:border-t-0 md:border-l border-brand-cream/10">
+            <div className="w-full md:w-80 bg-brand-bg/85 p-5 flex flex-col justify-between shrink-0 overflow-y-auto border-t md:border-t-0 md:border-l border-brand-cream/10">
               {selectedAsset ? (
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between pb-2 border-b border-brand-cream/10">
@@ -417,13 +495,13 @@ export function MediaLibraryModal({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-brand-cream/40 hover:text-brand-cream p-1 rounded hover:bg-brand-cream/5"
-                      title="Abrir imagen original a tamaño completo"
+                      title="Abrir imagen original en Cloudinary"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
 
-                  <div className="rounded-xl overflow-hidden border border-brand-cream/15 aspect-square bg-brand-dark shadow-md">
+                  <div className="rounded-xl overflow-hidden border border-brand-cream/15 aspect-square bg-brand-dark shadow-md relative group">
                     <img
                       src={getOptimizedImageUrl(selectedAsset.secureUrl || selectedAsset.url, 500)}
                       alt=""
@@ -438,29 +516,108 @@ export function MediaLibraryModal({
                     />
                   </div>
 
-                  <div className="flex flex-col gap-2 font-sans text-xs">
-                    <div className="p-2.5 rounded-lg bg-brand-dark/60 border border-brand-cream/10">
-                      <p className="text-[10px] text-brand-cream/40 uppercase mb-0.5 font-mono">Nombre / ID</p>
-                      <p className="text-brand-cream break-all font-mono text-[11px] leading-tight">
-                        {selectedAsset.publicId}
-                      </p>
+                  {renameSuccess && (
+                    <div className="p-2.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+                      <Check className="w-3.5 h-3.5 shrink-0" />
+                      <span>¡Nombre actualizado en Cloudinary!</span>
+                    </div>
+                  )}
+
+                  {renameError && (
+                    <div className="p-2.5 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span className="break-words">{renameError}</span>
+                    </div>
+                  )}
+
+                  <div className="p-3 rounded-xl bg-brand-dark/70 border border-brand-cream/15 flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-brand-cream/50 uppercase font-mono tracking-wider">
+                        Nombre de la obra
+                      </span>
+                      {!isRenaming ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsRenaming(true);
+                            setRenameInput(selectedAsset.publicId.split("/").pop() || "");
+                          }}
+                          className="text-xs font-sans text-brand-blush hover:text-brand-cream flex items-center gap-1 cursor-pointer transition-colors"
+                        >
+                          <Pencil className="w-3 h-3" />
+                          <span>Renombrar</span>
+                        </button>
+                      ) : null}
                     </div>
 
-                    {selectedAsset.folder && (
-                      <div className="flex items-center justify-between text-brand-cream/70 text-[11px] px-1">
-                        <span className="text-brand-cream/40">Carpeta:</span>
-                        <span className="font-mono text-brand-blush">{formatFolderLabel(selectedAsset.folder)}</span>
+                    {isRenaming ? (
+                      <div className="flex flex-col gap-2 mt-1">
+                        <input
+                          type="text"
+                          value={renameInput}
+                          onChange={(e) => setRenameInput(e.target.value)}
+                          placeholder="Nuevo nombre de la obra..."
+                          className="w-full bg-brand-bg border border-brand-blush/60 rounded-lg px-2.5 py-1.5 text-xs text-brand-cream outline-none focus:ring-1 focus:ring-brand-blush font-sans"
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") handleRename();
+                            if (e.key === "Escape") setIsRenaming(false);
+                          }}
+                        />
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setIsRenaming(false)}
+                            disabled={renameLoading}
+                            className="px-2 py-1 rounded text-xs text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5 cursor-pointer"
+                          >
+                            Cancelar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleRename}
+                            disabled={renameLoading || !renameInput.trim()}
+                            className="px-3 py-1 rounded-lg bg-brand-blush text-brand-ink text-xs font-semibold hover:bg-brand-cream transition-colors cursor-pointer flex items-center gap-1 disabled:opacity-50"
+                          >
+                            {renameLoading ? (
+                              <RefreshCw className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <Check className="w-3 h-3" />
+                            )}
+                            <span>Guardar</span>
+                          </button>
+                        </div>
                       </div>
+                    ) : (
+                      <p className="text-brand-cream font-sans font-medium text-xs break-all leading-tight">
+                        {selectedAsset.publicId.split("/").pop()}
+                      </p>
                     )}
 
-                    {selectedAsset.width && selectedAsset.height ? (
-                      <div className="flex items-center justify-between text-brand-cream/70 text-[11px] px-1">
-                        <span className="text-brand-cream/40">Resolución:</span>
-                        <span className="font-mono text-brand-cream">
-                          {selectedAsset.width} × {selectedAsset.height} px
+                    <div className="pt-2 border-t border-brand-cream/10 mt-1 flex flex-col gap-1 text-[11px] text-brand-cream/60">
+                      <div className="flex items-center justify-between">
+                        <span>Ruta Cloudinary:</span>
+                        <span className="font-mono text-[10px] text-brand-cream/80 truncate max-w-[140px]" title={selectedAsset.publicId}>
+                          {selectedAsset.publicId}
                         </span>
                       </div>
-                    ) : null}
+                      {selectedAsset.folder && (
+                        <div className="flex items-center justify-between">
+                          <span>Carpeta:</span>
+                          <span className="font-mono text-brand-blush truncate max-w-[140px]">
+                            {formatFolderLabel(selectedAsset.folder)}
+                          </span>
+                        </div>
+                      )}
+                      {selectedAsset.width && selectedAsset.height && (
+                        <div className="flex items-center justify-between">
+                          <span>Dimensiones:</span>
+                          <span className="font-mono text-brand-cream/80">
+                            {selectedAsset.width} × {selectedAsset.height} px
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -469,7 +626,7 @@ export function MediaLibraryModal({
                     <Images className="w-6 h-6" />
                   </div>
                   <p className="text-xs font-sans max-w-[180px]">
-                    Haz clic en cualquier imagen para previsualizarla y aplicarla
+                    Haz clic en cualquier imagen para previsualizarla, renombrarla en Cloudinary o seleccionarla
                   </p>
                 </div>
               )}
@@ -529,10 +686,10 @@ export function MediaLibraryModal({
 
               <div>
                 <h3 className="font-serif text-xl font-light text-brand-cream mb-1">
-                  {isUploading ? "Subiendo a la biblioteca..." : "Arrastra o haz clic para subir"}
+                  {isUploading ? "Subiendo a Cloudinary..." : "Arrastra o haz clic para subir"}
                 </h3>
                 <p className="font-sans text-xs text-brand-cream/50 max-w-sm">
-                  Soporta JPG, PNG, WebP o AVIF en alta resolución. Se optimizará y quedará guardada en la biblioteca para reutilizarla cuando quieras.
+                  Se subirá directamente a la carpeta <strong className="text-brand-blush">{formatFolderLabel(selectedFolder !== "all" ? selectedFolder : uploadFolder)}</strong> de Cloudinary y estará disponible para reutilizar en cualquier momento.
                 </p>
               </div>
 

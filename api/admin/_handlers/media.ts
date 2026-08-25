@@ -17,7 +17,7 @@ export interface MediaAsset {
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET,PATCH,POST,OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
@@ -25,10 +25,6 @@ export default async function handler(req: any, res: any) {
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
-  }
-
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Método no permitido" });
   }
 
   // Requiere autenticación de administrador
@@ -40,6 +36,121 @@ export default async function handler(req: any, res: any) {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME || "doznr2qm4";
   const apiKey = process.env.CLOUDINARY_API_KEY || "";
   const apiSecret = process.env.CLOUDINARY_API_SECRET || "";
+
+  // ── PATCH / POST: Renombrar imagen directamente en Cloudinary y sincronizar BD ──
+  if (req.method === "PATCH" || (req.method === "POST" && req.url?.includes("rename"))) {
+    if (!apiKey || !apiSecret) {
+      return res.status(400).json({ error: "Credenciales de Cloudinary no configuradas en el servidor" });
+    }
+
+    try {
+      const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
+      const fromPublicId = (body.fromPublicId || body.from_public_id || "").trim();
+      let toPublicId = (body.toPublicId || body.to_public_id || "").trim();
+      const newFilename = (body.newFilename || "").trim();
+
+      // Si nos pasan un nuevo nombre de archivo simple, preservar la carpeta
+      if (!toPublicId && newFilename && fromPublicId) {
+        const folderParts = fromPublicId.split("/");
+        if (folderParts.length > 1) {
+          const folder = folderParts.slice(0, -1).join("/");
+          // Sanitizar nuevo nombre de archivo (letras, números, guiones y guiones bajos)
+          const cleanName = newFilename.replace(/[^a-zA-Z0-9_\-\s]/g, "").replace(/\s+/g, "_");
+          toPublicId = `${folder}/${cleanName}`;
+        } else {
+          toPublicId = newFilename;
+        }
+      }
+
+      if (!fromPublicId || !toPublicId) {
+        return res.status(400).json({ error: "Parámetros 'fromPublicId' y 'toPublicId' requeridos" });
+      }
+
+      if (fromPublicId === toPublicId) {
+        return res.status(200).json({ message: "El nombre no ha cambiado", publicId: toPublicId });
+      }
+
+      // Validar que pertenezca a miluarte
+      if (!fromPublicId.startsWith("miluarte") || !toPublicId.startsWith("miluarte")) {
+        return res.status(403).json({ error: "Solo se permite renombrar archivos dentro de la carpeta 'miluarte'" });
+      }
+
+      const authHeader = `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`;
+      const renameUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/rename`;
+
+      const formData = new URLSearchParams();
+      formData.append("from_public_id", fromPublicId);
+      formData.append("to_public_id", toPublicId);
+      formData.append("overwrite", "true");
+
+      const cRes = await fetch(renameUrl, {
+        method: "POST",
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+      });
+
+      if (!cRes.ok) {
+        const errorData = await cRes.json().catch(() => ({}));
+        return res.status(cRes.status).json({
+          error: "Error de Cloudinary al renombrar: " + (errorData.error?.message || cRes.statusText),
+        });
+      }
+
+      const cData = await cRes.json();
+      const newSecureUrl = cData.secure_url || cData.url;
+
+      // Actualizar referencias en la base de datos KV si está disponible
+      if (isKvConfigured() && newSecureUrl) {
+        try {
+          const galleries = getBaseGalleries();
+          for (const g of galleries) {
+            const raw = await kv.get(`miluarte:gallery:${g.slug}`);
+            const works = typeof raw === "string" ? JSON.parse(raw) : raw;
+            if (Array.isArray(works)) {
+              let updated = false;
+              const newWorks = works.map((w: any) => {
+                if (w.img && (w.img.includes(fromPublicId) || (w.publicId && w.publicId === fromPublicId))) {
+                  updated = true;
+                  return { ...w, img: newSecureUrl, publicId: toPublicId };
+                }
+                return w;
+              });
+              if (updated) {
+                await kv.set(`miluarte:gallery:${g.slug}`, newWorks);
+              }
+            }
+          }
+        } catch (kvErr) {
+          console.warn("No se pudieron actualizar referencias en KV tras renombrar:", kvErr);
+        }
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Imagen renombrada exitosamente en Cloudinary",
+        asset: {
+          publicId: cData.public_id,
+          url: cData.url,
+          secureUrl: cData.secure_url,
+          width: cData.width,
+          height: cData.height,
+          format: cData.format,
+          folder: toPublicId.includes("/") ? toPublicId.split("/").slice(0, -1).join("/") : "miluarte",
+          source: "cloudinary",
+        },
+      });
+    } catch (err: any) {
+      console.error("Error al renombrar imagen:", err);
+      return res.status(500).json({ error: "Error en el servidor al renombrar: " + err.message });
+    }
+  }
+
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Método no permitido" });
+  }
 
   const assetsMap = new Map<string, MediaAsset>();
 
