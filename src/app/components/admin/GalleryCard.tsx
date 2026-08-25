@@ -153,15 +153,13 @@ export function GalleryCard({
                 <Edit3 className="w-4 h-4" />
               </button>
 
-              {!["ilustracion", "diggin", "animas", "retratos", "pasta-ya", "concept-art", "diseno-grafico", "3d-stands"].includes(gallery.slug) && (
-                <button
-                  onClick={onDelete}
-                  title="Eliminar galería"
-                  className="p-2.5 rounded-xl border border-brand-orange/20 text-brand-orange hover:bg-brand-orange/10 transition-colors cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              )}
+              <button
+                onClick={onDelete}
+                title={`Eliminar la galería "${gallery.title}" y sus obras`}
+                className="p-2.5 rounded-xl border border-brand-orange/20 text-brand-orange/70 hover:text-brand-orange hover:bg-brand-orange/10 transition-colors cursor-pointer"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>

@@ -130,22 +130,13 @@ export async function rollbackToSnapshot(snapshotId: string): Promise<boolean> {
 
     if (snapshotGalleries.length === 0) {
       snapshotGalleries = getBaseGalleries();
-    } else {
-      // Asegurar que las galerías base que existan no se pierdan
-      const baseGalleries = getBaseGalleries();
-      const existingSlugs = new Set(snapshotGalleries.map((g: any) => g.slug));
-      for (const bg of baseGalleries) {
-        if (!existingSlugs.has(bg.slug)) {
-          snapshotGalleries.push(bg);
-        }
-      }
     }
 
     const snapshotSlugs = new Set(snapshotGalleries.map((g: any) => g.slug));
 
-    // 3. Borrar solo las claves de galerías creadas después que NO sean galerías base
+    // 3. Borrar las claves de galerías que no existían en el snapshot
     for (const g of currentGalleries) {
-      if (!snapshotSlugs.has(g.slug) && !BASE_GALLERY_SLUGS.has(g.slug)) {
+      if (!snapshotSlugs.has(g.slug)) {
         await kv.del(`miluarte:gallery:${g.slug}`);
       }
     }

@@ -619,9 +619,9 @@ export function AdminGalleries() {
         isOpen={Boolean(deletingGallery)}
         onClose={() => setDeletingGallery(null)}
         onConfirm={handleDeleteGallery}
-        title="¿Eliminar galería?"
-        description={`¿Estás segura de que deseas eliminar permanentemente la galería "${deletingGallery?.title}"? Esta acción no se puede deshacer.`}
-        confirmText="Eliminar Galería"
+        title={`¿Eliminar galería "${deletingGallery?.title}" y todas sus obras?`}
+        description={`Esta acción eliminará de la web la galería "${deletingGallery?.title}" y todas las obras que contiene. Siempre podrás revertir esta acción desde el "Historial de Cambios" si cambias de opinión.`}
+        confirmText="Sí, eliminar galería completa"
         destructive={true}
       />
 

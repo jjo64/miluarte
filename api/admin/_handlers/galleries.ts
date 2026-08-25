@@ -5,21 +5,12 @@ import { GalleryMeta, getBaseGalleries, BASE_GALLERY_SLUGS, WORKS_BY_SLUG } from
 
 // Helper para obtener las galerías actuales
 async function getGalleries(): Promise<GalleryMeta[]> {
-  const baseGalleries = getBaseGalleries();
-
   if (isKvConfigured()) {
     try {
       const raw = await kv.get("miluarte:galleries");
       if (raw) {
         const parsed: GalleryMeta[] = typeof raw === "string" ? JSON.parse(raw) : (raw as any);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Asegurar que las galerías base NUNCA desaparezcan
-          const existingSlugs = new Set(parsed.map((g) => g.slug));
-          for (const bg of baseGalleries) {
-            if (!existingSlugs.has(bg.slug)) {
-              parsed.push(bg);
-            }
-          }
+        if (Array.isArray(parsed)) {
           return parsed.filter((g) => g.slug !== "ilustracion");
         }
       }
@@ -29,7 +20,7 @@ async function getGalleries(): Promise<GalleryMeta[]> {
   }
 
   // Fallback a los datos estáticos si KV aún no tiene datos o está vacío
-  return baseGalleries;
+  return getBaseGalleries();
 }
 
 export default async function handler(req: any, res: any) {
@@ -236,15 +227,12 @@ function normalizeCoverUrl(url: string, slug: string): string {
   }
 
   // 4. DELETE: Eliminar galería y sus obras (solo galerías personalizadas)
+  // 4. DELETE: Eliminar galería y sus obras asociadas
   if (req.method === "DELETE") {
     try {
       const slug = req.query?.slug || req.body?.slug;
       if (!slug) {
         return res.status(400).json({ error: "Slug de galería requerido" });
-      }
-
-      if (BASE_GALLERY_SLUGS.has(slug)) {
-        return res.status(400).json({ error: "Las colecciones originales del portafolio no pueden eliminarse del sistema." });
       }
 
       let galleries = await getGalleries();
@@ -265,7 +253,7 @@ function normalizeCoverUrl(url: string, slug: string): string {
         await kv.del(`miluarte:gallery:${slug}`);
       }
 
-      await recordChangelog(`Eliminó la galería "${target.title}"`, "galleries", preSnapId);
+      await recordChangelog(`Eliminó la galería "${target.title}" y sus obras`, "galleries", preSnapId);
 
       return res.status(200).json({ success: true, deletedSlug: slug });
     } catch (error: any) {
