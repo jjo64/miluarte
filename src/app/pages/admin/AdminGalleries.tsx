@@ -567,8 +567,8 @@ export function AdminGalleries() {
       <MediaLibraryModal
         isOpen={isMediaModalOpen}
         onClose={() => setIsMediaModalOpen(false)}
-        onSelectMedia={(item) => {
-          setFormData((prev) => ({ ...prev, coverImage: item.secure_url }));
+        onSelect={(url) => {
+          setFormData((prev) => ({ ...prev, coverImage: url }));
           setIsMediaModalOpen(false);
         }}
       />

@@ -436,7 +436,7 @@ export function SharedHeader() {
         <div 
           className="mobile-controls-row flex md:hidden items-center justify-between gap-3 px-4 pb-4 pt-1"
           style={{ display: expanded ? undefined : "none" }}
-          inert={!expanded ? "" : undefined}
+          inert={!expanded ? true : undefined}
         >
           <span className="font-sans text-[10px] font-bold tracking-[0.12em] uppercase text-brand-cream/40">
             {language === "es" ? "Preferencias" : "Preferences"}
@@ -457,7 +457,7 @@ export function SharedHeader() {
             display: expanded ? "grid" : "none"
           }}
           aria-hidden={!expanded}
-          inert={!expanded ? "" : undefined}
+          inert={!expanded ? true : undefined}
         >
           {navCards.map((card, idx) => (
             <div

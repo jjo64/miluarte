@@ -43,34 +43,47 @@ export default async function handler(req: any, res: any) {
 
   const assetsMap = new Map<string, MediaAsset>();
 
-  // 1. Intentar consultar la API de Cloudinary si las credenciales están configuradas
+  // 1. Consultar la API de Cloudinary en tiempo real
   if (apiKey && apiSecret) {
     try {
       const authHeader = `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`;
       
-      // A. Consultar Cloudinary Search API (trae todos los recursos de la cuenta ordenados por fecha)
-      try {
+      // A. Consultar Cloudinary Search API (trae todos los recursos actuales de la cuenta ordenados por fecha)
+      let nextCursor: string | undefined = undefined;
+      let iterations = 0;
+      do {
+        iterations++;
+        const requestBody: any = {
+          expression: "resource_type:image",
+          max_results: 500,
+          sort_by: [{ created_at: "desc" }],
+        };
+        if (nextCursor) {
+          requestBody.next_cursor = nextCursor;
+        }
+
         const searchRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/search`, {
           method: "POST",
           headers: {
             Authorization: authHeader,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            expression: "resource_type:image",
-            max_results: 500,
-            sort_by: [{ created_at: "desc" }],
-          }),
+          body: JSON.stringify(requestBody),
         });
 
         if (searchRes.ok) {
           const sData = await searchRes.json();
           if (Array.isArray(sData?.resources)) {
             for (const item of sData.resources) {
-              if (!item.public_id?.startsWith("miluarte/")) continue;
               const secureUrl = item.secure_url || item.url;
               if (secureUrl) {
-                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "miluarte/archivo");
+                const folder =
+                  item.folder ||
+                  item.asset_folder ||
+                  (item.public_id && item.public_id.includes("/")
+                    ? item.public_id.split("/").slice(0, -1).join("/")
+                    : "general");
+
                 assetsMap.set(secureUrl, {
                   publicId: item.public_id,
                   url: item.url,
@@ -85,175 +98,122 @@ export default async function handler(req: any, res: any) {
               }
             }
           }
-        }
-      } catch (searchErr) {
-        console.warn("Cloudinary search API error, intentando Admin API:", searchErr);
-      }
-
-      // B. Consultar Admin API para todas las imágenes (con paginación para traer todas las carpetas)
-      let nextCursor: string | undefined = undefined;
-      let iterations = 0;
-      do {
-        iterations++;
-        const params = new URLSearchParams({
-          max_results: "500",
-        });
-        if (nextCursor) {
-          params.set("next_cursor", nextCursor);
-        }
-
-        const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?${params.toString()}`;
-        const cRes = await fetch(url, {
-          headers: {
-            Authorization: authHeader,
-          },
-        });
-
-        if (cRes.ok) {
-          const cData = await cRes.json();
-          if (Array.isArray(cData?.resources)) {
-            for (const item of cData.resources) {
-              if (!item.public_id?.startsWith("miluarte/")) continue;
-              const secureUrl = item.secure_url || item.url;
-              if (secureUrl && !assetsMap.has(secureUrl)) {
-                const folder = item.folder || (item.public_id.includes("/") ? item.public_id.split("/").slice(0, -1).join("/") : "miluarte/archivo");
-                assetsMap.set(secureUrl, {
-                  publicId: item.public_id,
-                  url: item.url,
-                  secureUrl: item.secure_url,
-                  width: item.width,
-                  height: item.height,
-                  format: item.format,
-                  createdAt: item.created_at,
-                  folder,
-                  source: "cloudinary",
-                });
-              }
-            }
-          }
-          nextCursor = cData.next_cursor;
+          nextCursor = sData.next_cursor;
         } else {
           break;
         }
-      } while (nextCursor && iterations < 5);
+      } while (nextCursor && iterations < 10);
 
+      // B. Si la Search API no devolvió resultados o está indexando, consultar Admin API
+      if (assetsMap.size === 0) {
+        let adminCursor: string | undefined = undefined;
+        let adminIterations = 0;
+        do {
+          adminIterations++;
+          const params = new URLSearchParams({
+            max_results: "500",
+          });
+          if (adminCursor) {
+            params.set("next_cursor", adminCursor);
+          }
+
+          const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?${params.toString()}`;
+          const cRes = await fetch(url, {
+            headers: {
+              Authorization: authHeader,
+            },
+          });
+
+          if (cRes.ok) {
+            const cData = await cRes.json();
+            if (Array.isArray(cData?.resources)) {
+              for (const item of cData.resources) {
+                const secureUrl = item.secure_url || item.url;
+                if (secureUrl && !assetsMap.has(secureUrl)) {
+                  const folder =
+                    item.folder ||
+                    item.asset_folder ||
+                    (item.public_id && item.public_id.includes("/")
+                      ? item.public_id.split("/").slice(0, -1).join("/")
+                      : "general");
+
+                  assetsMap.set(secureUrl, {
+                    publicId: item.public_id,
+                    url: item.url,
+                    secureUrl: item.secure_url,
+                    width: item.width,
+                    height: item.height,
+                    format: item.format,
+                    createdAt: item.created_at,
+                    folder,
+                    source: "cloudinary",
+                  });
+                }
+              }
+            }
+            adminCursor = cData.next_cursor;
+          } else {
+            break;
+          }
+        } while (adminCursor && adminIterations < 10);
+      }
     } catch (err) {
-      console.warn("No se pudo consultar la API de Cloudinary, usando base de datos:", err);
+      console.warn("No se pudo consultar la API de Cloudinary:", err);
     }
   }
 
-  // 2. Extraer todas las imágenes registradas en la base de datos (KV / local / estáticos)
-  try {
-    const urlsToHarvest = new Set<string>();
+  // 2. Solo si Cloudinary no devolvió nada (ej. entorno local sin credenciales API), usar datos de KV
+  if (assetsMap.size === 0 && isKvConfigured()) {
+    try {
+      const urlsToHarvest = new Set<string>();
 
-    // A. Galerías y obras de base de datos y fallback
-    const galleries = getBaseGalleries();
-    for (const g of galleries) {
-      let works: any[] = [];
-      if (isKvConfigured()) {
+      // Galerías activas en base de datos KV
+      const galleries = getBaseGalleries();
+      for (const g of galleries) {
         try {
           const raw = await kv.get(`miluarte:gallery:${g.slug}`);
-          if (raw) works = typeof raw === "string" ? JSON.parse(raw) : raw;
+          const works = typeof raw === "string" ? JSON.parse(raw) : raw;
+          if (Array.isArray(works)) {
+            for (const w of works) {
+              if (w.img && typeof w.img === "string") urlsToHarvest.add(w.img);
+            }
+          }
         } catch {}
       }
-      if (Array.isArray(works)) {
-        for (const w of works) {
-          if (w.img && typeof w.img === "string") urlsToHarvest.add(w.img);
-        }
-      }
-    }
 
-    // Incluir todas las obras base de initialData
-    for (const slug of Object.keys(WORKS_BY_SLUG)) {
-      const defaultWorks = WORKS_BY_SLUG[slug] || [];
-      for (const w of defaultWorks) {
-        if (w.img && typeof w.img === "string") urlsToHarvest.add(w.img);
-      }
-    }
-
-    // B. Renders de base de datos y fallback
-    let dbRenders: any[] = [];
-    if (isKvConfigured()) {
+      // Renders en KV
       try {
         const raw = await kv.get("miluarte:renders");
-        if (raw) dbRenders = typeof raw === "string" ? JSON.parse(raw) : raw;
-      } catch {}
-    }
-    const allRenders = [...(Array.isArray(dbRenders) ? dbRenders : []), ...RENDERS];
-    for (const r of allRenders) {
-      if (r.img && typeof r.img === "string") urlsToHarvest.add(r.img);
-      if (Array.isArray(r.process)) {
-        for (const p of r.process) {
-          if (p.src && typeof p.src === "string") urlsToHarvest.add(p.src);
-          if (p.img && typeof p.img === "string") urlsToHarvest.add(p.img);
-        }
-      }
-    }
-
-    // C. Textos (Hero, Slider, Servicios, CV, Sobre Mí) y Traducciones
-    let texts: any = {};
-    if (isKvConfigured()) {
-      try {
-        const raw = await kv.get("miluarte:texts");
-        if (raw) texts = typeof raw === "string" ? JSON.parse(raw) : raw;
-      } catch {}
-    }
-    if (texts.resumePhoto) urlsToHarvest.add(texts.resumePhoto);
-    if (texts.aboutPhoto) urlsToHarvest.add(texts.aboutPhoto);
-    if (texts.aboutMusaeImg) urlsToHarvest.add(texts.aboutMusaeImg);
-    if (texts.heroImage) urlsToHarvest.add(texts.heroImage);
-    if (texts.featuredImage) urlsToHarvest.add(texts.featuredImage);
-    if (texts.sketchImg) urlsToHarvest.add(texts.sketchImg);
-    if (texts.finalImg) urlsToHarvest.add(texts.finalImg);
-    if (texts.servicesImages && typeof texts.servicesImages === "object") {
-      for (const imgUrl of Object.values(texts.servicesImages)) {
-        if (typeof imgUrl === "string") urlsToHarvest.add(imgUrl);
-      }
-    }
-    if (Array.isArray(texts.animasSlides)) {
-      for (const s of texts.animasSlides) {
-        if (typeof s === "string") urlsToHarvest.add(s);
-        else if (s?.img) urlsToHarvest.add(s.img);
-      }
-    }
-
-    // Recursivo sobre traducciones por defecto
-    const findUrlsInObject = (obj: any) => {
-      if (!obj) return;
-      if (typeof obj === "string" && obj.startsWith("http")) {
-        urlsToHarvest.add(obj);
-      } else if (Array.isArray(obj)) {
-        for (const item of obj) findUrlsInObject(item);
-      } else if (typeof obj === "object") {
-        for (const val of Object.values(obj)) findUrlsInObject(val);
-      }
-    };
-    findUrlsInObject(translations);
-
-    // D. Escaneo de archivos locales de backup y base de datos (cms-seed-backup.json, cms-local-db.json)
-    try {
-      const fs = await import("fs");
-      const path = await import("path");
-      const filesToCheck = ["cms-seed-backup.json", "cms-local-db.json"];
-      for (const f of filesToCheck) {
-        const fullPath = path.resolve(process.cwd(), f);
-        if (fs.existsSync(fullPath)) {
-          const content = fs.readFileSync(fullPath, "utf-8");
-          const matches = content.match(/https:\/\/res\.cloudinary\.com\/[^\s"',]+/g);
-          if (matches) {
-            for (const m of matches) urlsToHarvest.add(m);
+        const dbRenders = typeof raw === "string" ? JSON.parse(raw) : raw;
+        if (Array.isArray(dbRenders)) {
+          for (const r of dbRenders) {
+            if (r.img && typeof r.img === "string") urlsToHarvest.add(r.img);
+            if (Array.isArray(r.process)) {
+              for (const p of r.process) {
+                if (p.src && typeof p.src === "string") urlsToHarvest.add(p.src);
+              }
+            }
           }
         }
-      }
-    } catch {}
+      } catch {}
 
-    // Convertir URLs recolectadas en assets
-    for (const u of urlsToHarvest) {
-      if (!u || !u.startsWith("http")) continue;
-      if (!assetsMap.has(u)) {
-        // Extraer publicId aproximado de la URL de Cloudinary
+      // Textos en KV
+      try {
+        const raw = await kv.get("miluarte:texts");
+        const texts = typeof raw === "string" ? JSON.parse(raw) : raw;
+        if (texts?.resumePhoto) urlsToHarvest.add(texts.resumePhoto);
+        if (texts?.aboutPhoto) urlsToHarvest.add(texts.aboutPhoto);
+        if (texts?.aboutMusaeImg) urlsToHarvest.add(texts.aboutMusaeImg);
+        if (texts?.heroImage) urlsToHarvest.add(texts.heroImage);
+        if (texts?.featuredImage) urlsToHarvest.add(texts.featuredImage);
+        if (texts?.sketchImg) urlsToHarvest.add(texts.sketchImg);
+        if (texts?.finalImg) urlsToHarvest.add(texts.finalImg);
+      } catch {}
+
+      for (const u of urlsToHarvest) {
+        if (!u || !u.startsWith("http")) continue;
         let publicId = u;
-        let folder = "portfolio";
+        let folder = "general";
         if (u.includes("/image/upload/")) {
           const parts = u.split("/image/upload/");
           if (parts[1]) {
@@ -273,13 +233,13 @@ export default async function handler(req: any, res: any) {
           source: "database",
         });
       }
+    } catch (e) {
+      console.warn("Error en fallback de base de datos:", e);
     }
-  } catch (e) {
-    console.warn("Error al procesar imágenes de base de datos:", e);
   }
 
   const assetsList = Array.from(assetsMap.values());
-  // Ordenar: primero las de cloudinary más recientes o por orden alfabético
+  // Ordenar por fecha de creación (más recientes primero) o por nombre
   assetsList.sort((a, b) => {
     if (a.createdAt && b.createdAt) {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

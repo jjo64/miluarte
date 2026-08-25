@@ -52,8 +52,15 @@ const FOLDER_NAMES: Record<string, { label: string; icon?: string }> = {
 
 function formatFolderLabel(folder: string): string {
   if (FOLDER_NAMES[folder]) return FOLDER_NAMES[folder].label;
-  const clean = folder.replace(/^miluarte\/(?:galerias\/)?/, "");
-  return clean.charAt(0).toUpperCase() + clean.slice(1);
+  if (!folder || folder === "general") return "Archivos Generales";
+  let clean = folder.replace(/^miluarte\/(?:galerias\/)?/i, "").replace(/^miluarte\//i, "");
+  if (!clean) return "Archivos Generales";
+  clean = clean.replace(/[-_/]/g, " ");
+  return clean
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
 }
 
 export function MediaLibraryModal({
@@ -107,12 +114,13 @@ export function MediaLibraryModal({
   const handleFileUpload = async (file: File) => {
     try {
       setIsUploading(true);
-      const res = await uploadImage(file, uploadFolder);
+      const destFolder = selectedFolder !== "all" && selectedFolder !== "general" ? selectedFolder : uploadFolder;
+      const res = await uploadImage(file, destFolder);
       const newAsset: MediaAsset = {
         publicId: res.publicId,
         url: res.secureUrl,
         secureUrl: res.secureUrl,
-        folder: uploadFolder,
+        folder: destFolder,
         source: "cloudinary",
       };
       setAssets((prev) => [newAsset, ...prev]);
@@ -361,6 +369,13 @@ export function MediaLibraryModal({
                           <img
                             src={getOptimizedImageUrl(asset.secureUrl || asset.url, 280)}
                             alt={displayName}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              const rawUrl = asset.secureUrl || asset.url;
+                              if (target.src !== rawUrl) {
+                                target.src = rawUrl;
+                              }
+                            }}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             loading="lazy"
                           />
@@ -412,6 +427,13 @@ export function MediaLibraryModal({
                     <img
                       src={getOptimizedImageUrl(selectedAsset.secureUrl || selectedAsset.url, 500)}
                       alt=""
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        const rawUrl = selectedAsset.secureUrl || selectedAsset.url;
+                        if (target.src !== rawUrl) {
+                          target.src = rawUrl;
+                        }
+                      }}
                       className="w-full h-full object-cover"
                     />
                   </div>
