@@ -241,7 +241,7 @@ export function AdminGalleryEditor() {
 
     try {
       setToast({ message: "Subiendo diapositiva a Cloudinary...", type: "success", open: true });
-      const res = await uploadImage(file, "miluarte/galerias/animas");
+      const res = await uploadImage(file, "miluarte/animas");
       setAnimasSlides((prev) => {
         const next = [...prev];
         if (activeSlideIndex === -1) {
@@ -353,7 +353,7 @@ export function AdminGalleryEditor() {
       let finalPublicId = workForm.publicId;
 
       if (pendingFile) {
-        const uploadRes = await uploadImage(pendingFile, `miluarte/galerias/${slug || "general"}`);
+        const uploadRes = await uploadImage(pendingFile, `miluarte/${slug || "general"}`);
         finalImg = uploadRes.secureUrl;
         finalPublicId = uploadRes.publicId;
       }
@@ -951,7 +951,7 @@ export function AdminGalleryEditor() {
                   <form id="work-form" onSubmit={handleSaveWork} className="flex flex-col gap-4">
                     {/* Subida de Imagen */}
                     <ImageUploader
-                      folder={`miluarte/galerias/${slug || "general"}`}
+                      folder={`miluarte/${slug || "general"}`}
                       currentImageUrl={workForm.img}
                       onUploadSuccess={(res) => {
                         setWorkForm((prev) => ({
@@ -1127,7 +1127,7 @@ export function AdminGalleryEditor() {
           setActiveSlideIndex(null);
         }}
         onSelect={handleSlideMediaSelect}
-        uploadFolder="miluarte/galerias/animas"
+        uploadFolder="miluarte/animas"
         title="Biblioteca"
       />
 
