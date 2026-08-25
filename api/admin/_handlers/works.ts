@@ -4,25 +4,61 @@ import { createPreSnapshot, recordChangelog } from "../_lib/changelog.js";
 import { Work, WORKS_BY_SLUG } from "../_lib/initialData.js";
 import { nanoid } from "nanoid";
 
-// Helper para obtener las obras actuales de una galería
+const SLUG_TO_FOLDER: Record<string, string> = {
+  musae: "miluarte/musae",
+  diggin: "miluarte/diggin",
+  animas: "miluarte/animas",
+  retratos: "miluarte/retratos",
+  "pasta-ya": "miluarte/pasta-ya",
+  "3d-stands": "miluarte/renders",
+  "concept-art": "miluarte/renders",
+  "diseno-grafico": "miluarte/musae",
+};
+
+function normalizeWorkImageUrl(url: string, slug: string): string {
+  if (!url || !url.includes("res.cloudinary.com")) return url;
+  const targetFolder = SLUG_TO_FOLDER[slug] || `miluarte/${slug}`;
+
+  // Si ya tiene la carpeta exacta, no tocar
+  if (url.includes(`/${targetFolder}/`)) return url;
+
+  // Extraer nombre de archivo
+  const match = url.match(/([a-zA-Z0-9_\-%]+\.[a-zA-Z0-9]+)$/i);
+  if (match) {
+    const filename = match[1];
+    return `https://res.cloudinary.com/doznr2qm4/image/upload/${targetFolder}/${filename}`;
+  }
+  return url;
+}
+
+// Helper para obtener las obras actuales de una galería con resolver inteligente
 async function getWorksForGallery(slug: string): Promise<Work[]> {
   const activeSlug = slug === "ilustracion" ? "musae" : slug;
+  let rawWorks: Work[] = [];
+
   if (isKvConfigured()) {
     try {
       const raw = await kv.get(`miluarte:gallery:${activeSlug}`);
       if (raw) {
-        return typeof raw === "string" ? JSON.parse(raw) : (raw as any);
+        rawWorks = typeof raw === "string" ? JSON.parse(raw) : (raw as any);
       }
     } catch (e) {
       console.warn(`KV get works for ${slug} error, using fallback:`, e);
     }
   }
 
-  // Fallback estático
-  const staticWorks = WORKS_BY_SLUG[activeSlug] || [];
-  return staticWorks.map((w, index) => ({
+  if (!rawWorks || rawWorks.length === 0) {
+    const staticWorks = WORKS_BY_SLUG[activeSlug] || [];
+    rawWorks = staticWorks.map((w, index) => ({
+      ...w,
+      order: index,
+    }));
+  }
+
+  return rawWorks.map((w, index) => ({
     ...w,
-    order: index,
+    order: typeof w.order === "number" ? w.order : index,
+    img: normalizeWorkImageUrl(w.img, activeSlug),
   }));
 }
 

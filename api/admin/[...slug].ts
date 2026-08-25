@@ -9,6 +9,7 @@ import socialHandler from "./_handlers/social.js";
 import textsHandler from "./_handlers/texts.js";
 import uploadHandler from "./_handlers/upload.js";
 import worksHandler from "./_handlers/works.js";
+import syncCloudinaryHandler from "./_handlers/sync-cloudinary.js";
 
 const routes: Record<string, (req: any, res: any) => Promise<any> | any> = {
   auth: authHandler,
@@ -22,6 +23,7 @@ const routes: Record<string, (req: any, res: any) => Promise<any> | any> = {
   texts: textsHandler,
   upload: uploadHandler,
   works: worksHandler,
+  "sync-cloudinary": syncCloudinaryHandler,
 };
 
 export default async function handler(req: any, res: any) {

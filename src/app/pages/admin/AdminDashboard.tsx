@@ -15,6 +15,7 @@ import {
   TrendingUp,
   Sliders,
   Eye,
+  RefreshCw,
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { useAdminApi } from "../../hooks/useAdminApi";
@@ -24,6 +25,8 @@ export function AdminDashboard() {
   const { request } = useAdminApi();
   const navigate = useNavigate();
   const [exporting, setExporting] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<string | null>(null);
   const [stats, setStats] = useState({
     galleriesCount: 8,
     worksCount: 87,
@@ -31,32 +34,47 @@ export function AdminDashboard() {
     lastUpdate: "Hoy",
   });
 
-  useEffect(() => {
-    async function loadDashboardStats() {
-      try {
-        const [galleries, contact, booking] = await Promise.all([
-          request<any[]>("/api/admin/galleries").catch(() => []),
-          request<any[]>("/api/admin/messages?type=contact").catch(() => []),
-          request<any[]>("/api/admin/messages?type=booking").catch(() => []),
-        ]);
+  const loadDashboardStats = async () => {
+    try {
+      const [galleries, contact, booking] = await Promise.all([
+        request<any[]>("/api/admin/galleries").catch(() => []),
+        request<any[]>("/api/admin/messages?type=contact").catch(() => []),
+        request<any[]>("/api/admin/messages?type=booking").catch(() => []),
+      ]);
 
-        const gList = Array.isArray(galleries) ? galleries : [];
-        const cList = Array.isArray(contact) ? contact : [];
-        const bList = Array.isArray(booking) ? booking : [];
-        const unreadCount = [...cList, ...bList].filter((m: any) => !m.read).length;
+      const gList = Array.isArray(galleries) ? galleries : [];
+      const cList = Array.isArray(contact) ? contact : [];
+      const bList = Array.isArray(booking) ? booking : [];
+      const unreadCount = [...cList, ...bList].filter((m: any) => !m.read).length;
 
-        setStats({
-          galleriesCount: gList.length || 8,
-          worksCount: 87,
-          newMessagesCount: unreadCount,
-          lastUpdate: "Hoy",
-        });
-      } catch (e) {
-        // Fallback stats
-      }
+      setStats({
+        galleriesCount: gList.length || 8,
+        worksCount: 87,
+        newMessagesCount: unreadCount,
+        lastUpdate: "Hoy",
+      });
+    } catch (e) {
+      // Fallback stats
     }
+  };
+
+  const handleSyncCloudinary = async () => {
+    try {
+      setIsSyncing(true);
+      const res = await request<any>("/api/admin/sync-cloudinary", { method: "POST" });
+      setSyncStatus(res.message || "¡Sincronizado!");
+      setTimeout(() => setSyncStatus(null), 4000);
+      loadDashboardStats();
+    } catch (err: any) {
+      alert("Error al sincronizar con Cloudinary: " + (err.message || "Fallo de red"));
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  useEffect(() => {
     loadDashboardStats();
-  }, [request]);
+  }, []);
 
   const handleExportBackup = async () => {
     setExporting(true);
@@ -89,7 +107,17 @@ export function AdminDashboard() {
   };
 
   const headerActions = (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-2.5 flex-wrap justify-end">
+      <button
+        onClick={handleSyncCloudinary}
+        disabled={isSyncing}
+        className="px-3.5 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/80 hover:text-brand-cream hover:bg-brand-cream/5 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+        title="Sincronizar todas las obras y portadas con Cloudinary"
+      >
+        <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-brand-blush" : ""}`} />
+        <span>{isSyncing ? "Sincronizando..." : syncStatus || "Sincronizar Cloudinary"}</span>
+      </button>
+
       <button
         onClick={() => navigate("/admin/inicio")}
         className="px-3.5 py-1.5 rounded-xl bg-brand-blush/15 hover:bg-brand-blush text-brand-blush hover:text-brand-ink border border-brand-blush/30 text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-xs"

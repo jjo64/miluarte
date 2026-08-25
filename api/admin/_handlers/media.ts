@@ -48,13 +48,13 @@ export default async function handler(req: any, res: any) {
     try {
       const authHeader = `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`;
       
-      // A. Consultar Cloudinary Search API (trae todos los recursos actuales de la cuenta ordenados por fecha)
+      // A. Consultar Cloudinary Search API filtrando estrictamente por la carpeta 'miluarte'
       let nextCursor: string | undefined = undefined;
       let iterations = 0;
       do {
         iterations++;
         const requestBody: any = {
-          expression: "resource_type:image",
+          expression: "resource_type:image AND (folder:miluarte* OR public_id:miluarte*)",
           max_results: 500,
           sort_by: [{ created_at: "desc" }],
         };
@@ -75,6 +75,13 @@ export default async function handler(req: any, res: any) {
           const sData = await searchRes.json();
           if (Array.isArray(sData?.resources)) {
             for (const item of sData.resources) {
+              const publicId = (item.public_id || "").toLowerCase();
+              const itemFolder = (item.folder || item.asset_folder || "").toLowerCase();
+              
+              // Excluir estrictamente otros proyectos
+              if (publicId.startsWith("cinevault") || itemFolder.startsWith("cinevault")) continue;
+              if (!publicId.startsWith("miluarte") && !itemFolder.startsWith("miluarte")) continue;
+
               const secureUrl = item.secure_url || item.url;
               if (secureUrl) {
                 const folder =
@@ -82,7 +89,7 @@ export default async function handler(req: any, res: any) {
                   item.asset_folder ||
                   (item.public_id && item.public_id.includes("/")
                     ? item.public_id.split("/").slice(0, -1).join("/")
-                    : "general");
+                    : "miluarte");
 
                 assetsMap.set(secureUrl, {
                   publicId: item.public_id,
@@ -112,6 +119,7 @@ export default async function handler(req: any, res: any) {
           adminIterations++;
           const params = new URLSearchParams({
             max_results: "500",
+            prefix: "miluarte/",
           });
           if (adminCursor) {
             params.set("next_cursor", adminCursor);
@@ -128,6 +136,13 @@ export default async function handler(req: any, res: any) {
             const cData = await cRes.json();
             if (Array.isArray(cData?.resources)) {
               for (const item of cData.resources) {
+                const publicId = (item.public_id || "").toLowerCase();
+                const itemFolder = (item.folder || item.asset_folder || "").toLowerCase();
+                
+                // Excluir estrictamente otros proyectos
+                if (publicId.startsWith("cinevault") || itemFolder.startsWith("cinevault")) continue;
+                if (!publicId.startsWith("miluarte") && !itemFolder.startsWith("miluarte")) continue;
+
                 const secureUrl = item.secure_url || item.url;
                 if (secureUrl && !assetsMap.has(secureUrl)) {
                   const folder =
@@ -135,7 +150,7 @@ export default async function handler(req: any, res: any) {
                     item.asset_folder ||
                     (item.public_id && item.public_id.includes("/")
                       ? item.public_id.split("/").slice(0, -1).join("/")
-                      : "general");
+                      : "miluarte");
 
                   assetsMap.set(secureUrl, {
                     publicId: item.public_id,

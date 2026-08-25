@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Plus, ArrowUpDown, Check, X, Sparkles, Globe } from "lucide-react";
+import { Plus, ArrowUpDown, Check, X, Sparkles, Globe, RefreshCw } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { GalleryCard } from "../../components/admin/GalleryCard";
 import { DragSortableList } from "../../components/admin/DragSortableList";
@@ -40,6 +40,7 @@ export function AdminGalleries() {
   // Modal Borrar
   const [deletingGallery, setDeletingGallery] = useState<GalleryMeta | null>(null);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Toast
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
@@ -50,6 +51,27 @@ export function AdminGalleries() {
 
   const { request } = useAdminApi();
   const navigate = useNavigate();
+
+  const handleSyncCloudinary = async () => {
+    try {
+      setIsSyncing(true);
+      const res = await request<any>("/api/admin/sync-cloudinary", { method: "POST" });
+      setToast({
+        message: res.message || "Sincronización con Cloudinary completada exitosamente.",
+        type: "success",
+        open: true,
+      });
+      fetchGalleries();
+    } catch (err: any) {
+      setToast({
+        message: "Error al sincronizar con Cloudinary: " + (err.message || "Fallo de conexión"),
+        type: "error",
+        open: true,
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const fetchGalleries = async () => {
     try {
@@ -260,6 +282,16 @@ export function AdminGalleries() {
           <span>English</span>
         </button>
       </div>
+
+      <button
+        onClick={handleSyncCloudinary}
+        disabled={isSyncing}
+        className="px-3.5 py-1.5 rounded-xl border border-brand-cream/15 text-brand-cream/80 hover:text-brand-cream hover:bg-brand-cream/5 text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+        title="Escanear Cloudinary y sincronizar automáticamente portadas y obras en la base de datos"
+      >
+        <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-brand-blush" : ""}`} />
+        <span>{isSyncing ? "Sincronizando..." : "Sincronizar Cloudinary"}</span>
+      </button>
 
       <button
         onClick={() => setIsReordering(!isReordering)}

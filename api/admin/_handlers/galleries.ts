@@ -51,6 +51,28 @@ export default async function handler(req: any, res: any) {
       const galleries = await getGalleries();
       galleries.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
+const SLUG_TO_FOLDER: Record<string, string> = {
+  musae: "miluarte/musae",
+  diggin: "miluarte/diggin",
+  animas: "miluarte/animas",
+  retratos: "miluarte/retratos",
+  "pasta-ya": "miluarte/pasta-ya",
+  "3d-stands": "miluarte/renders",
+  "concept-art": "miluarte/renders",
+  "diseno-grafico": "miluarte/musae",
+};
+
+function normalizeCoverUrl(url: string, slug: string): string {
+  if (!url || !url.includes("res.cloudinary.com")) return url;
+  const targetFolder = SLUG_TO_FOLDER[slug] || `miluarte/${slug}`;
+  if (url.includes(`/${targetFolder}/`)) return url;
+  const match = url.match(/([a-zA-Z0-9_\-%]+\.[a-zA-Z0-9]+)$/i);
+  if (match) {
+    return `https://res.cloudinary.com/doznr2qm4/image/upload/${targetFolder}/${match[1]}`;
+  }
+  return url;
+}
+
             const enriched = await Promise.all(
         galleries.map(async (g) => {
           let count = (WORKS_BY_SLUG[g.slug] || []).length;
@@ -73,7 +95,7 @@ export default async function handler(req: any, res: any) {
           return {
             ...g,
             worksCount: count,
-            coverImage: cover,
+            coverImage: normalizeCoverUrl(cover, g.slug),
           };
         })
       );
