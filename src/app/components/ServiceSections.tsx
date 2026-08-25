@@ -6,13 +6,13 @@ import { useLanguage } from "../context/LanguageContext";
 import { BeforeAfterSlider } from "./BeforeAfterSlider";
 import { getOptimizedImageUrl } from "../utils/cloudinary";
 
-const artDiggin   = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", 800);
-const artMusae    = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", 800);
-const artPortraits = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", 800);
+const artDiggin   = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", 800);
+const artMusae    = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", 800);
+const artPortraits = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", 800);
 
 // Cloudinary images for 3D before/after
-const IMG_3D_BEFORE = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/miluarte/renders/Captura_de_pantalla_2026-06-18_224728_qvosll.png", 1000);
-const IMG_3D_AFTER  = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/miluarte/renders/Doke_Red_Flag_u1njsw.jpg", 1000);
+const IMG_3D_BEFORE = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/Captura_de_pantalla_2026-06-18_224728_qvosll.png", 1000);
+const IMG_3D_AFTER  = getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/diggin/Doke_Red_Flag_u1njsw.jpg", 1000);
 
 const vp = { once: true, margin: "-60px" } as const;
 

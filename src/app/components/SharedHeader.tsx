@@ -190,22 +190,22 @@ export function SharedHeader() {
         { 
           label: "Diggin' label", 
           path: "/coleccion/diggin",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/diggin/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg" 
         },
         { 
           label: "Animas", 
           path: "/coleccion/animas",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/1_Melisa_Completo_nwlyro.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/1_Melisa_Completo_nwlyro.jpg" 
         },
         { 
           label: "Retratos y más", 
           path: "/coleccion/retratos",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/2-Retrato-Anna-Karina_cb505e.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/retratos/2-Retrato-Anna-Karina_cb505e.jpg" 
         },
         { 
           label: "Pasta Ya", 
           path: "/coleccion/pasta-ya",
-          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg" 
+          thumbnail: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/pasta-ya/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg" 
         },
         { 
           label: language === "es" ? "Ver más colecciones →" : "View more collections →", 

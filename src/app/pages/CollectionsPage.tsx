@@ -19,7 +19,7 @@ const STATIC_THUMBNAILS: Record<string, string> = {
   retratos: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/retratos/2-Retrato-Anna-Karina_cb505e.jpg",
   "pasta-ya": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/pasta-ya/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
   "concept-art": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
-  "diseno-grafico": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/Kreativit%C3%A4t_Schreibkunst_mzvltr.jpg",
+  "diseno-grafico": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/Kreativität_Schreibkunst_mzvltr.jpg",
 };
 
 interface GalleryWithCount extends GalleryMeta {

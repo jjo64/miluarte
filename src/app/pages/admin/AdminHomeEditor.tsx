@@ -35,26 +35,26 @@ import { C, SANS, SERIF, RADIUS } from "../../tokens";
 type Lang = "es" | "en";
 type DeviceView = "desktop" | "tablet" | "mobile";
 
-const DEFAULT_ANIMAS_SKETCH = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822593/miluarte/archivo/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
-const DEFAULT_ANIMAS_FINAL  = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781822579/miluarte/archivo/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
+const DEFAULT_ANIMAS_SKETCH = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Captura_de_pantalla_2026-06-19_004226_kbbzwm.png";
+const DEFAULT_ANIMAS_FINAL  = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Captura_de_pantalla_2026-06-19_004056_lpcimv.png";
 const DEFAULT_FEATURED_IMG  = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/diggin/Doke_Red_Flag_u1njsw.jpg";
 const DEFAULT_HERO_IMG      = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/axtt8y6owprqrjralpyy.jpg";
 
-const DEFAULT_STAND_BEFORE = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781815712/miluarte/renders/Captura_de_pantalla_2026-06-18_224728_qvosll.png";
+const DEFAULT_STAND_BEFORE = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/Captura_de_pantalla_2026-06-18_224728_qvosll.png";
 const DEFAULT_STAND_AFTER  = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/diggin/Doke_Red_Flag_u1njsw.jpg";
-const DEFAULT_DIGGIN_IMG   = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg";
-const DEFAULT_MUSAE_IMG    = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
-const DEFAULT_PORTRAIT_IMG = "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
+const DEFAULT_DIGGIN_IMG   = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg";
+const DEFAULT_MUSAE_IMG    = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg";
+const DEFAULT_PORTRAIT_IMG = "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg";
 
 const DEFAULT_GALLERY_IMAGES = [
-  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", category: "ilustracion", altKey: "obra1" },
-  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", category: "concept", altKey: "obra2" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/532613326_18320483857235254_170206825296032194_n_mcewf6.jpg", category: "ilustracion", altKey: "obra1" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg", category: "concept", altKey: "obra2" },
   { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/miluarte/archivo/719099666_18085459703434740_3604615127722183027_n_apifn2.jpg", category: "ilustracion", altKey: "obra3" },
-  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", category: "musica", altKey: "obra4" },
-  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798273/miluarte/archivo/Captura_de_pantalla_2026-06-18_175704_agpitt.png", category: "concept", altKey: "obra5" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg", category: "musica", altKey: "obra4" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Captura_de_pantalla_2026-06-18_175704_agpitt.png", category: "concept", altKey: "obra5" },
   { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781798241/miluarte/archivo/656747786_18083218367600656_3599812440241416906_n_f8npa1.jpg", category: "joyeria", altKey: "obra6" },
   { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781797812/miluarte/archivo/520988252_18317337157235254_3623552272738405742_n_xafgzp.jpg", category: "concept", altKey: "obra7" },
-  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/miluarte/archivo/favicon_xih1kk.jpg", category: "ilustracion", altKey: "obra8" },
+  { src: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/favicon_xih1kk.jpg", category: "ilustracion", altKey: "obra8" },
 ];
 
 function deepMerge(target: any, source: any): any {
@@ -600,7 +600,7 @@ export function AdminHomeEditor() {
                   {/* Badge Miluarte */}
                   <div className="absolute bottom-3.5 left-3.5 flex items-center gap-2 bg-[#180E09]/85 backdrop-blur-sm py-1.5 px-3 rounded-full border border-white/10 select-none pointer-events-none">
                     <img
-                      src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781812066/miluarte/archivo/favicon_xih1kk.jpg", 80)}
+                      src={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/favicon_xih1kk.jpg", 80)}
                       alt=""
                       className="w-5 h-5 rounded-full object-cover"
                     />

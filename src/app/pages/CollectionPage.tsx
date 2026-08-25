@@ -195,8 +195,8 @@ function WorkCard({
 
 const ANIMAS_SLIDES = [
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/01_Portada_ljcbrq.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/02_Introducci%C3%B3n_vopmvs.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/03_Introducci%C3%B3n_rpdjrc.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/02_Introducción_vopmvs.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/03_Introducción_rpdjrc.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/04_Veive_cgvvbf.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/05_Veive_rftpr5.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/06_Veive_pqy387.jpg",
@@ -214,7 +214,7 @@ const ANIMAS_SLIDES = [
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/18_Feronia_qmleha.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/19_Atum_y_Satres_myxu2c.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/20_Gran_Espiritu_gnfaxn.jpg",
-  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/21_Abuela_Ara%C3%B1a_dja5v6.jpg",
+  "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/21_Abuela_Araña_dja5v6.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/22_Vesta_ynqsgg.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/23_Nethus_notptk.jpg",
   "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/24_Usil_y_Losna_nib3my.jpg",
