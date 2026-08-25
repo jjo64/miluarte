@@ -8,7 +8,8 @@
       "accent": "var(--color-brand-blush)",
       "twoColumns": false,
       "order": 0,
-      "featured": true
+      "featured": true,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg"
     },
     {
       "slug": "diggin",
@@ -18,7 +19,8 @@
       "accent": "var(--color-brand-neon)",
       "twoColumns": true,
       "order": 1,
-      "featured": true
+      "featured": true,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg"
     },
     {
       "slug": "concept-art",
@@ -28,7 +30,8 @@
       "accent": "var(--color-brand-orange)",
       "twoColumns": false,
       "order": 2,
-      "featured": true
+      "featured": true,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg"
     },
     {
       "slug": "diseno-grafico",
@@ -38,7 +41,8 @@
       "accent": "var(--color-brand-orange)",
       "twoColumns": false,
       "order": 3,
-      "featured": false
+      "featured": false,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/Kreativit%C3%A4t_Schreibkunst_mzvltr.jpg"
     },
     {
       "slug": "3d-stands",
@@ -48,7 +52,8 @@
       "accent": "var(--color-brand-blush)",
       "twoColumns": false,
       "order": 4,
-      "featured": false
+      "featured": false,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/624072385_18076991993069555_3759238577248943847_n_zjw6f8.jpg"
     },
     {
       "slug": "animas",
@@ -58,7 +63,8 @@
       "accent": "#C8A96E",
       "twoColumns": false,
       "order": 5,
-      "featured": true
+      "featured": true,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/1_Melisa_Completo_nwlyro.jpg"
     },
     {
       "slug": "retratos",
@@ -68,7 +74,8 @@
       "accent": "#9B7FA6",
       "twoColumns": false,
       "order": 6,
-      "featured": false
+      "featured": false,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/2-Retrato-Anna-Karina_cb505e.jpg"
     },
     {
       "slug": "pasta-ya",
@@ -78,7 +85,8 @@
       "accent": "#E8854A",
       "twoColumns": false,
       "order": 7,
-      "featured": false
+      "featured": false,
+      "coverImage": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg"
     }
   ],
   "miluarte:renders": [

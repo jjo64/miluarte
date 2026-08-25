@@ -45,70 +45,45 @@ export function CollectionsPage() {
   useEffect(() => {
     let isMounted = true;
 
-    async function loadAllGalleries() {
+        async function loadAllGalleries() {
       try {
         setLoading(true);
         const res = await fetch("/api/admin/galleries");
-        let remoteGalleries: GalleryMeta[] = [];
+        let remoteGalleries: GalleryWithCount[] = [];
 
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
-            remoteGalleries = data.filter((g: any) => g.slug !== "ilustracion");
+            remoteGalleries = data
+              .filter((g: any) => g.slug !== "ilustracion")
+              .map((g: any) => ({
+                ...g,
+                worksCount: typeof g.worksCount === "number" ? g.worksCount : (WORKS_BY_SLUG[g.slug]?.length || 0),
+                coverImage: g.coverImage || (WORKS_BY_SLUG[g.slug]?.[0]?.img) || STATIC_THUMBNAILS[g.slug] || DEFAULT_COVER,
+              }));
           }
         }
 
-        // Si no hay datos de la API, fallback estático
+        // Fallback si la API no responde
         if (remoteGalleries.length === 0) {
-          remoteGalleries = Object.entries(META).filter(([slug]) => slug !== "ilustracion").map(([slug, meta], idx) => ({
-            slug,
-            title: meta.title,
-            label: meta.label,
-            statement: meta.statement,
-            accent: meta.accent,
-            twoColumns: meta.twoColumns,
-            order: idx,
-            featured: true,
-          }));
+          remoteGalleries = Object.entries(META)
+            .filter(([slug]) => slug !== "ilustracion")
+            .map(([slug, meta], idx) => ({
+              slug,
+              title: meta.title,
+              label: meta.label,
+              statement: meta.statement,
+              accent: meta.accent,
+              twoColumns: meta.twoColumns,
+              order: idx,
+              featured: true,
+              worksCount: WORKS_BY_SLUG[slug]?.length || 0,
+              coverImage: (WORKS_BY_SLUG[slug]?.[0]?.img) || STATIC_THUMBNAILS[slug] || DEFAULT_COVER,
+            }));
         }
 
-        // Cargar obras/portadas de cada una
-        const fullGalleries: GalleryWithCount[] = await Promise.all(
-          remoteGalleries.map(async (g) => {
-            let count = 0;
-            let cover = STATIC_THUMBNAILS[g.slug] || DEFAULT_COVER;
-
-            try {
-              const worksRes = await fetch(`/api/admin/works?slug=${g.slug}`);
-              if (worksRes.ok) {
-                const worksData = await worksRes.json();
-                if (Array.isArray(worksData) && worksData.length > 0) {
-                  count = worksData.length;
-                  if (worksData[0].img) {
-                    cover = worksData[0].img;
-                  }
-                } else if (WORKS_BY_SLUG[g.slug]) {
-                  count = WORKS_BY_SLUG[g.slug].length;
-                  cover = WORKS_BY_SLUG[g.slug][0]?.img || cover;
-                }
-              }
-            } catch {
-              if (WORKS_BY_SLUG[g.slug]) {
-                count = WORKS_BY_SLUG[g.slug].length;
-                cover = WORKS_BY_SLUG[g.slug][0]?.img || cover;
-              }
-            }
-
-            return {
-              ...g,
-              worksCount: count,
-              coverImage: cover,
-            };
-          })
-        );
-
         if (isMounted) {
-          setGalleries(fullGalleries);
+          setGalleries(remoteGalleries);
         }
       } catch (e) {
         console.warn("Error cargando colecciones:", e);

@@ -1,6 +1,7 @@
 // Tipos autosuficientes para la API Serverless sin dependencias de frontend
 export interface GalleryMeta {
   slug: string;
+  coverImage?: string;
   title: string;
   label: string;
   statement: string;

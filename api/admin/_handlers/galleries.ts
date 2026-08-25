@@ -51,21 +51,29 @@ export default async function handler(req: any, res: any) {
       const galleries = await getGalleries();
       galleries.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-      const enriched = await Promise.all(
+            const enriched = await Promise.all(
         galleries.map(async (g) => {
           let count = (WORKS_BY_SLUG[g.slug] || []).length;
+          let cover = g.coverImage || (WORKS_BY_SLUG[g.slug] && WORKS_BY_SLUG[g.slug][0]?.img) || "";
+          
           if (isKvConfigured()) {
             try {
               const raw = await kv.get(`miluarte:gallery:${g.slug}`);
               if (raw) {
                 const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
-                if (Array.isArray(parsed)) count = parsed.length;
+                if (Array.isArray(parsed)) {
+                  count = parsed.length;
+                  if (!g.coverImage && parsed.length > 0 && parsed[0].img) {
+                    cover = parsed[0].img;
+                  }
+                }
               }
             } catch (e) {}
           }
           return {
             ...g,
             worksCount: count,
+            coverImage: cover,
           };
         })
       );

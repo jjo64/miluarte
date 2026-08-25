@@ -7,6 +7,8 @@ import { GalleryCard } from "../../components/admin/GalleryCard";
 import { DragSortableList } from "../../components/admin/DragSortableList";
 import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
 import { Toast } from "../../components/admin/Toast";
+import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
+import { Image as ImageIcon } from "lucide-react";
 import { GalleryMeta } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
 
@@ -30,12 +32,14 @@ export function AdminGalleries() {
     statement: "",
     statementEn: "",
     accent: "#EAA898",
+    coverImage: "",
     twoColumns: false,
     featured: false,
   });
 
   // Modal Borrar
   const [deletingGallery, setDeletingGallery] = useState<GalleryMeta | null>(null);
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
 
   // Toast
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
@@ -96,6 +100,7 @@ export function AdminGalleries() {
       statement: "",
       statementEn: "",
       accent: "#EAA898",
+      coverImage: "",
       twoColumns: false,
       featured: false,
     });
@@ -113,6 +118,7 @@ export function AdminGalleries() {
       statement: gallery.statement || "",
       statementEn: (gallery as any).statementEn || gallery.statement || "",
       accent: gallery.accent || "#EAA898",
+      coverImage: gallery.coverImage || "",
       twoColumns: Boolean(gallery.twoColumns),
       featured: Boolean(gallery.featured),
     });
@@ -457,6 +463,37 @@ export function AdminGalleries() {
                   />
                 </div>
 
+                                {/* Imagen de Portada de la Colección */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium flex items-center justify-between">
+                    <span>Imagen de Portada (/colecciones)</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsMediaModalOpen(true)}
+                      className="text-brand-blush hover:underline text-[11px] font-sans flex items-center gap-1 cursor-pointer"
+                    >
+                      <ImageIcon className="w-3 h-3" />
+                      Elegir de Biblioteca
+                    </button>
+                  </label>
+                  <div className="flex items-center gap-3">
+                    {formData.coverImage && (
+                      <img
+                        src={formData.coverImage}
+                        alt="Portada preview"
+                        className="w-14 h-14 rounded-lg object-cover border border-brand-cream/20 shrink-0"
+                      />
+                    )}
+                    <input
+                      type="text"
+                      value={formData.coverImage}
+                      onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                      placeholder="https://res.cloudinary.com/.../portada.jpg"
+                      className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-xs font-mono focus:border-brand-blush outline-none"
+                    />
+                  </div>
+                </div>
+
                 {/* Color de Acento y Opciones */}
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <div className="flex flex-col gap-1.5">
@@ -525,6 +562,15 @@ export function AdminGalleries() {
         message={toast.message}
         type={toast.type}
         onClose={() => setToast((prev) => ({ ...prev, open: false }))}
+      />
+      {/* Modal Biblioteca de Medios */}
+      <MediaLibraryModal
+        isOpen={isMediaModalOpen}
+        onClose={() => setIsMediaModalOpen(false)}
+        onSelectMedia={(item) => {
+          setFormData((prev) => ({ ...prev, coverImage: item.secure_url }));
+          setIsMediaModalOpen(false);
+        }}
       />
     </AdminLayout>
   );

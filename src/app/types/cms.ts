@@ -1,5 +1,6 @@
 export interface GalleryMeta {
-  slug: string;          // ej: "ilustracion", "diggin"
+  slug: string;
+  coverImage?: string;          // ej: "ilustracion", "diggin"
   title: string;
   label: string;
   statement: string;
