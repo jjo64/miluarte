@@ -66,6 +66,14 @@ export interface SocialLinks {
   twitter?: string;
 }
 
+export const DEFAULT_SOCIAL_LINKS: SocialLinks = {
+  instagram: "https://www.instagram.com/naraneko13/",
+  linkedin: "https://www.linkedin.com/in/nerealucaspajares4815162342/",
+  behance: "",
+  tiktok: "",
+  twitter: "",
+};
+
 export interface ContactMessage {
   id: string;
   timestamp: string;
