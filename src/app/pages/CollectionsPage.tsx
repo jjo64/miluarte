@@ -14,10 +14,10 @@ const DEFAULT_COVER = "https://res.cloudinary.com/doznr2qm4/image/upload/miluart
 
 const STATIC_THUMBNAILS: Record<string, string> = {
   musae: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/musae_dkbruz.jpg",
-  diggin: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
-  animas: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/1_Melisa_Completo_nwlyro.jpg",
-  retratos: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/2-Retrato-Anna-Karina_cb505e.jpg",
-  "pasta-ya": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
+  diggin: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/diggin/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
+  animas: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/1_Melisa_Completo_nwlyro.jpg",
+  retratos: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/retratos/2-Retrato-Anna-Karina_cb505e.jpg",
+  "pasta-ya": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/pasta-ya/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
   "concept-art": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/533637781_18320483821235254_4718922861619683556_n_ddrhz1.jpg",
   "diseno-grafico": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/musae/Kreativit%C3%A4t_Schreibkunst_mzvltr.jpg",
 };

@@ -25,22 +25,22 @@ const IMAGES = [
     "altKey": "obra3"
   },
   {
-    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
+    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/diggin/Tom_Hodges_-_Smokin_On_EP_eflsuv.jpg",
     "category": "musica",
     "altKey": "obra4"
   },
   {
-    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/1_Melisa_Completo_nwlyro.jpg",
+    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/animas/1_Melisa_Completo_nwlyro.jpg",
     "category": "concept",
     "altKey": "obra5"
   },
   {
-    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/2-Retrato-Anna-Karina_cb505e.jpg",
+    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/retratos/2-Retrato-Anna-Karina_cb505e.jpg",
     "category": "joyeria",
     "altKey": "obra6"
   },
   {
-    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/archivo/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
+    "src": "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/pasta-ya/Bravioli-el-bravo-y-Tortastini_m1owbr.jpg",
     "category": "concept",
     "altKey": "obra7"
   },
