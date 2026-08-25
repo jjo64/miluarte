@@ -42,6 +42,9 @@ export function AdminGalleries() {
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
+  // Modal para cambio rápido y directo de portada desde la tarjeta
+  const [coverModalGallery, setCoverModalGallery] = useState<GalleryMeta | null>(null);
+
   // Toast
   const [toast, setToast] = useState<{ message: string; type: "success" | "error"; open: boolean }>({
     message: "",
@@ -51,6 +54,38 @@ export function AdminGalleries() {
 
   const { request } = useAdminApi();
   const navigate = useNavigate();
+
+  const handleDirectCoverChange = async (gallery: GalleryMeta, newUrl: string) => {
+    // Actualización optimista inmediata en UI
+    setGalleries((prev) =>
+      prev.map((g) => (g.slug === gallery.slug ? { ...g, coverImage: newUrl } : g))
+    );
+
+    try {
+      await request("/api/admin/galleries", {
+        method: "PUT",
+        body: JSON.stringify({
+          slug: gallery.slug,
+          coverImage: newUrl,
+        }),
+      });
+
+      setToast({
+        message: `Portada de "${gallery.title}" actualizada exitosamente`,
+        type: "success",
+        open: true,
+      });
+    } catch (err: any) {
+      setToast({
+        message: "Error al guardar la nueva portada: " + (err.message || "Fallo de conexión"),
+        type: "error",
+        open: true,
+      });
+      fetchGalleries();
+    } finally {
+      setCoverModalGallery(null);
+    }
+  };
 
   const handleSyncCloudinary = async () => {
     try {
@@ -362,6 +397,7 @@ export function AdminGalleries() {
                 onOpen={() => navigate(`/admin/galerias/${g.slug}`)}
                 onEditMeta={() => handleOpenEdit(g)}
                 onDelete={() => setDeletingGallery(g)}
+                onChangeCover={() => setCoverModalGallery(g)}
                 isReorderMode={isReordering}
               />
             );
@@ -595,7 +631,7 @@ export function AdminGalleries() {
         type={toast.type}
         onClose={() => setToast((prev) => ({ ...prev, open: false }))}
       />
-      {/* Modal Biblioteca de Medios */}
+      {/* Modal Biblioteca de Medios (Para el formulario de edición tradicional) */}
       <MediaLibraryModal
         isOpen={isMediaModalOpen}
         onClose={() => setIsMediaModalOpen(false)}
@@ -603,6 +639,24 @@ export function AdminGalleries() {
           setFormData((prev) => ({ ...prev, coverImage: url }));
           setIsMediaModalOpen(false);
         }}
+      />
+
+      {/* Modal Cambio Rápido de Portada (Directo desde la tarjeta de galería) */}
+      <MediaLibraryModal
+        isOpen={Boolean(coverModalGallery)}
+        onClose={() => setCoverModalGallery(null)}
+        onSelect={(url) => {
+          if (coverModalGallery) {
+            handleDirectCoverChange(coverModalGallery, url);
+          }
+        }}
+        initialSelectedUrl={coverModalGallery?.coverImage}
+        uploadFolder={
+          coverModalGallery
+            ? `miluarte/${coverModalGallery.slug === "3d-stands" || coverModalGallery.slug === "concept-art" ? "renders" : coverModalGallery.slug}`
+            : "all"
+        }
+        title={coverModalGallery ? `Elegir Portada para "${coverModalGallery.title}"` : "Elegir Portada"}
       />
     </AdminLayout>
   );
