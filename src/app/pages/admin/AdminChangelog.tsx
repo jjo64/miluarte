@@ -139,11 +139,22 @@ export function AdminChangelog() {
     }
   };
 
-  const formatDate = (iso: string) => {
+  const getActionText = (action: any): string => {
+    if (!action) return "Cambio registrado";
+    if (typeof action === "string") return action;
+    if (typeof action === "object") {
+      if (typeof action.action === "string") return action.action;
+      return JSON.stringify(action);
+    }
+    return String(action);
+  };
+
+  const formatDate = (iso?: string) => {
+    if (!iso) return "Fecha no disponible";
     try {
       return format(parseISO(iso), "d 'de' MMMM, yyyy · HH:mm", { locale: es });
     } catch {
-      return iso;
+      return String(iso);
     }
   };
 
@@ -231,7 +242,7 @@ export function AdminChangelog() {
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
                       <p className="font-sans text-xs sm:text-sm text-brand-cream font-medium leading-relaxed">
-                        {entry.action}
+                        {getActionText(entry.action)}
                       </p>
 
                       {hasSnapshot && idx > 0 && (
@@ -259,7 +270,7 @@ export function AdminChangelog() {
         onClose={() => setRevertingEntry(null)}
         onConfirm={handleRollback}
         title="¿Restaurar la página a esta versión?"
-        description={`Se restaurará el estado completo del portfolio (galerías, obras y textos) tal y como estaba antes de: "${revertingEntry?.action}". Cualquier cambio posterior será reemplazado.`}
+        description={`Se restaurará el estado completo del portfolio (galerías, obras y textos) tal y como estaba antes de: "${getActionText(revertingEntry?.action)}". Cualquier cambio posterior será reemplazado.`}
         confirmText="Sí, restaurar versión"
         destructive={false}
       />

@@ -3,12 +3,53 @@ import { extractTokenFromHeader, verifyToken } from "../_lib/auth.js";
 import { rollbackToSnapshot, addChangelogEntry } from "../_lib/changelog.js";
 import { ChangelogEntry } from "../_lib/initialData.js";
 
+function normalizeEntry(entry: any, index: number): ChangelogEntry {
+  if (!entry || typeof entry !== "object") {
+    return {
+      id: `entry-${index}`,
+      timestamp: new Date().toISOString(),
+      action: String(entry || "Cambio registrado"),
+      section: "system",
+      canRollback: false,
+    };
+  }
+
+  let actionStr = "Cambio registrado";
+  if (typeof entry.action === "string") {
+    actionStr = entry.action;
+  } else if (entry.action && typeof entry.action === "object") {
+    actionStr = typeof entry.action.action === "string" ? entry.action.action : JSON.stringify(entry.action);
+  }
+
+  const validSections = ["galleries", "works", "renders", "texts", "social", "messages", "system"];
+  const section = validSections.includes(entry.section)
+    ? entry.section
+    : (entry.action?.section && validSections.includes(entry.action.section) ? entry.action.section : "system");
+
+  const snapshotId = typeof entry.snapshotId === "string" ? entry.snapshotId : (typeof entry.action?.snapshotId === "string" ? entry.action.snapshotId : undefined);
+  const canRollback = typeof entry.canRollback === "boolean" ? entry.canRollback : Boolean(snapshotId);
+  const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : (typeof entry.action?.timestamp === "string" ? entry.action.timestamp : new Date().toISOString());
+  const id = typeof entry.id === "string" ? entry.id : `entry-${index}-${Date.now()}`;
+
+  return {
+    id,
+    timestamp,
+    action: actionStr,
+    section: section as any,
+    snapshotId,
+    canRollback,
+  };
+}
+
 async function getChangelog(): Promise<ChangelogEntry[]> {
   if (isKvConfigured()) {
     try {
       const raw = await kv.get("miluarte:changelog");
       if (raw) {
-        return typeof raw === "string" ? JSON.parse(raw) : (raw as any);
+        const parsed: any[] = typeof raw === "string" ? JSON.parse(raw) : (Array.isArray(raw) ? raw : [raw]);
+        if (Array.isArray(parsed)) {
+          return parsed.map(normalizeEntry);
+        }
       }
     } catch (e) {
       console.warn("KV get changelog error, using fallback:", e);
