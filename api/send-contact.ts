@@ -1,4 +1,5 @@
 import dns from "dns";
+import { kv } from "./admin/_lib/kv.js";
 
 // DNS MX Record lookup helper
 function resolveMx(domain: string): Promise<boolean> {
@@ -67,26 +68,30 @@ export default async function handler(req: any, res: any) {
 
     // 4. Guardar SIEMPRE en la base de datos para la bandeja del panel de administración
     try {
-      const { kv, isKvConfigured } = await import("./admin/_lib/kv.js");
-      if (isKvConfigured()) {
-        const raw = await kv.get("miluarte:messages:contact");
-        let messages = typeof raw === "string" ? JSON.parse(raw || "[]") : (raw as any) || [];
-        messages.unshift({
-          id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          timestamp: new Date().toISOString(),
-          name,
-          email,
-          company: company || "",
-          subject: subjectText,
-          message,
-          read: false,
-          type: "contact",
-        });
-        if (messages.length > 200) messages = messages.slice(0, 200);
-        await kv.set("miluarte:messages:contact", JSON.stringify(messages));
+      const raw = await kv.get("miluarte:messages:contact");
+      let messages: any[] = [];
+      if (raw) {
+        if (Array.isArray(raw)) {
+          messages = raw;
+        } else if (typeof raw === "string") {
+          try { messages = JSON.parse(raw); } catch { messages = []; }
+        }
       }
+      messages.unshift({
+        id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        timestamp: new Date().toISOString(),
+        name,
+        email,
+        company: company || "",
+        subject: subjectText,
+        message,
+        read: false,
+        type: "contact",
+      });
+      if (messages.length > 200) messages = messages.slice(0, 200);
+      await kv.set("miluarte:messages:contact", messages);
     } catch (kvErr) {
-      console.warn("KV contact message save warning:", kvErr);
+      console.error("KV contact message save error:", kvErr);
     }
 
     // 5. Enviar por email si RESEND_API_KEY está configurada

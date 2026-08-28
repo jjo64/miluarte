@@ -101,14 +101,26 @@ let lastUrl: string | null = null;
 let lastToken: string | null = null;
 
 function getRemoteClient() {
-  const url =
+  let url =
     process.env.KV_REST_API_URL ||
     process.env.UPSTASH_REDIS_REST_URL ||
     process.env.STORAGE_KV_REST_API_URL;
-  const token =
+  let token =
     process.env.KV_REST_API_TOKEN ||
     process.env.UPSTASH_REDIS_REST_TOKEN ||
     process.env.STORAGE_KV_REST_API_TOKEN;
+
+  // Detección automática si la base de datos de Vercel tiene un prefijo personalizado
+  if (!url || !token) {
+    for (const [k, v] of Object.entries(process.env)) {
+      if (!url && typeof v === "string" && (k.endsWith("_REST_API_URL") || k.includes("KV_REST_API_URL") || k.includes("REDIS_REST_URL"))) {
+        url = v;
+      }
+      if (!token && typeof v === "string" && (k.endsWith("_REST_API_TOKEN") || k.includes("KV_REST_API_TOKEN") || k.includes("REDIS_REST_TOKEN"))) {
+        token = v;
+      }
+    }
+  }
 
   if (!url || !token) {
     return null;
@@ -135,9 +147,16 @@ export const kv = {
     const remoteClient = getRemoteClient();
     if (remoteClient) {
       try {
-        const res: any = await remoteClient.get(key);
+        let res: any = await remoteClient.get(key);
         if (res !== null && res !== undefined) {
-          return typeof res === "string" ? JSON.parse(res) : res;
+          while (typeof res === "string") {
+            try {
+              res = JSON.parse(res);
+            } catch {
+              break;
+            }
+          }
+          return res as T;
         }
       } catch (e) {
         console.warn(`Remote KV error on get(${key}), falling back to local:`, e);
@@ -145,7 +164,15 @@ export const kv = {
     }
 
     const store = getLocalStore();
-    return (store[key] as T) ?? null;
+    let val = store[key];
+    while (typeof val === "string") {
+      try {
+        val = JSON.parse(val);
+      } catch {
+        break;
+      }
+    }
+    return (val as T) ?? null;
   },
 
   async set(key: string, value: any): Promise<string | null> {
