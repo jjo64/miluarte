@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Box, Play, Eye } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { C, RADIUS, ease, fadeUp, staggerContainer, staggerItem } from "../tokens";
 import { SharedFooter } from "../components/SharedFooter";
 import { useLanguage } from "../context/LanguageContext";
 import { getOptimizedImageUrl } from "../utils/cloudinary";
+import { ModelViewer3D } from "../components/ModelViewer3D";
 
 // Registrar GSAP ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
@@ -131,6 +132,23 @@ function RenderCard({
         </div>
       )}
 
+      {/* Badge 3D Interactivo si tiene modelo */}
+      {item.model3dSrc && (
+        <div
+          className="absolute top-4 left-4 z-20 font-sans text-[9px] font-bold tracking-wider uppercase py-1 px-2.5 rounded-md flex items-center gap-1.5 shadow-lg"
+          style={{
+            fontFamily: DMSANS,
+            backgroundColor: "rgba(229, 84, 39, 0.9)",
+            color: "#FFF",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <Box className="w-3 h-3 text-white" />
+          <span>3D Interactivo</span>
+        </div>
+      )}
+
       {/* Badge en Esquina (Neon Green) */}
       <div
         className="absolute top-4 right-4 z-20 font-sans text-[9px] font-bold tracking-widest uppercase py-1 px-2.5 rounded-md"
@@ -242,6 +260,16 @@ function RenderLightbox({
 }) {
   const { language } = useLanguage();
   const [isZoomed, setIsZoomed] = useState(false);
+  const [activeTab, setActiveTab] = useState<"3d" | "media">("3d");
+
+  // Reset tab when opening a new item
+  useEffect(() => {
+    if (item?.model3dSrc) {
+      setActiveTab("3d");
+    } else {
+      setActiveTab("media");
+    }
+  }, [item]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -278,9 +306,16 @@ function RenderLightbox({
       >
         {/* Cabecera del Lightbox */}
         <div className="sticky top-0 z-30 flex justify-between items-center px-6 py-4 border-b border-brand-cream/10" style={{ backgroundColor: "rgba(13, 9, 8, 0.95)", backdropFilter: "blur(8px)" }}>
-          <h2 className="font-serif text-[#F5EDE0] text-base font-normal tracking-wide" style={{ fontFamily: PLAYFAIR }}>
-            {item.title}
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="font-serif text-[#F5EDE0] text-base font-normal tracking-wide" style={{ fontFamily: PLAYFAIR }}>
+              {item.title}
+            </h2>
+            {item.model3dSrc && (
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#E55427]/20 text-[#E55427] border border-[#E55427]/30">
+                <Box className="w-3 h-3" /> 3D Live
+              </span>
+            )}
+          </div>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full border border-brand-cream/10 flex items-center justify-center text-brand-secondary hover:text-brand-orange hover:bg-brand-cream/5 cursor-pointer transition-all duration-200"
@@ -289,9 +324,42 @@ function RenderLightbox({
           </button>
         </div>
 
-        {/* Bloque 1 - El render o Video */}
-        <div className="w-full bg-black flex items-center justify-center relative overflow-hidden">
-          {item.videoSrcMp4 ? (
+        {/* Selector de modo si tiene 3D */}
+        {item.model3dSrc && (
+          <div className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#140E0C] border-b border-brand-cream/10">
+            <button
+              type="button"
+              onClick={() => setActiveTab("3d")}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer ${
+                activeTab === "3d"
+                  ? "bg-[#E55427] text-white shadow-md shadow-[#E55427]/30"
+                  : "bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              <Box className="w-3.5 h-3.5" />
+              <span>{language === "es" ? "Explorar 3D en Vivo" : "Live 3D View"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab("media")}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer ${
+                activeTab === "media"
+                  ? "bg-white/20 text-white shadow-md"
+                  : "bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>{language === "es" ? "Render / Video" : "Render / Video"}</span>
+            </button>
+          </div>
+        )}
+
+        {/* Bloque 1 - El 3D o Render o Video */}
+        <div className="w-full bg-black flex items-center justify-center relative overflow-hidden min-h-[350px] md:min-h-[450px]">
+          {activeTab === "3d" && item.model3dSrc ? (
+            <ModelViewer3D modelUrl={item.model3dSrc} className="w-full h-[55vh] md:h-[60vh]" />
+          ) : item.videoSrcMp4 ? (
             renderUniversalVideo(item.videoSrcMp4, getOptimizedImageUrl(item.img, 1200))
           ) : (
             <div 
@@ -439,7 +507,14 @@ export function RendersPage() {
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0 && isMounted) {
-            setDynamicRenders(data);
+            const merged = data.map((d: RenderItem) => {
+              const fallback = RENDERS.find((r) => r.id === d.id);
+              return {
+                ...d,
+                model3dSrc: d.model3dSrc || fallback?.model3dSrc,
+              };
+            });
+            setDynamicRenders(merged);
           }
         }
       } catch {
@@ -549,24 +624,13 @@ export function RendersPage() {
             </motion.p>
           </div>
 
-          {/* Vídeo Hero con Parallax */}
-          <div 
-            ref={heroVideoContainerRef}
-            className="w-full lg:w-[60%] overflow-hidden relative shadow-2xl"
-            style={{ borderRadius: "16px", aspectRatio: "16/9" }}
-          >
-            <div ref={heroVideoRef} className="w-full h-full scale-[1.2]">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster={getOptimizedImageUrl("https://res.cloudinary.com/doznr2qm4/image/upload/v1781811479/miluarte/renders/Doke_Red_Flag_u1njsw.jpg", 1000)}
-                className="w-full h-full object-cover"
-              >
-                <source src="/videos/sample-bbb.mp4" type="video/mp4" />
-              </video>
-            </div>
+          {/* 3D Interactivo en el Hero */}
+          <div className="w-full lg:w-[60%]">
+            <ModelViewer3D
+              isHero={true}
+              modelUrl="/models/Matelec-optimized.glb"
+              className="w-full h-[380px] sm:h-[440px] md:h-[480px]"
+            />
           </div>
 
         </div>

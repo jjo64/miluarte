@@ -57,3 +57,4 @@ Thumbs.db
 animas/
 *-backup.json
 backup-pre-migration/
+public/models/Matelec.glb

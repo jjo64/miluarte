@@ -14,21 +14,23 @@ export interface RenderItem {
   process: { src: string; label: string }[];
   makingOfVideoMp4?: string;
   makingOfVideoWebm?: string;
+  model3dSrc?: string;
   order?: number;
 }
 
 export const RENDERS: RenderItem[] = [
   {
     id: "stand-feria-milan",
-    title: "Stand Modular de Feria — Milán",
-    client: "Fiera Milano S.p.A.",
+    title: "Stand Modular de Feria — Matelec",
+    client: "Feria Matelec / Milán",
     year: "2025",
     badge: "STAND · FERIA",
-    software: ["Blender", "SketchUp", "AutoCAD"],
-    delivery: "Planos técnicos + Renders fotorrealistas",
+    software: ["Blender", "SketchUp", "Three.js"],
+    delivery: "Modelo 3D Interactivo + Planos técnicos + Renders",
     description:
-      "Propuesta de stand fotorrealista para exhibición de mobiliario de vanguardia. La estructura utiliza materiales ecológicos de alta durabilidad y un sistema modular desmontable de rápida construcción.",
+      "Propuesta de stand fotorrealista para exhibición de mobiliario y diseño de vanguardia. Estructura modular interactiva explorable en 3D en tiempo real con iluminación PBR optimizada para web.",
     img: "https://res.cloudinary.com/doznr2qm4/image/upload/miluarte/renders/Doke_Red_Flag_u1njsw.jpg",
+    model3dSrc: "/models/Matelec-optimized.glb",
     videoSrcMp4: "/videos/miluarte/archivo/sample-3d.mp4",
     videoSrcWebm: "/videos/miluarte/archivo/sample-3d.mp4",
     process: [
