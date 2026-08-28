@@ -81,7 +81,7 @@ export default async function handler(req: any, res: any) {
         ? (process.env.RESEND_TO_PRIORITY || "miluartedenara@gmail.com")
         : (process.env.RESEND_TO_COMMON || "miluartedenara@gmail.com");
 
-      const fromEmail = process.env.RESEND_FROM || "onboarding@resend.dev";
+      const fromEmail = process.env.RESEND_FROM || "Miluarte <contacto@contact.miluartedenara.com>";
       const subject = projectType === "commercial"
         ? `[COMERCIAL - PRIORIDAD] Nuevo Encargo de ${name}`
         : `[PERSONAL] Nuevo Encargo de ${name}`;
