@@ -213,7 +213,7 @@ export const kv = {
   },
 };
 
-export function isKvConfigured(): boolean {
+export function isRemoteKvConfigured(): boolean {
   const url =
     process.env.KV_REST_API_URL ||
     process.env.UPSTASH_REDIS_REST_URL ||
@@ -223,4 +223,9 @@ export function isKvConfigured(): boolean {
     process.env.UPSTASH_REDIS_REST_TOKEN ||
     process.env.STORAGE_KV_REST_API_TOKEN;
   return Boolean(url && token);
+}
+
+export function isKvConfigured(): boolean {
+  // El sistema de almacenamiento KV (remoto o local vía cms-local-db.json) siempre está activo
+  return true;
 }

@@ -270,9 +270,10 @@ export function AdminGalleryEditor() {
     if (!slug) return;
     try {
       setIsSavingBatch(true);
+      const worksWithOrder = works.map((w, idx) => ({ ...w, order: idx }));
       await request(`/api/admin/works?slug=${slug}`, {
         method: "PUT",
-        body: JSON.stringify({ works }),
+        body: JSON.stringify({ works: worksWithOrder }),
       });
 
       if (slug === "animas") {
@@ -282,8 +283,14 @@ export function AdminGalleryEditor() {
         });
       }
 
-      setServerWorks(JSON.parse(JSON.stringify(works)));
-      setServerSnapshot(currentSnapshot);
+      setWorks(worksWithOrder);
+      setServerWorks(JSON.parse(JSON.stringify(worksWithOrder)));
+      setServerSnapshot(
+        JSON.stringify({
+          works: worksWithOrder,
+          animasSlides: slug === "animas" ? animasSlides : [],
+        })
+      );
       setToast({
         message: "¡Diseño de mosaico guardado y publicado en el portafolio!",
         type: "success",
@@ -408,16 +415,24 @@ export function AdminGalleryEditor() {
   };
 
   const handleReorder = async (reordered: Work[]) => {
-    setWorks(reordered);
+    const updated = reordered.map((w, idx) => ({ ...w, order: idx }));
+    setWorks(updated);
     if (!slug) return;
     try {
       await request(`/api/admin/works?slug=${slug}`, {
         method: "PUT",
         body: JSON.stringify({
           reorder: true,
-          ids: reordered.map((w) => w.id),
+          ids: updated.map((w) => w.id),
         }),
       });
+      setServerWorks(JSON.parse(JSON.stringify(updated)));
+      setServerSnapshot(
+        JSON.stringify({
+          works: updated,
+          animasSlides: slug === "animas" ? animasSlides : [],
+        })
+      );
       setToast({ message: "Orden de obras actualizado", type: "success", open: true });
     } catch (err: any) {
       setToast({ message: "Error al guardar el orden", type: "error", open: true });

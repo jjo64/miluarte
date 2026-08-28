@@ -172,12 +172,16 @@ export default async function handler(req: any, res: any) {
 
       // Modo Guardar lote completo (Diseño interactivo de puzzle)
       if (Array.isArray(batchWorks)) {
+        const normalizedBatch = batchWorks.map((w: Work, idx: number) => ({
+          ...w,
+          order: idx,
+        }));
         const preSnapId = await createPreSnapshot();
         if (isKvConfigured()) {
-          await kv.set(`miluarte:gallery:${gallerySlug}`, JSON.stringify(batchWorks));
+          await kv.set(`miluarte:gallery:${gallerySlug}`, JSON.stringify(normalizedBatch));
         }
         await recordChangelog(`Actualizó el diseño y tamaños de la galería "${gallerySlug}"`, "works", preSnapId);
-        return res.status(200).json(batchWorks);
+        return res.status(200).json(normalizedBatch);
       }
 
       // Modo Reordenar

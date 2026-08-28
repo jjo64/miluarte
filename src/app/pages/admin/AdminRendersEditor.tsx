@@ -190,13 +190,14 @@ export function AdminRendersEditor() {
   };
 
   const handleReorder = async (reordered: RenderItem[]) => {
-    setRenders(reordered);
+    const updated = reordered.map((r, idx) => ({ ...r, order: idx }));
+    setRenders(updated);
     try {
       await request("/api/admin/renders", {
         method: "PUT",
         body: JSON.stringify({
           reorder: true,
-          ids: reordered.map((r) => r.id),
+          ids: updated.map((r) => r.id),
         }),
       });
       setToast({ message: "Orden de proyectos 3D actualizado", type: "success", open: true });

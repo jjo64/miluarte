@@ -268,13 +268,14 @@ export function AdminGalleries() {
   };
 
   const handleReorder = async (reordered: GalleryMeta[]) => {
-    setGalleries(reordered);
+    const updated = reordered.map((g, idx) => ({ ...g, order: idx }));
+    setGalleries(updated);
     try {
       await request("/api/admin/galleries", {
         method: "PUT",
         body: JSON.stringify({
           reorder: true,
-          slugs: reordered.map((g) => g.slug),
+          slugs: updated.map((g) => g.slug),
         }),
       });
       setToast({ message: "Orden de galerías actualizado", type: "success", open: true });
