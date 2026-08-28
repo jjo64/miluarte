@@ -80,8 +80,12 @@ export interface ContactMessage {
   name: string;
   email: string;
   company?: string;
-  subject: string;
-  message: string;
+  subject?: string;
+  projectType?: "commercial" | "personal" | string;
+  budget?: string;
+  deadline?: string;
+  description?: string;
+  message?: string;
   read: boolean;
   type: "contact" | "booking";
   details?: Record<string, any>;

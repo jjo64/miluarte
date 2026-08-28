@@ -22,7 +22,7 @@ export default async function handler(req: any, res: any) {
     return res.status(401).json({ error: "No autorizado" });
   }
 
-  const type = req.query?.type === "booking" ? "booking" : "contact";
+  const type = (req.query?.type || req.body?.type) === "booking" ? "booking" : "contact";
   const kvKey = `miluarte:messages:${type}`;
 
   // 1. GET: Listar mensajes
@@ -34,6 +34,17 @@ export default async function handler(req: any, res: any) {
         if (raw) {
           messages = typeof raw === "string" ? JSON.parse(raw) : (raw as any);
         }
+        if (!Array.isArray(messages)) {
+          messages = [];
+        }
+        // Normalizar campos para compatibilidad completa
+        messages = messages.map((m: any) => ({
+          ...m,
+          message: m.message || m.description || "",
+          description: m.description || m.message || "",
+          subject: m.subject || (type === "booking" ? (m.projectType === "commercial" ? "Proyecto Comercial" : "Proyecto Personal") : "Consulta General"),
+          type: m.type || type,
+        }));
         return res.status(200).json(messages);
       }
       return res.status(200).json([]);
@@ -45,13 +56,15 @@ export default async function handler(req: any, res: any) {
   // 2. PUT: Marcar como leído o actualizar
   if (req.method === "PUT") {
     try {
-      const { id, read, all } = req.body || {};
+      const { id, read, all, markAll } = req.body || {};
+      const isMarkAll = Boolean(all || markAll);
 
       if (isKvConfigured()) {
         const raw = await kv.get(kvKey);
         let messages: ContactMessage[] = raw ? (typeof raw === "string" ? JSON.parse(raw) : (raw as any)) : [];
+        if (!Array.isArray(messages)) messages = [];
 
-        if (all) {
+        if (isMarkAll) {
           // Marcar todos como leídos
           messages = messages.map((m) => ({ ...m, read: true }));
         } else if (id) {
@@ -81,6 +94,7 @@ export default async function handler(req: any, res: any) {
       if (isKvConfigured()) {
         const raw = await kv.get(kvKey);
         let messages: ContactMessage[] = raw ? (typeof raw === "string" ? JSON.parse(raw) : (raw as any)) : [];
+        if (!Array.isArray(messages)) messages = [];
         messages = messages.filter((m) => m.id !== id);
         await kv.set(kvKey, JSON.stringify(messages));
       }

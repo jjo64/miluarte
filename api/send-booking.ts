@@ -61,9 +61,11 @@ export default async function handler(req: any, res: any) {
           name,
           email,
           projectType,
+          subject: projectType === "commercial" ? "Proyecto Comercial" : "Proyecto Personal",
           budget: budget || "No especificado",
           deadline: deadline || "Flexible",
           description,
+          message: description,
           read: false,
           type: "booking",
         });
