@@ -20,7 +20,8 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { name, email, projectType, budget, deadline, description } = req.body || {};
+    const { name, email, projectType, budget, deadline, timeline, description } = req.body || {};
+    const finalDeadline = deadline || timeline || "Flexible";
 
     // 1. Basic validation
     if (!name || !email || !projectType || !description) {
@@ -69,7 +70,7 @@ export default async function handler(req: any, res: any) {
         projectType,
         subject: projectType === "commercial" ? "Proyecto Comercial" : "Proyecto Personal",
         budget: budget || "No especificado",
-        deadline: deadline || "Flexible",
+        deadline: finalDeadline,
         description,
         message: description,
         read: false,
@@ -142,7 +143,7 @@ export default async function handler(req: any, res: any) {
       </div>
       <div class="meta-item">
         <div class="meta-label">Fecha límite / Deadline:</div>
-        <div class="meta-value">${deadline || "Flexible"}</div>
+        <div class="meta-value">${finalDeadline}</div>
       </div>
     </div>
     

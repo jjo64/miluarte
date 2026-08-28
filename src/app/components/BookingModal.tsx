@@ -143,6 +143,14 @@ export function BookingModal() {
     setIsSubmitting(true);
 
     try {
+      const formattedDeadline = selectedDate
+        ? selectedDate.toLocaleDateString(language === "es" ? "es-ES" : "en-US", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+        : (timeline || "Flexible");
+
       const response = await fetch("/api/send-booking", {
         method: "POST",
         headers: {
@@ -151,11 +159,8 @@ export function BookingModal() {
         body: JSON.stringify({
           projectType,
           description,
-          timeline: selectedDate ? selectedDate.toLocaleDateString(language === "es" ? "es-ES" : "en-US", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          }) : "",
+          deadline: formattedDeadline,
+          timeline: formattedDeadline,
           budget,
           name,
           email
