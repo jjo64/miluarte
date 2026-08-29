@@ -137,7 +137,7 @@ function WorkCard({
     <motion.div
       ref={cardRef}
       variants={staggerItem}
-      className={`relative overflow-hidden cursor-pointer group col-span-1 ${layout.gridCol}`}
+      className={`relative overflow-hidden cursor-pointer group ${layout.gridCol}`}
       onMouseEnter={() => setHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}

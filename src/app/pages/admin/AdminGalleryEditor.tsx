@@ -255,38 +255,40 @@ function SortablePuzzleCard({
             )}
           </div>
 
-          {/* Selector de Proporción (Ratios) */}
-          <div className="flex items-center gap-0.5 bg-brand-bg px-1.5 py-0.5 rounded-lg border border-brand-cream/10">
-            <span className="text-[8.5px] uppercase font-sans text-brand-cream/40 mr-0.5">Ratio:</span>
-            {ASPECT_OPTIONS.map((a) => {
-              const active = a.value === currentAspect;
-              return (
-                <button
-                  key={a.value}
-                  type="button"
-                  onClick={() => onUpdateLayout(work.id, { aspect: a.value })}
-                  className={`px-1.5 py-0.5 rounded text-[8.5px] font-mono transition-all cursor-pointer ${
-                    active
-                      ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
-                      : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
-                  }`}
-                  title={a.sub}
-                >
-                  {a.label}
-                </button>
-              );
-            })}
-            {/* Auto Aspect button */}
-            <button
-              type="button"
-              onClick={() => onDetectAutoAspect(work)}
-              className="px-1.5 py-0.5 rounded text-[8.5px] font-sans text-[#C8A96E] hover:bg-[#C8A96E]/20 transition-all cursor-pointer flex items-center gap-0.5"
-              title="Detectar y aplicar la proporción nativa exacta de la foto"
-            >
-              <Wand2 className="w-2.5 h-2.5" />
-              <span>Auto</span>
-            </button>
-          </div>
+          {/* Selector de Proporción (Solo en Desktop para no saturar Móvil/Tablet) */}
+          {device === "desktop" && (
+            <div className="flex items-center gap-0.5 bg-brand-bg px-1.5 py-0.5 rounded-lg border border-brand-cream/10">
+              <span className="text-[8.5px] uppercase font-sans text-brand-cream/40 mr-0.5">Ratio:</span>
+              {ASPECT_OPTIONS.map((a) => {
+                const active = a.value === currentAspect;
+                return (
+                  <button
+                    key={a.value}
+                    type="button"
+                    onClick={() => onUpdateLayout(work.id, { aspect: a.value })}
+                    className={`px-1.5 py-0.5 rounded text-[8.5px] font-mono transition-all cursor-pointer ${
+                      active
+                        ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
+                        : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                    }`}
+                    title={a.sub}
+                  >
+                    {a.label}
+                  </button>
+                );
+              })}
+              {/* Auto Aspect button */}
+              <button
+                type="button"
+                onClick={() => onDetectAutoAspect(work)}
+                className="px-1.5 py-0.5 rounded text-[8.5px] font-sans text-[#C8A96E] hover:bg-[#C8A96E]/20 transition-all cursor-pointer flex items-center gap-0.5"
+                title="Detectar y aplicar la proporción nativa exacta de la foto"
+              >
+                <Wand2 className="w-2.5 h-2.5" />
+                <span>Auto</span>
+              </button>
+            </div>
+          )}
 
           {/* Acciones de Ajuste Visual & Edición */}
           <div className="flex items-center gap-1">
