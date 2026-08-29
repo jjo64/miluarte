@@ -99,10 +99,10 @@ export function getGridColClass(gridCol: string | undefined): string {
 }
 
 const COL_OPTIONS = [
-  { value: "md:col-span-4", span: 4, label: "1/3" },
-  { value: "md:col-span-6", span: 6, label: "1/2" },
-  { value: "md:col-span-8", span: 8, label: "2/3" },
-  { value: "md:col-span-12", span: 12, label: "Full" },
+  { value: "md:col-span-4", span: 4, label: "1 col", tooltip: "1 columna (1/3 de fila)" },
+  { value: "md:col-span-6", span: 6, label: "1/2", tooltip: "Media pantalla (1/2 de fila)" },
+  { value: "md:col-span-8", span: 8, label: "2 col", tooltip: "2 columnas (2/3 de fila)" },
+  { value: "md:col-span-12", span: 12, label: "Full", tooltip: "Fila completa (3 columnas)" },
 ];
 
 const ASPECT_OPTIONS = [
@@ -930,7 +930,7 @@ export function AdminGalleryEditor() {
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={works.map((w) => w.id)} strategy={rectSortingStrategy}>
               <div
-                className={`grid gap-6 auto-rows-auto ${
+                className={`grid gap-6 auto-rows-auto items-start ${
                   device === "mobile"
                     ? "grid-cols-1"
                     : device === "tablet"

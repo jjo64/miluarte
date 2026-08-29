@@ -771,7 +771,7 @@ export function CollectionPage() {
           animate="visible"
           className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} ${
             isTwoColumns ? "" : "md:grid-cols-12"
-          } gap-4 md:gap-4 mb-1`}
+          } gap-4 md:gap-4 mb-1 items-start`}
         >
           {localizedWorks.map((w, idx) => (
             <WorkCard 
