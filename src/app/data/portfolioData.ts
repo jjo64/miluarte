@@ -17,6 +17,7 @@ export interface Work {
   img: string;
   imgPos: string;
   gridCol: string;
+  gridColMobile?: string;
   aspect: string;
   publicId?: string;
   order?: number;

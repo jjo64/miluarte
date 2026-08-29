@@ -37,7 +37,7 @@ function WorkCard({
   isTwoColumns?: boolean;
   index?: number;
 }) {
-  const layout = getEditorialLayout(index, isTwoColumns, work.gridCol, work.aspect);
+  const layout = getEditorialLayout(index, isTwoColumns, work.gridCol, work.aspect, work.gridColMobile);
   const [hovered, setHovered] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
@@ -402,32 +402,41 @@ export function getGridColClass(gridCol: string | undefined): string {
 }
 
 // Helper para calcular diseño editorial armónico que nunca se rompe al reordenar
-export function getEditorialLayout(index: number, isTwoColumns: boolean = false, customGridCol?: string, customAspect?: string) {
+export function getEditorialLayout(
+  index: number,
+  isTwoColumns: boolean = false,
+  customGridCol?: string,
+  customAspect?: string,
+  customGridColMobile?: string
+) {
   if (isTwoColumns) {
     return {
       gridCol: "col-span-1",
-      aspect: "1/1",
+      aspect: customAspect || "1/1",
     };
   }
+
+  // En móvil usamos grid de 2 columnas: col-span-1 (2 por fila) o col-span-2 (ancho completo)
+  const mobileSpan = customGridColMobile || (customGridCol === "md:col-span-1" || customGridCol === "md:col-span-4" ? "col-span-1" : "col-span-2");
 
   // Si tiene custom y no queremos forzar patrón:
   if (customGridCol && customAspect) {
     return {
-      gridCol: getGridColClass(customGridCol),
+      gridCol: `${mobileSpan} ${getGridColClass(customGridCol)}`,
       aspect: customAspect,
     };
   }
 
   // Patrón editorial armónico cíclico de 8 piezas adaptado al grid de 12 columnas
   const pattern = [
-    { gridCol: "md:col-span-8", aspect: "3/2" },  // 0: Ancha (2/3)
-    { gridCol: "md:col-span-4", aspect: "3/4" },  // 1: Vertical (1/3) -> Fila 1 completa
-    { gridCol: "md:col-span-4", aspect: "3/4" },  // 2: Vertical (1/3)
-    { gridCol: "md:col-span-8", aspect: "3/2" },  // 3: Ancha (2/3) -> Fila 2 completa
-    { gridCol: "md:col-span-4", aspect: "1/1" },  // 4: Cuadrada (1/3)
-    { gridCol: "md:col-span-4", aspect: "1/1" },  // 5: Cuadrada (1/3)
-    { gridCol: "md:col-span-4", aspect: "1/1" },  // 6: Cuadrada (1/3) -> Fila 3 completa
-    { gridCol: "md:col-span-12", aspect: "16/9" }, // 7: Panorámica completa (3/3) -> Fila 4 completa
+    { gridCol: `${mobileSpan} md:col-span-8`, aspect: "3/2" },  // 0: Ancha (2/3)
+    { gridCol: `${mobileSpan} md:col-span-4`, aspect: "3/4" },  // 1: Vertical (1/3) -> Fila 1 completa
+    { gridCol: `${mobileSpan} md:col-span-4`, aspect: "3/4" },  // 2: Vertical (1/3)
+    { gridCol: `${mobileSpan} md:col-span-8`, aspect: "3/2" },  // 3: Ancha (2/3) -> Fila 2 completa
+    { gridCol: `${mobileSpan} md:col-span-4`, aspect: "1/1" },  // 4: Cuadrada (1/3)
+    { gridCol: `${mobileSpan} md:col-span-4`, aspect: "1/1" },  // 5: Cuadrada (1/3)
+    { gridCol: `${mobileSpan} md:col-span-4`, aspect: "1/1" },  // 6: Cuadrada (1/3) -> Fila 3 completa
+    { gridCol: "col-span-2 md:col-span-12", aspect: "16/9" }, // 7: Panorámica completa (3/3) -> Fila 4 completa
   ];
 
   return pattern[index % pattern.length];
@@ -769,9 +778,7 @@ export function CollectionPage() {
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-1"} ${
-            isTwoColumns ? "" : "md:grid-cols-12"
-          } gap-4 md:gap-4 mb-1 items-start`}
+          className={`grid ${isTwoColumns ? "grid-cols-2" : "grid-cols-2 md:grid-cols-12"} gap-4 md:gap-4 mb-1 items-start`}
         >
           {localizedWorks.map((w, idx) => (
             <WorkCard 

@@ -98,11 +98,16 @@ export function getGridColClass(gridCol: string | undefined): string {
   return gridCol;
 }
 
-const COL_OPTIONS = [
-  { value: "md:col-span-4", span: 4, label: "1 col", tooltip: "1 columna (1/3 de fila)" },
-  { value: "md:col-span-6", span: 6, label: "1/2", tooltip: "Media pantalla (1/2 de fila)" },
-  { value: "md:col-span-8", span: 8, label: "2 col", tooltip: "2 columnas (2/3 de fila)" },
-  { value: "md:col-span-12", span: 12, label: "Full", tooltip: "Fila completa (3 columnas)" },
+const COL_OPTIONS_DESKTOP = [
+  { value: "md:col-span-4", span: 4, label: "1 col", tooltip: "1 columna en PC (1/3 de fila)" },
+  { value: "md:col-span-6", span: 6, label: "1/2", tooltip: "Media pantalla en PC (1/2 de fila)" },
+  { value: "md:col-span-8", span: 8, label: "2 col", tooltip: "2 columnas en PC (2/3 de fila)" },
+  { value: "md:col-span-12", span: 12, label: "Full", tooltip: "Fila completa en PC (3 columnas)" },
+];
+
+const COL_OPTIONS_MOBILE = [
+  { value: "col-span-1", span: 1, label: "2 por fila", tooltip: "Media pantalla en móvil (caben 2 por fila)" },
+  { value: "col-span-2", span: 2, label: "1 por fila", tooltip: "Ancho completo en móvil (1 por fila)" },
 ];
 
 const ASPECT_OPTIONS = [
@@ -160,8 +165,18 @@ function SortablePuzzleCard({
   };
 
   const currentGridCol = getGridColClass(work.gridCol);
+  const currentGridColMobile =
+    work.gridColMobile ||
+    (work.gridCol === "md:col-span-1" || work.gridCol === "md:col-span-4" ? "col-span-1" : "col-span-2");
   const currentAspect = work.aspect || "3/4";
   const isContain = work.fitMode === "contain";
+
+  const appliedGridClass =
+    device === "desktop"
+      ? currentGridCol
+      : currentGridColMobile === "col-span-1"
+      ? "col-span-1"
+      : "col-span-2";
 
   return (
     <motion.div
@@ -173,9 +188,7 @@ function SortablePuzzleCard({
         isDragging
           ? "border-brand-blush shadow-2xl scale-[1.02] ring-2 ring-brand-blush/40"
           : "border-brand-cream/15 hover:border-brand-blush/60"
-      } shadow-xl overflow-hidden flex flex-col group/puzzle col-span-1 ${
-        device === "desktop" ? currentGridCol : ""
-      }`}
+      } shadow-xl overflow-hidden flex flex-col group/puzzle ${appliedGridClass}`}
     >
       {/* Barra de Controles Superiores de la Card */}
       {!cleanPreview && (
@@ -196,27 +209,50 @@ function SortablePuzzleCard({
             </span>
           </div>
 
-          {/* Selector de Ancho de Columna */}
+          {/* Selector de Ancho dependiente del dispositivo */}
           <div className="flex items-center gap-0.5 bg-brand-bg px-1.5 py-0.5 rounded-lg border border-brand-cream/10">
-            <span className="text-[8.5px] uppercase font-sans text-brand-cream/40 mr-0.5">Ancho:</span>
-            {COL_OPTIONS.map((c) => {
-              const active = c.value === currentGridCol;
-              return (
-                <button
-                  key={c.value}
-                  type="button"
-                  onClick={() => onUpdateLayout(work.id, { gridCol: c.value })}
-                  className={`px-1.5 py-0.5 rounded text-[8.5px] font-sans font-semibold transition-all cursor-pointer ${
-                    active
-                      ? "bg-brand-blush text-brand-ink shadow-xs"
-                      : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
-                  }`}
-                  title={`Ancho: ${c.span}/12 columnas`}
-                >
-                  {c.label}
-                </button>
-              );
-            })}
+            <span className="text-[8.5px] uppercase font-sans text-brand-cream/40 mr-0.5">
+              {device === "mobile" ? "Móvil:" : "Ancho:"}
+            </span>
+            {device === "mobile" ? (
+              COL_OPTIONS_MOBILE.map((c) => {
+                const active = c.value === currentGridColMobile;
+                return (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => onUpdateLayout(work.id, { gridColMobile: c.value })}
+                    className={`px-1.5 py-0.5 rounded text-[8.5px] font-sans font-semibold transition-all cursor-pointer ${
+                      active
+                        ? "bg-brand-blush text-brand-ink shadow-xs"
+                        : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                    }`}
+                    title={c.tooltip}
+                  >
+                    {c.label}
+                  </button>
+                );
+              })
+            ) : (
+              COL_OPTIONS_DESKTOP.map((c) => {
+                const active = c.value === currentGridCol;
+                return (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => onUpdateLayout(work.id, { gridCol: c.value })}
+                    className={`px-1.5 py-0.5 rounded text-[8.5px] font-sans font-semibold transition-all cursor-pointer ${
+                      active
+                        ? "bg-brand-blush text-brand-ink shadow-xs"
+                        : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                    }`}
+                    title={c.tooltip}
+                  >
+                    {c.label}
+                  </button>
+                );
+              })
+            )}
           </div>
 
           {/* Selector de Proporción (Ratios) */}
@@ -352,7 +388,13 @@ function SortablePuzzleCard({
         {/* Badge en esquina */}
         {!cleanPreview && (
           <div className="absolute top-3 left-3 z-3 bg-brand-dark/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-brand-blush/40 text-[9px] font-mono text-brand-blush flex items-center gap-1">
-            <span>{currentGridCol.replace("md:col-span-", "")} col</span>
+            <span>
+              {device === "mobile"
+                ? currentGridColMobile === "col-span-1"
+                  ? "2 por fila"
+                  : "1 por fila"
+                : `${currentGridCol.replace("md:col-span-", "")} col`}
+            </span>
             <span>·</span>
             <span>{currentAspect}</span>
             {isContain && (
@@ -405,7 +447,8 @@ export function AdminGalleryEditor() {
     img: "",
     publicId: "",
     imgPos: "50% 30%",
-    gridCol: "md:col-span-1",
+    gridCol: "md:col-span-4",
+    gridColMobile: "col-span-2",
     aspect: "3/4",
     featured: false,
     fitMode: "cover",
@@ -651,7 +694,8 @@ export function AdminGalleryEditor() {
       img: "",
       publicId: "",
       imgPos: "50% 30%",
-      gridCol: "md:col-span-1",
+      gridCol: "md:col-span-4",
+      gridColMobile: "col-span-2",
       aspect: "3/4",
       featured: false,
       fitMode: "cover",
@@ -887,7 +931,9 @@ export function AdminGalleryEditor() {
           <div className="flex items-center gap-2.5">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-medium text-brand-cream">
-              Muro Interactivo: Arrastra cualquier obra desde su icono ⠿ para reordenarla. Ajusta el ancho (1/3, 1/2, 2/3, Full), la proporción o el foco; todo se guarda automáticamente en vivo.
+              {device === "mobile"
+                ? "Vista Móvil (2 col): Configura cada obra como '2 por fila' o '1 por fila' de forma independiente a la vista de ordenador."
+                : "Muro Interactivo: Arrastra cualquier obra desde su icono ⠿ para reordenarla. Ajusta el ancho en PC (1 col, 1/2, 2 col, Full) o proporción; se guarda automáticamente."}
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -902,7 +948,7 @@ export function AdminGalleryEditor() {
       <div
         className={`w-full mx-auto transition-all duration-300 ${
           device === "mobile"
-            ? "max-w-[420px]"
+            ? "max-w-[480px]"
             : device === "tablet"
             ? "max-w-[768px]"
             : "w-full"
@@ -932,7 +978,7 @@ export function AdminGalleryEditor() {
               <div
                 className={`grid gap-6 auto-rows-auto items-start ${
                   device === "mobile"
-                    ? "grid-cols-1"
+                    ? "grid-cols-2"
                     : device === "tablet"
                     ? "grid-cols-2"
                     : "grid-cols-1 md:grid-cols-12"

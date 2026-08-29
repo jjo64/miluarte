@@ -23,6 +23,7 @@ export interface Work {
   publicId?: string;
   imgPos: string;
   gridCol: string;
+  gridColMobile?: string;
   aspect: string;
   order?: number;
   featured?: boolean;
