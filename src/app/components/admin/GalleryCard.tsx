@@ -24,7 +24,12 @@ export function GalleryCard({
   const hasCover = Boolean(gallery.coverImage && gallery.coverImage.trim().length > 0);
 
   return (
-    <div className="rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-cream/25 transition-all overflow-hidden flex flex-col justify-between group shadow-xl">
+    <div
+      onClick={!isReorderMode ? onOpen : undefined}
+      className={`rounded-2xl bg-brand-dark border border-brand-cream/10 hover:border-brand-blush/50 transition-all duration-300 overflow-hidden flex flex-col justify-between group shadow-xl ${
+        !isReorderMode ? "cursor-pointer hover:shadow-2xl hover:-translate-y-0.5" : ""
+      }`}
+    >
       {/* 1. SECCIÓN DE PORTADA VISUAL */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-brand-bg/90 border-b border-brand-cream/10 group/cover">
         {hasCover ? (
@@ -138,7 +143,11 @@ export function GalleryCard({
           {!isReorderMode && (
             <div className="flex items-center gap-2">
               <button
-                onClick={onOpen}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpen();
+                }}
                 className="flex-1 py-2.5 px-3 rounded-xl bg-brand-blush/15 hover:bg-brand-blush text-brand-blush hover:text-brand-ink text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <span>Gestionar Obras</span>
@@ -146,7 +155,11 @@ export function GalleryCard({
               </button>
 
               <button
-                onClick={onEditMeta}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditMeta();
+                }}
                 title="Editar información y textos de la galería"
                 className="p-2.5 rounded-xl border border-brand-cream/15 text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 transition-colors cursor-pointer"
               >
@@ -154,7 +167,11 @@ export function GalleryCard({
               </button>
 
               <button
-                onClick={onDelete}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
                 title={`Eliminar la galería "${gallery.title}" y sus obras`}
                 className="p-2.5 rounded-xl border border-brand-orange/20 text-brand-orange/70 hover:text-brand-orange hover:bg-brand-orange/10 transition-colors cursor-pointer"
               >
