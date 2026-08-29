@@ -509,9 +509,9 @@ export function AdminRendersEditor() {
       >
         {/* ── HERO LIVE SECTION (Calco de /renders) ── */}
         <section className="relative pt-12 pb-12 px-6 md:px-10 max-w-[1200px] mx-auto border-b border-white/5">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          <div className={`flex items-center gap-8 ${device === "desktop" ? "flex-col lg:flex-row lg:gap-12" : "flex-col"}`}>
             {/* Columna Izquierda: Textos Editables en Vivo */}
-            <div className="w-full lg:w-[45%] flex flex-col justify-center">
+            <div className={`w-full ${device === "desktop" ? "lg:w-[45%]" : "w-full"} flex flex-col justify-center`}>
               {/* Subtítulo / Categoría */}
               <div className="relative group/field mb-3">
                 <input
@@ -553,7 +553,7 @@ export function AdminRendersEditor() {
                       : "border-transparent"
                   }`}
                   style={{
-                    fontSize: device === "mobile" ? "28px" : "36px",
+                    fontSize: device === "mobile" ? "26px" : "36px",
                     lineHeight: 1.15,
                   }}
                 />
@@ -562,7 +562,7 @@ export function AdminRendersEditor() {
               {/* Descripción del Hero */}
               <div className="relative group/field">
                 <textarea
-                  rows={3}
+                  rows={device === "mobile" ? 4 : 3}
                   value={draftTexts[lang]?.heroDescription || ""}
                   onChange={(e) =>
                     setDraftTexts((prev) => ({
@@ -583,8 +583,8 @@ export function AdminRendersEditor() {
             </div>
 
             {/* Columna Derecha: Visor 3D en Vivo del Hero */}
-            <div className="w-full lg:w-[55%] relative group/hero3d">
-              <div className="w-full h-[320px] sm:h-[380px] rounded-2xl overflow-hidden border border-white/10 bg-black/60 relative shadow-xl">
+            <div className={`w-full ${device === "desktop" ? "lg:w-[55%]" : "w-full"} relative group/hero3d`}>
+              <div className={`w-full ${device === "mobile" ? "h-[280px]" : "h-[320px] sm:h-[380px]"} rounded-2xl overflow-hidden border border-white/10 bg-black/60 relative shadow-xl`}>
                 <ModelViewer3D
                   isHero={true}
                   modelUrl={renders.find((r) => r.model3dSrc)?.model3dSrc || "/models/Matelec-optimized.glb"}
@@ -643,9 +643,9 @@ export function AdminRendersEditor() {
 
             {/* Listado de Tarjetas de Renders */}
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              <div className={`grid gap-6 ${device === "mobile" ? "grid-cols-1" : device === "tablet" ? "grid-cols-2" : "grid-cols-1 md:grid-cols-5"}`}>
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="aspect-[16/9] rounded-2xl bg-black/40 border border-white/5 animate-pulse md:col-span-2" />
+                  <div key={i} className="aspect-[16/9] rounded-2xl bg-black/40 border border-white/5 animate-pulse" />
                 ))}
               </div>
             ) : renders.length === 0 ? (
@@ -659,9 +659,9 @@ export function AdminRendersEditor() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              <div className={`grid gap-6 ${device === "mobile" ? "grid-cols-1" : device === "tablet" ? "grid-cols-2" : "grid-cols-1 md:grid-cols-5"}`}>
                 {renders.map((item, i) => {
-                  const colClass = getColSpan(i);
+                  const colClass = device === "desktop" ? getColSpan(i) : "col-span-1";
 
                   return (
                     <motion.div

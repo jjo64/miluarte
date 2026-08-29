@@ -314,7 +314,7 @@ export function AdminAboutEditor() {
         }`}
       >
         {/* ── 1. Encabezado y Retrato Principal de Nerea ── */}
-        <div className="p-6 md:p-8 rounded-2xl bg-brand-dark border border-brand-cream/15 shadow-xl flex flex-col sm:flex-row gap-8 items-start">
+        <div className={`p-6 md:p-8 rounded-2xl bg-brand-dark border border-brand-cream/15 shadow-xl flex gap-8 items-start ${device === "desktop" ? "flex-col sm:flex-row" : "flex-col"}`}>
           <div
             onClick={() => {
               setMediaTarget("photo");

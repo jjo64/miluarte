@@ -508,8 +508,8 @@ export function AdminHomeEditor() {
           }`}
         >
           {/* ── 1. Hero Exacto ── */}
-          <section className="relative min-h-[640px] bg-brand-bg flex items-center overflow-hidden pt-16 pb-16 md:py-20 border-b border-brand-cream/10">
-            <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 px-6 md:px-12 max-w-[1200px] mx-auto items-center">
+          <section className={`relative bg-brand-bg flex items-center overflow-hidden border-b border-brand-cream/10 ${device === "mobile" ? "py-10 min-h-auto" : "min-h-[640px] pt-16 pb-16 md:py-20"}`}>
+            <div className={`relative z-10 w-full grid gap-10 px-6 md:px-12 max-w-[1200px] mx-auto items-center ${device === "desktop" ? "grid-cols-1 md:grid-cols-[1.1fr_1fr]" : "grid-cols-1"}`}>
               {/* Left: Bio */}
               <div className="flex flex-col justify-center order-1">
                 <EditableField
