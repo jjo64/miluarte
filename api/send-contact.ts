@@ -1,5 +1,6 @@
 import dns from "dns";
 import { kv } from "./admin/_lib/kv.js";
+import { sendTelegramNotification, escapeHtml } from "./admin/_lib/telegram.js";
 
 // DNS MX Record lookup helper
 function resolveMx(domain: string): Promise<boolean> {
@@ -94,7 +95,30 @@ export default async function handler(req: any, res: any) {
       console.error("KV contact message save error:", kvErr);
     }
 
-    // 5. Enviar por email si RESEND_API_KEY está configurada
+    // 5. Enviar notificación por Telegram si está configurado
+    try {
+      const escapedEmail = escapeHtml(email);
+      const companyLine = company ? `🏢 <b>Empresa / Proyecto:</b> ${escapeHtml(company)}\n` : "";
+      
+      const telegramText =
+        `💌 <b>NUEVO MENSAJE DE CONTACTO</b> 💌\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `📌 <b>Motivo:</b> ${escapeHtml(subjectText)}\n` +
+        `👤 <b>Remitente:</b> ${escapeHtml(name)}\n` +
+        `✉️ <b>Email:</b> <code>${escapedEmail}</code> (<a href="mailto:${escapedEmail}">Responder</a>)\n` +
+        companyLine +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `💬 <b>Mensaje:</b>\n` +
+        `<blockquote>${escapeHtml(message)}</blockquote>\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `✨ <i>Gestiona tus mensajes en <a href="https://miluartedenara.com/admin">miluartedenara.com/admin</a></i>`;
+
+      await sendTelegramNotification(telegramText);
+    } catch (tgErr) {
+      console.warn("Telegram notification error:", tgErr);
+    }
+
+    // 6. Enviar por email si RESEND_API_KEY está configurada
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       const toEmail = (subject === "job" || subject === "gigantic")

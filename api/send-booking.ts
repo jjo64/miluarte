@@ -1,5 +1,6 @@
 import dns from "dns";
 import { kv } from "./admin/_lib/kv.js";
+import { sendTelegramNotification, escapeHtml } from "./admin/_lib/telegram.js";
 
 // DNS MX Record lookup helper
 function resolveMx(domain: string): Promise<boolean> {
@@ -82,7 +83,32 @@ export default async function handler(req: any, res: any) {
       console.error("KV booking message save error:", kvErr);
     }
 
-    // 5. Enviar por email si RESEND_API_KEY está configurada
+    // 5. Enviar notificación por Telegram si está configurado
+    try {
+      const isCommercial = projectType === "commercial";
+      const typeLabel = isCommercial ? "💼 Comercial (Prioridad)" : "🎨 Personal";
+      const escapedEmail = escapeHtml(email);
+      
+      const telegramText =
+        `🌿 <b>NUEVO ENCARGO EN MILUARTE</b> 🌿\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `🏷️ <b>Tipo:</b> ${typeLabel}\n` +
+        `👤 <b>Cliente:</b> ${escapeHtml(name)}\n` +
+        `✉️ <b>Email:</b> <code>${escapedEmail}</code> (<a href="mailto:${escapedEmail}">Responder</a>)\n` +
+        `💰 <b>Presupuesto:</b> ${escapeHtml(budget || "No especificado")}\n` +
+        `⏰ <b>Plazo estimado:</b> ${escapeHtml(finalDeadline)}\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `📝 <b>Descripción de la idea:</b>\n` +
+        `<blockquote>${escapeHtml(description)}</blockquote>\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `✨ <i>Gestiona este encargo en <a href="https://miluartedenara.com/admin">miluartedenara.com/admin</a></i>`;
+
+      await sendTelegramNotification(telegramText);
+    } catch (tgErr) {
+      console.warn("Telegram notification error:", tgErr);
+    }
+
+    // 6. Enviar por email si RESEND_API_KEY está configurada
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       const toEmail = projectType === "commercial"
