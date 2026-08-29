@@ -145,6 +145,7 @@ export default async function handler(req: any, res: any) {
         aspect: aspect || "1/1",
         order: works.length,
         featured: Boolean(featured),
+        fitMode: (req.body?.fitMode === "contain" ? "contain" : "cover") as "cover" | "contain",
       };
 
       const preSnapId = await createPreSnapshot();

@@ -149,15 +149,23 @@ function WorkCard({
       }}
       data-cursor={language === "es" ? "Ampliar" : "Zoom"}
     >
-      <div className="relative overflow-hidden w-full h-full" style={{ aspectRatio: layout.aspect }}>
+      <div className="relative overflow-hidden w-full h-full bg-brand-dark/90" style={{ aspectRatio: layout.aspect }}>
+        {work.fitMode === "contain" && (
+          <div
+            className="absolute inset-0 bg-cover bg-center blur-md opacity-25 scale-110 pointer-events-none"
+            style={{ backgroundImage: `url(${getOptimizedImageUrl(work.img, 400)})` }}
+          />
+        )}
         <img
           ref={imgRef}
           src={getOptimizedImageUrl(work.img, 800)}
           alt={work.title}
-          className={`w-full h-full object-cover transition-all duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`relative z-1 w-full h-full ${
+            work.fitMode === "contain" ? "object-contain p-2" : "object-cover"
+          } transition-all duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
             hovered ? "scale-105 brightness-[0.82] saturate-[1.1]" : "brightness-[0.72]"
           }`}
-          style={{ objectPosition: work.imgPos }}
+          style={{ objectPosition: work.imgPos || "50% 50%" }}
         />
 
         {/* Museum label overlay */}

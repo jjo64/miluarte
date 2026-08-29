@@ -21,6 +21,7 @@ export interface Work {
   publicId?: string;
   order?: number;
   featured?: boolean;
+  fitMode?: "cover" | "contain";
 }
 
 export const META: Record<string, CollectionMeta> = {

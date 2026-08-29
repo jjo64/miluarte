@@ -1,42 +1,55 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   ArrowLeft,
   Plus,
-  ArrowUpDown,
-  Check,
   X,
   ExternalLink,
   Star,
   Edit3,
   Trash2,
-  LayoutGrid,
-  Save,
-  RotateCcw,
   Sparkles,
-  Maximize2,
-  Square,
-  RectangleHorizontal,
-  RectangleVertical,
-  ChevronLeft,
-  ChevronRight,
   Eye,
   EyeOff,
   Monitor,
   Tablet,
   Smartphone,
   Camera,
-  Layers,
   BookOpen,
+  GripVertical,
+  Crosshair,
+  Maximize,
+  Crop,
+  Wand2,
+  CheckCircle2,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
-import { WorkCard } from "../../components/admin/WorkCard";
-import { DragSortableList } from "../../components/admin/DragSortableList";
 import { ImageUploader } from "../../components/admin/ImageUploader";
 import { CardResizer } from "../../components/admin/CardResizer";
 import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
 import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
+import { FocalPointModal } from "../../components/admin/FocalPointModal";
 import { Toast } from "../../components/admin/Toast";
 import { GalleryMeta, Work } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
@@ -89,18 +102,271 @@ const COL_OPTIONS = [
   { value: "md:col-span-4", span: 4, label: "1/3" },
   { value: "md:col-span-6", span: 6, label: "1/2" },
   { value: "md:col-span-8", span: 8, label: "2/3" },
-  { value: "md:col-span-12", span: 12, label: "1/1" },
+  { value: "md:col-span-12", span: 12, label: "Full" },
 ];
 
 const ASPECT_OPTIONS = [
-  { value: "3/4", label: "3:4", icon: RectangleVertical },
-  { value: "1/1", label: "1:1", icon: Square },
-  { value: "3/2", label: "3:2", icon: RectangleHorizontal },
-  { value: "16/9", label: "16:9", icon: Maximize2 },
+  { value: "3/4", label: "3:4", sub: "Vertical Clásico" },
+  { value: "4/5", label: "4:5", sub: "Retrato / Cartel" },
+  { value: "1/1", label: "1:1", sub: "Cuadrado" },
+  { value: "4/3", label: "4:3", sub: "Horizontal Estándar" },
+  { value: "3/2", label: "3:2", sub: "Foto Clásica" },
+  { value: "16/9", label: "16:9", sub: "Panorámico" },
+  { value: "21/9", label: "21:9", sub: "Ultra-Wide" },
 ];
 
 type DeviceView = "desktop" | "tablet" | "mobile";
 type Lang = "es" | "en";
+
+interface SortablePuzzleCardProps {
+  work: Work;
+  index: number;
+  device: DeviceView;
+  cleanPreview: boolean;
+  onUpdateLayout: (workId: string, updates: Partial<Work>) => void;
+  onOpenEdit: (work: Work) => void;
+  onDelete: (work: Work) => void;
+  onOpenFocalPicker: (work: Work) => void;
+  onDetectAutoAspect: (work: Work) => void;
+  onToggleFitMode: (work: Work) => void;
+}
+
+function SortablePuzzleCard({
+  work,
+  index,
+  device,
+  cleanPreview,
+  onUpdateLayout,
+  onOpenEdit,
+  onDelete,
+  onOpenFocalPicker,
+  onDetectAutoAspect,
+  onToggleFitMode,
+}: SortablePuzzleCardProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: work.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : "auto",
+    opacity: isDragging ? 0.75 : 1,
+  };
+
+  const currentGridCol = getGridColClass(work.gridCol);
+  const currentAspect = work.aspect || "3/4";
+  const isContain = work.fitMode === "contain";
+
+  return (
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      layout
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className={`relative rounded-2xl bg-brand-dark border-2 ${
+        isDragging
+          ? "border-brand-blush shadow-2xl scale-[1.02] ring-2 ring-brand-blush/40"
+          : "border-brand-cream/15 hover:border-brand-blush/60"
+      } shadow-xl overflow-hidden flex flex-col group/puzzle col-span-1 ${
+        device === "desktop" ? currentGridCol : ""
+      }`}
+    >
+      {/* Barra de Controles Superiores de la Card */}
+      {!cleanPreview && (
+        <div className="p-2 bg-brand-dark/95 border-b border-brand-cream/10 flex items-center justify-between gap-1.5 flex-wrap z-20">
+          {/* Drag Handle & Order Badge */}
+          <div className="flex items-center gap-1.5">
+            <button
+              {...attributes}
+              {...listeners}
+              type="button"
+              className="p-1 rounded-lg bg-brand-cream/5 hover:bg-brand-blush hover:text-brand-ink text-brand-cream/60 cursor-grab active:cursor-grabbing transition-colors"
+              title="Arrastra desde aquí para reordenar la obra"
+            >
+              <GripVertical className="w-4 h-4" />
+            </button>
+            <span className="font-mono text-[10px] text-brand-cream/50 bg-black/40 px-1.5 py-0.5 rounded font-medium">
+              #{index + 1}
+            </span>
+          </div>
+
+          {/* Selector de Ancho de Columna */}
+          <div className="flex items-center gap-0.5 bg-brand-bg px-1.5 py-0.5 rounded-lg border border-brand-cream/10">
+            <span className="text-[8.5px] uppercase font-sans text-brand-cream/40 mr-0.5">Ancho:</span>
+            {COL_OPTIONS.map((c) => {
+              const active = c.value === currentGridCol;
+              return (
+                <button
+                  key={c.value}
+                  type="button"
+                  onClick={() => onUpdateLayout(work.id, { gridCol: c.value })}
+                  className={`px-1.5 py-0.5 rounded text-[8.5px] font-sans font-semibold transition-all cursor-pointer ${
+                    active
+                      ? "bg-brand-blush text-brand-ink shadow-xs"
+                      : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                  }`}
+                  title={`Ancho: ${c.span}/12 columnas`}
+                >
+                  {c.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Selector de Proporción (Ratios) */}
+          <div className="flex items-center gap-0.5 bg-brand-bg px-1.5 py-0.5 rounded-lg border border-brand-cream/10">
+            <span className="text-[8.5px] uppercase font-sans text-brand-cream/40 mr-0.5">Ratio:</span>
+            {ASPECT_OPTIONS.map((a) => {
+              const active = a.value === currentAspect;
+              return (
+                <button
+                  key={a.value}
+                  type="button"
+                  onClick={() => onUpdateLayout(work.id, { aspect: a.value })}
+                  className={`px-1.5 py-0.5 rounded text-[8.5px] font-mono transition-all cursor-pointer ${
+                    active
+                      ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
+                      : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+                  }`}
+                  title={a.sub}
+                >
+                  {a.label}
+                </button>
+              );
+            })}
+            {/* Auto Aspect button */}
+            <button
+              type="button"
+              onClick={() => onDetectAutoAspect(work)}
+              className="px-1.5 py-0.5 rounded text-[8.5px] font-sans text-[#C8A96E] hover:bg-[#C8A96E]/20 transition-all cursor-pointer flex items-center gap-0.5"
+              title="Detectar y aplicar la proporción nativa exacta de la foto"
+            >
+              <Wand2 className="w-2.5 h-2.5" />
+              <span>Auto</span>
+            </button>
+          </div>
+
+          {/* Acciones de Ajuste Visual & Edición */}
+          <div className="flex items-center gap-1">
+            {/* Modo Obra Completa (Contain vs Cover) */}
+            <button
+              type="button"
+              onClick={() => onToggleFitMode(work)}
+              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                isContain
+                  ? "bg-brand-blush text-brand-ink border-brand-blush font-semibold shadow-xs"
+                  : "border-brand-cream/10 text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
+              }`}
+              title={isContain ? "Modo Obra Completa (sin recortes). Clic para Llenar" : "Modo Llenar. Clic para Obra Completa (sin recortes)"}
+            >
+              {isContain ? <Maximize className="w-3.5 h-3.5" /> : <Crop className="w-3.5 h-3.5" />}
+            </button>
+
+            {/* Punto Focal */}
+            <button
+              type="button"
+              onClick={() => onOpenFocalPicker(work)}
+              className="p-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-cream/20 text-brand-cream hover:text-brand-blush transition-colors cursor-pointer"
+              title="Ajustar punto focal de recorte (Crosshair)"
+            >
+              <Crosshair className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Destacada */}
+            <button
+              type="button"
+              onClick={() => onUpdateLayout(work.id, { featured: !work.featured })}
+              className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                work.featured
+                  ? "bg-brand-blush/20 border-brand-blush text-brand-blush"
+                  : "border-brand-cream/10 text-brand-cream/40 hover:text-brand-cream"
+              }`}
+              title={work.featured ? "Destacada en Inicio" : "Marcar como destacada"}
+            >
+              <Star className={`w-3.5 h-3.5 ${work.featured ? "fill-brand-blush" : ""}`} />
+            </button>
+
+            {/* Editar Ficha */}
+            <button
+              type="button"
+              onClick={() => onOpenEdit(work)}
+              className="p-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink transition-colors cursor-pointer"
+              title="Editar título, año y ficha técnica"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Eliminar */}
+            <button
+              type="button"
+              onClick={() => onDelete(work)}
+              className="p-1.5 rounded-lg bg-brand-orange/10 hover:bg-brand-orange text-brand-orange hover:text-white transition-colors cursor-pointer"
+              title="Eliminar obra"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Contenedor de Imagen con el aspect ratio real */}
+      <div
+        className="relative overflow-hidden w-full bg-brand-bg group/img"
+        style={{ aspectRatio: currentAspect }}
+      >
+        {isContain && (
+          <div
+            className="absolute inset-0 bg-cover bg-center blur-md opacity-25 scale-110 pointer-events-none"
+            style={{ backgroundImage: `url(${getOptimizedImageUrl(work.img, 300)})` }}
+          />
+        )}
+
+        <img
+          src={getOptimizedImageUrl(work.img, 800)}
+          alt={work.title}
+          className={`relative z-1 w-full h-full ${
+            isContain ? "object-contain p-2" : "object-cover"
+          } transition-transform duration-500 group-hover/img:scale-105`}
+          style={{ objectPosition: work.imgPos || "50% 50%" }}
+        />
+
+        {/* Ficha artística overlay en la base */}
+        <div className="absolute inset-0 z-2 bg-gradient-to-t from-brand-bg/95 via-brand-bg/30 to-transparent flex flex-col justify-end p-5 select-none pointer-events-none">
+          <p className="font-sans text-[9px] tracking-widest uppercase text-brand-blush mb-1">
+            {work.technique || "Digital"} · {work.year}
+          </p>
+          <p className="font-serif text-brand-cream text-base font-light truncate">
+            {work.title || "Sin título"}
+          </p>
+          <p className="font-sans text-brand-cream/50 text-[11px] tracking-wide">
+            {work.size || "Medidas N/A"}
+          </p>
+        </div>
+
+        {/* Badge en esquina */}
+        {!cleanPreview && (
+          <div className="absolute top-3 left-3 z-3 bg-brand-dark/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-brand-blush/40 text-[9px] font-mono text-brand-blush flex items-center gap-1">
+            <span>{currentGridCol.replace("md:col-span-", "")} col</span>
+            <span>·</span>
+            <span>{currentAspect}</span>
+            {isContain && (
+              <>
+                <span>·</span>
+                <span className="text-[#C8A96E]">Completa</span>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
 export function AdminGalleryEditor() {
   const { slug } = useParams<{ slug: string }>();
@@ -114,15 +380,19 @@ export function AdminGalleryEditor() {
   const [animasSlides, setAnimasSlides] = useState<string[]>(DEFAULT_ANIMAS_SLIDES);
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState<Lang>("es");
-  const [viewMode, setViewMode] = useState<"puzzle" | "list">("puzzle");
   const [device, setDevice] = useState<DeviceView>("desktop");
   const [cleanPreview, setCleanPreview] = useState(false);
-  const [serverSnapshot, setServerSnapshot] = useState<string | null>(null);
-  const [isSavingBatch, setIsSavingBatch] = useState(false);
+
+  // Autosave Status: "idle" | "saving" | "saved" | "error"
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const debounceTimerRef = useRef<any>(null);
 
   // Subida de diapositiva de Ánimas
   const [activeSlideIndex, setActiveSlideIndex] = useState<number | null>(null);
   const slideFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Modal selector de Punto Focal
+  const [focalWork, setFocalWork] = useState<Work | null>(null);
 
   // Panel lateral de edición / creación
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -138,14 +408,8 @@ export function AdminGalleryEditor() {
     gridCol: "md:col-span-1",
     aspect: "3/4",
     featured: false,
+    fitMode: "cover",
   });
-
-  const currentSnapshot = JSON.stringify({
-    works,
-    animasSlides: slug === "animas" ? animasSlides : [],
-  });
-
-  const hasChanges = serverSnapshot !== null && serverSnapshot !== currentSnapshot;
 
   // Modal borrar obra
   const [deletingWork, setDeletingWork] = useState<Work | null>(null);
@@ -156,6 +420,24 @@ export function AdminGalleryEditor() {
     type: "success",
     open: false,
   });
+
+  // Sensores de Drag & Drop
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Permite clics normales sin disparar drag
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 6,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const fetchGalleryAndWorks = async () => {
     if (!slug) return;
@@ -178,13 +460,6 @@ export function AdminGalleryEditor() {
       setWorks(safeWorks);
       setServerWorks(safeWorks);
       setAnimasSlides(safeSlides);
-
-      setServerSnapshot(
-        JSON.stringify({
-          works: safeWorks,
-          animasSlides: slug === "animas" ? safeSlides : [],
-        })
-      );
     } catch (err: any) {
       setToast({
         message: "Error al cargar obras: " + (err.message || "Fallo de conexión"),
@@ -200,41 +475,126 @@ export function AdminGalleryEditor() {
     fetchGalleryAndWorks();
   }, [slug]);
 
-  // Actualizar tamaño (col-span y aspect) de una obra directamente en el mosaico en vivo
-  const handleUpdateWorkLayout = (workId: string, updates: { gridCol?: string; aspect?: string; imgPos?: string; featured?: boolean }) => {
-    setWorks((prev) =>
-      prev.map((w) => {
-        if (w.id === workId) {
-          return { ...w, ...updates };
+  // Autosave con Debounce en segundo plano
+  const scheduleAutosave = useCallback(
+    (updatedWorks: Work[]) => {
+      setWorks(updatedWorks);
+      setSaveStatus("saving");
+
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(async () => {
+        if (!slug) return;
+        try {
+          const worksWithOrder = updatedWorks.map((w, idx) => ({ ...w, order: idx }));
+          await request(`/api/admin/works?slug=${slug}`, {
+            method: "PUT",
+            body: JSON.stringify({ works: worksWithOrder }),
+          });
+
+          setServerWorks(JSON.parse(JSON.stringify(worksWithOrder)));
+          setSaveStatus("saved");
+
+          setTimeout(() => {
+            setSaveStatus((prev) => (prev === "saved" ? "idle" : prev));
+          }, 2500);
+        } catch (err: any) {
+          console.error("Autosave error:", err);
+          setSaveStatus("error");
+          setToast({ message: "Error al guardar automáticamente", type: "error", open: true });
         }
-        return w;
-      })
-    );
+      }, 750);
+    },
+    [slug, request]
+  );
+
+  // Manejador de Drag End en el Muro Puzzle
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = works.findIndex((item) => item.id === active.id);
+      const newIndex = works.findIndex((item) => item.id === over.id);
+      const reordered = arrayMove(works, oldIndex, newIndex).map((w, idx) => ({ ...w, order: idx }));
+      scheduleAutosave(reordered);
+    }
   };
+
+  // Actualizar tamaño o propiedades de una obra
+  const handleUpdateWorkLayout = (workId: string, updates: Partial<Work>) => {
+    const next = works.map((w) => (w.id === workId ? { ...w, ...updates } : w));
+    scheduleAutosave(next);
+  };
+
+  // Detectar y aplicar la proporción nativa exacta de la imagen
+  const handleDetectAutoAspect = (work: Work) => {
+    if (!work.img) return;
+    const img = new Image();
+    img.onload = () => {
+      const ratio = img.naturalWidth / img.naturalHeight;
+      let bestMatch = `${img.naturalWidth}/${img.naturalHeight}`;
+
+      if (Math.abs(ratio - 1) < 0.04) bestMatch = "1/1";
+      else if (Math.abs(ratio - 0.75) < 0.04) bestMatch = "3/4";
+      else if (Math.abs(ratio - 0.8) < 0.04) bestMatch = "4/5";
+      else if (Math.abs(ratio - 1.33) < 0.04) bestMatch = "4/3";
+      else if (Math.abs(ratio - 1.5) < 0.04) bestMatch = "3/2";
+      else if (Math.abs(ratio - 1.77) < 0.04) bestMatch = "16/9";
+      else if (Math.abs(ratio - 2.33) < 0.04) bestMatch = "21/9";
+      else bestMatch = `${ratio.toFixed(2)}/1`;
+
+      handleUpdateWorkLayout(work.id, { aspect: bestMatch });
+      setToast({
+        message: `Proporción nativa aplicada: ${img.naturalWidth}×${img.naturalHeight}px (${bestMatch})`,
+        type: "success",
+        open: true,
+      });
+    };
+    img.src = work.img;
+  };
+
+  // Alternar entre modo Cover y Contain (Obra Completa)
+  const handleToggleFitMode = (work: Work) => {
+    const nextFit = work.fitMode === "contain" ? "cover" : "contain";
+    handleUpdateWorkLayout(work.id, { fitMode: nextFit });
+    setToast({
+      message: nextFit === "contain" ? "Modo: Obra Completa (sin recortes)" : "Modo: Llenar Tarjeta (Cover)",
+      type: "success",
+      open: true,
+    });
+  };
+
   const [isSlideMediaModalOpen, setIsSlideMediaModalOpen] = useState(false);
 
-  // Disparar selector de diapositiva
   const handleTriggerSlideUpload = (index: number) => {
     setActiveSlideIndex(index);
     setIsSlideMediaModalOpen(true);
   };
 
-  const handleSlideMediaSelect = (selectedUrl: string) => {
+  const handleSlideMediaSelect = async (selectedUrl: string) => {
     if (activeSlideIndex === null) return;
-    setAnimasSlides((prev) => {
-      const next = [...prev];
-      if (activeSlideIndex === -1) {
-        next.push(selectedUrl);
-      } else {
-        next[activeSlideIndex] = selectedUrl;
-      }
-      return next;
-    });
-    setToast({ message: "Diapositiva actualizada en la Biblia de Ánimas", type: "success", open: true });
+    const nextSlides = [...animasSlides];
+    if (activeSlideIndex === -1) {
+      nextSlides.push(selectedUrl);
+    } else {
+      nextSlides[activeSlideIndex] = selectedUrl;
+    }
+    setAnimasSlides(nextSlides);
     setActiveSlideIndex(null);
+
+    // Guardar slides en base de datos
+    try {
+      await request("/api/admin/texts", {
+        method: "PUT",
+        body: JSON.stringify({ animasSlides: nextSlides }),
+      });
+      setToast({ message: "Diapositiva actualizada en la Biblia de Ánimas", type: "success", open: true });
+    } catch {
+      setToast({ message: "Error al guardar diapositiva", type: "error", open: true });
+    }
   };
 
-  // Subir nueva diapositiva a Cloudinary
   const handleSlideFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || activeSlideIndex === null) return;
@@ -242,14 +602,17 @@ export function AdminGalleryEditor() {
     try {
       setToast({ message: "Subiendo diapositiva a Cloudinary...", type: "success", open: true });
       const res = await uploadImage(file, "miluarte/animas");
-      setAnimasSlides((prev) => {
-        const next = [...prev];
-        if (activeSlideIndex === -1) {
-          next.push(res.secureUrl);
-        } else {
-          next[activeSlideIndex] = res.secureUrl;
-        }
-        return next;
+      const nextSlides = [...animasSlides];
+      if (activeSlideIndex === -1) {
+        nextSlides.push(res.secureUrl);
+      } else {
+        nextSlides[activeSlideIndex] = res.secureUrl;
+      }
+      setAnimasSlides(nextSlides);
+
+      await request("/api/admin/texts", {
+        method: "PUT",
+        body: JSON.stringify({ animasSlides: nextSlides }),
       });
       setToast({ message: "Diapositiva actualizada en la Biblia de Ánimas", type: "success", open: true });
     } catch (err: any) {
@@ -260,61 +623,18 @@ export function AdminGalleryEditor() {
     }
   };
 
-  const handleDeleteSlide = (index: number) => {
-    setAnimasSlides((prev) => prev.filter((_, i) => i !== index));
-    setToast({ message: `Diapositiva #${index + 1} eliminada`, type: "success", open: true });
-  };
-
-  // Guardar todo el diseño del puzzle y diapositivas en la base de datos
-  const handleSaveBatchLayout = async () => {
-    if (!slug) return;
+  const handleDeleteSlide = async (index: number) => {
+    const nextSlides = animasSlides.filter((_, i) => i !== index);
+    setAnimasSlides(nextSlides);
     try {
-      setIsSavingBatch(true);
-      const worksWithOrder = works.map((w, idx) => ({ ...w, order: idx }));
-      await request(`/api/admin/works?slug=${slug}`, {
+      await request("/api/admin/texts", {
         method: "PUT",
-        body: JSON.stringify({ works: worksWithOrder }),
+        body: JSON.stringify({ animasSlides: nextSlides }),
       });
-
-      if (slug === "animas") {
-        await request("/api/admin/texts", {
-          method: "PUT",
-          body: JSON.stringify({ animasSlides }),
-        });
-      }
-
-      setWorks(worksWithOrder);
-      setServerWorks(JSON.parse(JSON.stringify(worksWithOrder)));
-      setServerSnapshot(
-        JSON.stringify({
-          works: worksWithOrder,
-          animasSlides: slug === "animas" ? animasSlides : [],
-        })
-      );
-      setToast({
-        message: "¡Diseño de mosaico guardado y publicado en el portafolio!",
-        type: "success",
-        open: true,
-      });
-    } catch (err: any) {
-      setToast({
-        message: err.message || "Error al guardar el diseño de la galería",
-        type: "error",
-        open: true,
-      });
-    } finally {
-      setIsSavingBatch(false);
+      setToast({ message: `Diapositiva #${index + 1} eliminada`, type: "success", open: true });
+    } catch {
+      setToast({ message: "Error al eliminar diapositiva", type: "error", open: true });
     }
-  };
-
-  // Descartar cambios de tamaño
-  const handleDiscardChanges = () => {
-    fetchGalleryAndWorks();
-    setToast({
-      message: "Cambios de tamaño descartados.",
-      type: "success",
-      open: true,
-    });
   };
 
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -334,6 +654,7 @@ export function AdminGalleryEditor() {
       gridCol: "md:col-span-1",
       aspect: "3/4",
       featured: false,
+      fitMode: "cover",
     });
     setIsDrawerOpen(true);
   };
@@ -356,39 +677,38 @@ export function AdminGalleryEditor() {
 
     try {
       setIsSaving(true);
-      let finalImg = workForm.img;
+      let finalImageUrl = workForm.img;
       let finalPublicId = workForm.publicId;
 
       if (pendingFile) {
-        const uploadRes = await uploadImage(pendingFile, `miluarte/${slug || "general"}`);
-        finalImg = uploadRes.secureUrl;
-        finalPublicId = uploadRes.publicId;
+        setToast({ message: "Subiendo imagen de la obra a Cloudinary...", type: "success", open: true });
+        const res = await uploadImage(pendingFile, `miluarte/${slug}`);
+        finalImageUrl = res.secureUrl;
+        finalPublicId = res.publicId;
       }
 
-      const payload = {
-        ...workForm,
-        img: finalImg,
-        publicId: finalPublicId,
-      };
-
       if (editingWork) {
-        await request(`/api/admin/works?slug=${slug}`, {
+        await request(`/api/admin/works?slug=${slug}&id=${editingWork.id}`, {
           method: "PUT",
           body: JSON.stringify({
-            id: editingWork.id,
-            ...payload,
+            ...workForm,
+            img: finalImageUrl,
+            publicId: finalPublicId,
           }),
         });
-        setToast({ message: "Obra actualizada correctamente", type: "success", open: true });
+        setToast({ message: `Obra "${workForm.title}" actualizada con éxito`, type: "success", open: true });
       } else {
         await request(`/api/admin/works?slug=${slug}`, {
           method: "POST",
-          body: JSON.stringify(payload),
+          body: JSON.stringify({
+            ...workForm,
+            img: finalImageUrl,
+            publicId: finalPublicId,
+          }),
         });
-        setToast({ message: "Nueva obra guardada y añadida a la galería", type: "success", open: true });
+        setToast({ message: `Nueva obra "${workForm.title}" publicada con éxito`, type: "success", open: true });
       }
 
-      setPendingFile(null);
       setIsDrawerOpen(false);
       fetchGalleryAndWorks();
     } catch (err: any) {
@@ -414,34 +734,33 @@ export function AdminGalleryEditor() {
     }
   };
 
-  const handleReorder = async (reordered: Work[]) => {
-    const updated = reordered.map((w, idx) => ({ ...w, order: idx }));
-    setWorks(updated);
-    if (!slug) return;
-    try {
-      await request(`/api/admin/works?slug=${slug}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          reorder: true,
-          ids: updated.map((w) => w.id),
-        }),
-      });
-      setServerWorks(JSON.parse(JSON.stringify(updated)));
-      setServerSnapshot(
-        JSON.stringify({
-          works: updated,
-          animasSlides: slug === "animas" ? animasSlides : [],
-        })
-      );
-      setToast({ message: "Orden de obras actualizado", type: "success", open: true });
-    } catch (err: any) {
-      setToast({ message: "Error al guardar el orden", type: "error", open: true });
-      fetchGalleryAndWorks();
-    }
-  };
-
   const headerActions = (
-    <div className="flex items-center gap-2 flex-wrap justify-end">
+    <div className="flex items-center gap-2.5 flex-wrap justify-end">
+      {/* Indicador de Estado de Guardado en Vivo */}
+      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-bg border border-brand-cream/15 text-xs font-mono">
+        {saveStatus === "saving" && (
+          <div className="flex items-center gap-1.5 text-brand-blush">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            <span className="font-sans">Guardando...</span>
+          </div>
+        )}
+        {saveStatus === "saved" && (
+          <div className="flex items-center gap-1.5 text-emerald-400">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span className="font-sans">Guardado ✓</span>
+          </div>
+        )}
+        {saveStatus === "error" && (
+          <div className="flex items-center gap-1.5 text-brand-orange">
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span className="font-sans">Error al guardar</span>
+          </div>
+        )}
+        {saveStatus === "idle" && (
+          <span className="font-sans text-brand-cream/50">Diseño al día</span>
+        )}
+      </div>
+
       {/* Selector de idioma */}
       <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
         <button
@@ -478,34 +797,6 @@ export function AdminGalleryEditor() {
         <span className="hidden sm:inline">Volver</span>
       </button>
 
-      {/* Selector de modo: Puzzle Muro Live vs Lista Reordenar */}
-      <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
-        <button
-          type="button"
-          onClick={() => setViewMode("puzzle")}
-          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
-            viewMode === "puzzle"
-              ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
-              : "text-brand-cream/60 hover:text-brand-cream"
-          }`}
-        >
-          <LayoutGrid className="w-3.5 h-3.5" />
-          <span>Muro Puzzle</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setViewMode("list")}
-          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
-            viewMode === "list"
-              ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
-              : "text-brand-cream/60 hover:text-brand-cream"
-          }`}
-        >
-          <ArrowUpDown className="w-3.5 h-3.5" />
-          <span>Lista</span>
-        </button>
-      </div>
-
       {/* Selector de dispositivo */}
       <div className="hidden lg:flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
         <button
@@ -540,7 +831,7 @@ export function AdminGalleryEditor() {
         </button>
       </div>
 
-      {/* Botón Vista Limpia (Ocultar Controles) */}
+      {/* Botón Vista Limpia */}
       <button
         type="button"
         onClick={() => setCleanPreview(!cleanPreview)}
@@ -553,38 +844,6 @@ export function AdminGalleryEditor() {
       >
         {cleanPreview ? <EyeOff className="w-3.5 h-3.5 text-brand-blush" /> : <Eye className="w-3.5 h-3.5" />}
         <span className="hidden sm:inline">{cleanPreview ? "Editar" : "Vista Limpia"}</span>
-      </button>
-
-      {/* Botón Descartar cambios de tamaño */}
-      {hasChanges && (
-        <button
-          type="button"
-          onClick={handleDiscardChanges}
-          className="px-3 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 flex items-center gap-1.5 transition-all cursor-pointer"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Descartar</span>
-        </button>
-      )}
-
-      {/* Botón Guardar Mosaico */}
-      <button
-        type="button"
-        onClick={handleSaveBatchLayout}
-        disabled={!hasChanges || isSavingBatch}
-        className="px-4 py-1.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isSavingBatch ? (
-          <>
-            <div className="w-3.5 h-3.5 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
-            <span>Guardando...</span>
-          </>
-        ) : (
-          <>
-            <Save className="w-4 h-4" />
-            <span>{hasChanges ? "Guardar Mosaico" : "Diseño Al Día"}</span>
-          </>
-        )}
       </button>
 
       <a
@@ -610,7 +869,7 @@ export function AdminGalleryEditor() {
   return (
     <AdminLayout
       title={gallery?.title || "Galería de Obras"}
-      subtitle={`${works.length} obras · Ajusta el tamaño de cada card en vivo como un puzzle`}
+      subtitle={`${works.length} obras · Arrastra para reordenar y personaliza tamaños en vivo (Autoguardado)`}
       actions={headerActions}
     >
       {/* Input oculto para subida de diapositivas de Ánimas */}
@@ -624,21 +883,14 @@ export function AdminGalleryEditor() {
 
       {/* Barra informativa de estado interactivo */}
       {!cleanPreview && (
-        <div className="w-full flex items-center justify-between px-5 py-3 mb-6 bg-brand-dark/90 border border-brand-cream/10 rounded-2xl text-xs font-sans text-brand-cream/70 shadow-sm">
+        <div className="w-full flex items-center justify-between px-5 py-3 mb-6 bg-brand-dark/90 border border-brand-cream/10 rounded-2xl text-xs font-sans text-brand-cream/70 shadow-sm flex-wrap gap-3">
           <div className="flex items-center gap-2.5">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-medium text-brand-cream">
-              {viewMode === "puzzle"
-                ? "Vista Mosaico Live: Usa los controles de cada obra para cambiar su ancho (1, 2 o 3 col) y proporción (3:4, 1:1, 3:2, 16:9) en tiempo real."
-                : "Vista Lista: Arrastra las tarjetas para ordenar la secuencia de las obras."}
+              Muro Interactivo: Arrastra cualquier obra desde su icono ⠿ para reordenarla. Ajusta el ancho (1/3, 1/2, 2/3, Full), la proporción o el foco; todo se guarda automáticamente en vivo.
             </span>
           </div>
           <div className="flex items-center gap-3">
-            {hasChanges && (
-              <span className="px-2.5 py-0.5 rounded-full bg-brand-orange/20 text-brand-orange text-[11px] font-mono border border-brand-orange/30">
-                ● Cambios sin guardar
-              </span>
-            )}
             <span className="font-mono text-[11px] text-brand-blush bg-brand-blush/10 px-2 py-0.5 rounded border border-brand-blush/20">
               Dispositivo: {device.toUpperCase()}
             </span>
@@ -673,174 +925,37 @@ export function AdminGalleryEditor() {
               Subir primera obra
             </button>
           </div>
-        ) : viewMode === "puzzle" ? (
-          /* ── MODO 1: Muro Interactivo (Puzzle Live Grid Exacto) ── */
-          <div
-            className={`grid gap-6 auto-rows-auto ${
-              device === "mobile"
-                ? "grid-cols-1"
-                : device === "tablet"
-                ? "grid-cols-2"
-                : "grid-cols-1 md:grid-cols-12"
-            }`}
-          >
-            {works.map((work) => {
-              const currentGridCol = getGridColClass(work.gridCol);
-              const currentAspect = work.aspect || "3/4";
-
-              return (
-                <motion.div
-                  key={work.id}
-                  layout
-                  transition={{ type: "spring", stiffness: 280, damping: 28 }}
-                  className={`relative rounded-2xl bg-brand-dark border-2 border-brand-cream/15 hover:border-brand-blush/60 shadow-xl overflow-hidden flex flex-col group/puzzle col-span-1 ${
-                    device === "desktop" ? currentGridCol : ""
-                  }`}
-                >
-                  {/* Barra de Controles Superiores de la Card (Ocultable con Vista Limpia) */}
-                  {!cleanPreview && (
-                    <div className="p-2.5 bg-brand-dark/95 border-b border-brand-cream/10 flex items-center justify-between gap-1.5 flex-wrap z-20">
-                      {/* Selector de Ancho de Columna */}
-                      <div className="flex items-center gap-1 bg-brand-bg px-2 py-1 rounded-lg border border-brand-cream/10">
-                        <span className="text-[9px] uppercase font-sans text-brand-cream/50 mr-0.5">Ancho:</span>
-                        {COL_OPTIONS.map((c) => {
-                          const active = c.value === currentGridCol;
-                          return (
-                            <button
-                              key={c.value}
-                              type="button"
-                              onClick={() => handleUpdateWorkLayout(work.id, { gridCol: c.value })}
-                              className={`px-1.5 py-0.5 rounded text-[9px] font-sans font-semibold transition-all cursor-pointer ${
-                                active
-                                  ? "bg-brand-blush text-brand-ink shadow-xs"
-                                  : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
-                              }`}
-                            >
-                              {c.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Selector de Proporción */}
-                      <div className="flex items-center gap-1 bg-brand-bg px-2 py-1 rounded-lg border border-brand-cream/10">
-                        <span className="text-[9px] uppercase font-sans text-brand-cream/50 mr-0.5">Ratio:</span>
-                        {ASPECT_OPTIONS.map((a) => {
-                          const active = a.value === currentAspect;
-                          return (
-                            <button
-                              key={a.value}
-                              type="button"
-                              onClick={() => handleUpdateWorkLayout(work.id, { aspect: a.value })}
-                              className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-medium transition-all cursor-pointer ${
-                                active
-                                  ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
-                                  : "text-brand-cream/60 hover:text-brand-cream hover:bg-brand-cream/5"
-                              }`}
-                            >
-                              {a.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Acciones de Edición & Borrado */}
-                      <div className="flex items-center gap-1">
-                        <button
-                          type="button"
-                          onClick={() => handleUpdateWorkLayout(work.id, { featured: !work.featured })}
-                          className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-                            work.featured
-                              ? "bg-brand-blush/20 border-brand-blush text-brand-blush"
-                              : "border-brand-cream/10 text-brand-cream/40 hover:text-brand-cream"
-                          }`}
-                          title={work.featured ? "Destacada en Inicio" : "Marcar como destacada"}
-                        >
-                          <Star className={`w-3.5 h-3.5 ${work.featured ? "fill-brand-blush" : ""}`} />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEdit(work)}
-                          className="p-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink transition-colors cursor-pointer"
-                          title="Editar título y medidas"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setDeletingWork(work)}
-                          className="p-1.5 rounded-lg bg-brand-orange/10 hover:bg-brand-orange text-brand-orange hover:text-white transition-colors cursor-pointer"
-                          title="Eliminar obra"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Contenedor de Imagen con el aspect ratio real */}
-                  <div
-                    className="relative overflow-hidden w-full bg-brand-bg group/img"
-                    style={{
-                      aspectRatio:
-                        currentAspect === "3/4"
-                          ? "3/4"
-                          : currentAspect === "1/1"
-                          ? "1/1"
-                          : currentAspect === "3/2"
-                          ? "3/2"
-                          : "16/9",
-                    }}
-                  >
-                    <img
-                      src={getOptimizedImageUrl(work.img, 800)}
-                      alt={work.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
-                      style={{ objectPosition: work.imgPos || "50% 30%" }}
-                    />
-
-                    {/* Ficha artística overlay en la base */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-bg/95 via-brand-bg/30 to-transparent flex flex-col justify-end p-5 select-none pointer-events-none">
-                      <p className="font-sans text-[9px] tracking-widest uppercase text-brand-blush mb-1">
-                        {work.technique || "Digital"} · {work.year}
-                      </p>
-                      <p className="font-serif text-brand-cream text-base font-light truncate">
-                        {work.title || "Sin título"}
-                      </p>
-                      <p className="font-sans text-brand-cream/50 text-[11px] tracking-wide">
-                        {work.size || "Medidas N/A"}
-                      </p>
-                    </div>
-
-                    {/* Badge en esquina */}
-                    {!cleanPreview && (
-                      <div className="absolute top-3 left-3 bg-brand-dark/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-brand-blush/40 text-[9px] font-mono text-brand-blush">
-                        {currentGridCol.replace("md:col-span-", "")} col · {currentAspect}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
         ) : (
-          /* ── MODO 2: Lista Compacta con Drag & Drop para Reordenar ── */
-          <DragSortableList
-            items={works}
-            enableDrag={true}
-            onReorder={handleReorder}
-            gridClassName="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
-            renderItem={(w) => (
-              <WorkCard
-                work={w}
-                onEdit={() => handleOpenEdit(w)}
-                onDelete={() => setDeletingWork(w)}
-                isReorderMode={true}
-              />
-            )}
-          />
+          /* ── Muro Interactivo Unificado con Drag & Drop Directo ── */
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={works.map((w) => w.id)} strategy={rectSortingStrategy}>
+              <div
+                className={`grid gap-6 auto-rows-auto ${
+                  device === "mobile"
+                    ? "grid-cols-1"
+                    : device === "tablet"
+                    ? "grid-cols-2"
+                    : "grid-cols-1 md:grid-cols-12"
+                }`}
+              >
+                {works.map((work, idx) => (
+                  <SortablePuzzleCard
+                    key={work.id}
+                    work={work}
+                    index={idx}
+                    device={device}
+                    cleanPreview={cleanPreview}
+                    onUpdateLayout={handleUpdateWorkLayout}
+                    onOpenEdit={handleOpenEdit}
+                    onDelete={(w) => setDeletingWork(w)}
+                    onOpenFocalPicker={(w) => setFocalWork(w)}
+                    onDetectAutoAspect={handleDetectAutoAspect}
+                    onToggleFitMode={handleToggleFitMode}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         )}
 
         {/* ── SECCIÓN ESPECIAL: BIBLIA VISUAL DE ÁNIMAS (si slug === "animas") ── */}
@@ -921,7 +1036,7 @@ export function AdminGalleryEditor() {
         )}
       </div>
 
-      {/* Panel Lateral Deslizante (Slide-in) para Añadir / Editar Obra */}
+      {/* Panel Lateral Deslizante para Añadir / Editar Obra */}
       <AnimatePresence>
         {isDrawerOpen && (
           <div className="fixed inset-0 z-50 overflow-hidden select-none">
@@ -1122,6 +1237,21 @@ export function AdminGalleryEditor() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Modal Selector de Punto Focal Interactivo */}
+      {focalWork && (
+        <FocalPointModal
+          isOpen={Boolean(focalWork)}
+          onClose={() => setFocalWork(null)}
+          workTitle={focalWork.title}
+          imageUrl={focalWork.img}
+          initialPos={focalWork.imgPos || "50% 50%"}
+          onSavePos={(newPos) => {
+            handleUpdateWorkLayout(focalWork.id, { imgPos: newPos });
+            setToast({ message: `Punto focal actualizado a ${newPos}`, type: "success", open: true });
+          }}
+        />
+      )}
 
       {/* Confirmación Borrar Obra */}
       <ConfirmDialog

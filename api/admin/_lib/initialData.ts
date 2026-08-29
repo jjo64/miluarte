@@ -26,6 +26,7 @@ export interface Work {
   aspect: string;
   order?: number;
   featured?: boolean;
+  fitMode?: "cover" | "contain";
 }
 
 export interface RenderProcessStep {
