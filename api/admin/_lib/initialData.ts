@@ -51,6 +51,7 @@ export interface RenderItem {
   process: RenderProcessStep[];
   makingOfVideoMp4?: string;
   makingOfVideoWebm?: string;
+  model3dSrc?: string;
   order: number;
 }
 

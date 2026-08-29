@@ -498,14 +498,32 @@ export function RendersPage() {
   const [active, setActive] = useState<RenderItem | null>(null);
   const [isTouch, setIsTouch] = useState(false);
   const [dynamicRenders, setDynamicRenders] = useState<RenderItem[]>(() => RENDERS);
+  const [pageTexts, setPageTexts] = useState<any>({
+    es: {
+      heroCategory: "3D & VISUALIZACIÓN",
+      heroTitle: "Del plano a la pantalla",
+      heroDescription: "Renders, modelado y visualización de espacios, productos y stands. Cada pieza comienza en papel y termina en un mundo tridimensional.",
+      galleryTitle: "PROYECTOS RECIENTES",
+    },
+    en: {
+      heroCategory: "3D & VISUALIZATION",
+      heroTitle: "From blueprint to screen",
+      heroDescription: "Renders, modeling and visualization of spaces, products and stands. Each piece begins on paper and ends in a three-dimensional world.",
+      galleryTitle: "RECENT PROJECTS",
+    },
+  });
 
   useEffect(() => {
     let isMounted = true;
-    async function loadRenders() {
+    async function loadData() {
       try {
-        const res = await fetch("/api/admin/renders");
-        if (res.ok) {
-          const data = await res.json();
+        const [resRenders, resTexts] = await Promise.allSettled([
+          fetch("/api/admin/renders"),
+          fetch("/api/admin/texts"),
+        ]);
+
+        if (resRenders.status === "fulfilled" && resRenders.value.ok) {
+          const data = await resRenders.value.json();
           if (Array.isArray(data) && data.length > 0 && isMounted) {
             const merged = data.map((d: RenderItem) => {
               const fallback = RENDERS.find((r) => r.id === d.id);
@@ -517,11 +535,21 @@ export function RendersPage() {
             setDynamicRenders(merged);
           }
         }
+
+        if (resTexts.status === "fulfilled" && resTexts.value.ok) {
+          const textsData = await resTexts.value.json();
+          if (textsData && isMounted) {
+            setPageTexts((prev: any) => ({
+              es: { ...prev.es, ...(textsData.es?.renders || {}) },
+              en: { ...prev.en, ...(textsData.en?.renders || {}) },
+            }));
+          }
+        }
       } catch {
         // fallback
       }
     }
-    loadRenders();
+    loadData();
 
     return () => {
       isMounted = false;
@@ -594,7 +622,7 @@ export function RendersPage() {
               className="font-sans text-[10px] tracking-[0.3em] font-semibold text-brand-orange uppercase mb-4"
               style={{ fontFamily: DMSANS, color: C.orange }}
             >
-              {language === "es" ? "3D & VISUALIZACIÓN" : "3D & VISUALIZATION"}
+              {pageTexts[language]?.heroCategory || (language === "es" ? "3D & VISUALIZACIÓN" : "3D & VISUALIZATION")}
             </motion.p>
             
             <motion.h1
@@ -608,7 +636,7 @@ export function RendersPage() {
                 lineHeight: 1.1 
               }}
             >
-              {language === "es" ? "Del plano a la pantalla" : "From blueprint to screen"}
+              {pageTexts[language]?.heroTitle || (language === "es" ? "Del plano a la pantalla" : "From blueprint to screen")}
             </motion.h1>
 
             <motion.p
@@ -618,9 +646,10 @@ export function RendersPage() {
               className="font-sans text-base leading-relaxed text-brand-secondary"
               style={{ fontFamily: DMSANS, color: C.secondary }}
             >
-              {language === "es" 
-                ? "Renders, modelado y visualización de espacios, productos y stands. Cada pieza comienza en papel y termina en un mundo tridimensional."
-                : "Renders, modeling and visualization of spaces, products and stands. Each piece begins on paper and ends in a three-dimensional world."}
+              {pageTexts[language]?.heroDescription ||
+                (language === "es" 
+                  ? "Renders, modelado y visualización de espacios, productos y stands. Cada pieza comienza en papel y termina en un mundo tridimensional."
+                  : "Renders, modeling and visualization of spaces, products and stands. Each piece begins on paper and ends in a three-dimensional world.")}
             </motion.p>
           </div>
 
@@ -628,7 +657,7 @@ export function RendersPage() {
           <div className="w-full lg:w-[60%]">
             <ModelViewer3D
               isHero={true}
-              modelUrl="/models/Matelec-optimized.glb"
+              modelUrl={dynamicRenders.find((r) => r.model3dSrc)?.model3dSrc || "/models/Matelec-optimized.glb"}
               className="w-full h-[380px] sm:h-[440px] md:h-[480px]"
             />
           </div>
@@ -648,7 +677,7 @@ export function RendersPage() {
             className="font-sans text-[10px] tracking-[0.3em] font-semibold text-brand-orange uppercase mb-12"
             style={{ fontFamily: DMSANS, color: C.orange }}
           >
-            {language === "es" ? "PROYECTOS RECIENTES" : "RECENT PROJECTS"}
+            {pageTexts[language]?.galleryTitle || (language === "es" ? "PROYECTOS RECIENTES" : "RECENT PROJECTS")}
           </motion.p>
 
           <motion.div

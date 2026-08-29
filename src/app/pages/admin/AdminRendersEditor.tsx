@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Plus,
-  ArrowUpDown,
   Check,
   X,
   Edit3,
@@ -16,23 +15,31 @@ import {
   Smartphone,
   Eye,
   EyeOff,
-  Camera,
   Play,
   RotateCcw,
   Save,
   Sparkles,
+  Cloud,
+  HardDrive,
+  Camera,
 } from "lucide-react";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { DragSortableList } from "../../components/admin/DragSortableList";
 import { ImageUploader } from "../../components/admin/ImageUploader";
+import { ModelUploader } from "../../components/admin/ModelUploader";
+import { VideoUploader } from "../../components/admin/VideoUploader";
+import { R2MediaLibraryModal } from "../../components/admin/R2MediaLibraryModal";
 import { TagEditor } from "../../components/admin/TagEditor";
 import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
 import { MediaLibraryModal } from "../../components/admin/MediaLibraryModal";
 import { Toast } from "../../components/admin/Toast";
+import { ModelViewer3D } from "../../components/ModelViewer3D";
 import { RenderItem, RenderProcessStep } from "../../types/cms";
 import { useAdminApi } from "../../hooks/useAdminApi";
 import { useUpload } from "../../hooks/useUpload";
 import { getOptimizedImageUrl } from "../../utils/cloudinary";
+import { RENDERS } from "../../data/rendersData";
+import { C } from "../../tokens";
 
 type DeviceView = "desktop" | "tablet" | "mobile";
 type Lang = "es" | "en";
@@ -43,10 +50,54 @@ export function AdminRendersEditor() {
   const [lang, setLang] = useState<Lang>("es");
   const [device, setDevice] = useState<DeviceView>("desktop");
   const [cleanPreview, setCleanPreview] = useState(false);
-  const [viewMode, setViewMode] = useState<"live" | "list">("live");
   const [isReordering, setIsReordering] = useState(false);
 
-  // Modal Crear / Editar
+  // R2 Storage Stats
+  const [r2Stats, setR2Stats] = useState<{
+    totalSizeBytes: number;
+    usedPercentage: number;
+    filesCount: number;
+  } | null>(null);
+
+  // Modal Biblioteca de Renders
+  const [isR2ModalOpen, setIsR2ModalOpen] = useState(false);
+
+  // Textos del Hero y secciones (Live Editing)
+  const [serverTexts, setServerTexts] = useState({
+    es: {
+      heroCategory: "3D & VISUALIZACIÓN",
+      heroTitle: "Del plano a la pantalla",
+      heroDescription: "Renders, modelado y visualización de espacios, productos y stands. Cada pieza comienza en papel y termina en un mundo tridimensional.",
+      galleryTitle: "PROYECTOS RECIENTES",
+    },
+    en: {
+      heroCategory: "3D & VISUALIZATION",
+      heroTitle: "From blueprint to screen",
+      heroDescription: "Renders, modeling and visualization of spaces, products and stands. Each piece begins on paper and ends in a three-dimensional world.",
+      galleryTitle: "RECENT PROJECTS",
+    },
+  });
+
+  const [draftTexts, setDraftTexts] = useState({
+    es: {
+      heroCategory: "3D & VISUALIZACIÓN",
+      heroTitle: "Del plano a la pantalla",
+      heroDescription: "Renders, modelado y visualización de espacios, productos y stands. Cada pieza comienza en papel y termina en un mundo tridimensional.",
+      galleryTitle: "PROYECTOS RECIENTES",
+    },
+    en: {
+      heroCategory: "3D & VISUALIZATION",
+      heroTitle: "From blueprint to screen",
+      heroDescription: "Renders, modeling and visualization of spaces, products and stands. Each piece begins on paper and ends in a three-dimensional world.",
+      galleryTitle: "RECENT PROJECTS",
+    },
+  });
+
+  const [serverSnapshot, setServerSnapshot] = useState<string>("");
+  const currentSnapshot = JSON.stringify(draftTexts);
+  const hasTextChanges = serverSnapshot !== "" && currentSnapshot !== serverSnapshot;
+
+  // Modal Crear / Editar Proyecto
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRender, setEditingRender] = useState<RenderItem | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -60,6 +111,7 @@ export function AdminRendersEditor() {
     delivery: "Planos técnicos + Renders fotorrealistas",
     description: "",
     img: "",
+    model3dSrc: "",
     videoSrcMp4: "",
     makingOfVideoMp4: "",
     process: [],
@@ -95,8 +147,81 @@ export function AdminRendersEditor() {
     }
   };
 
+  const fetchTexts = async () => {
+    try {
+      const data = await request<any>("/api/admin/texts");
+      if (data) {
+        const nextTexts = {
+          es: {
+            heroCategory: data.es?.renders?.heroCategory || "3D & VISUALIZACIÓN",
+            heroTitle: data.es?.renders?.heroTitle || "Del plano a la pantalla",
+            heroDescription: data.es?.renders?.heroDescription || "Renders, modelado y visualización de espacios, productos y stands. Cada pieza comienza en papel y termina en un mundo tridimensional.",
+            galleryTitle: data.es?.renders?.galleryTitle || "PROYECTOS RECIENTES",
+          },
+          en: {
+            heroCategory: data.en?.renders?.heroCategory || "3D & VISUALIZATION",
+            heroTitle: data.en?.renders?.heroTitle || "From blueprint to screen",
+            heroDescription: data.en?.renders?.heroDescription || "Renders, modeling and visualization of spaces, products and stands. Each piece begins on paper and ends in a three-dimensional world.",
+            galleryTitle: data.en?.renders?.galleryTitle || "RECENT PROJECTS",
+          },
+        };
+        setServerTexts(nextTexts);
+        setDraftTexts(nextTexts);
+        setServerSnapshot(JSON.stringify(nextTexts));
+      }
+    } catch (e) {
+      console.warn("Error cargando textos de renders:", e);
+    }
+  };
+
+  const handleSaveTexts = async () => {
+    try {
+      setIsSaving(true);
+      await request("/api/admin/texts", {
+        method: "PUT",
+        body: JSON.stringify({
+          es: { renders: draftTexts.es },
+          en: { renders: draftTexts.en },
+        }),
+      });
+      setServerTexts(JSON.parse(JSON.stringify(draftTexts)));
+      setServerSnapshot(currentSnapshot);
+      setToast({ message: "¡Textos del Hero y galería guardados!", type: "success", open: true });
+    } catch (err: any) {
+      setToast({ message: "Error al guardar textos: " + (err.message || "Fallo"), type: "error", open: true });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDiscardTexts = () => {
+    setDraftTexts(JSON.parse(JSON.stringify(serverTexts)));
+    setToast({ message: "Cambios de texto descartados.", type: "success", open: true });
+  };
+
+  const fetchR2Stats = async () => {
+    try {
+      const data = await request<{
+        totalSizeBytes: number;
+        usedPercentage: number;
+        files: any[];
+      }>("/api/admin/r2?action=list");
+      if (data && typeof data.totalSizeBytes === "number") {
+        setR2Stats({
+          totalSizeBytes: data.totalSizeBytes,
+          usedPercentage: data.usedPercentage || 0,
+          filesCount: data.files?.length || 0,
+        });
+      }
+    } catch {
+      // Silencioso
+    }
+  };
+
   useEffect(() => {
     fetchRenders();
+    fetchR2Stats();
+    fetchTexts();
   }, []);
 
   const handleOpenCreate = () => {
@@ -111,6 +236,7 @@ export function AdminRendersEditor() {
       delivery: "Planos técnicos + Renders fotorrealistas",
       description: "",
       img: "",
+      model3dSrc: "",
       videoSrcMp4: "",
       makingOfVideoMp4: "",
       process: [],
@@ -189,44 +315,33 @@ export function AdminRendersEditor() {
     }
   };
 
-  const handleReorder = async (reordered: RenderItem[]) => {
-    const updated = reordered.map((r, idx) => ({ ...r, order: idx }));
-    setRenders(updated);
-    try {
-      await request("/api/admin/renders", {
-        method: "PUT",
-        body: JSON.stringify({
-          reorder: true,
-          ids: updated.map((r) => r.id),
-        }),
-      });
-      setToast({ message: "Orden de proyectos 3D actualizado", type: "success", open: true });
-    } catch (err: any) {
-      setToast({ message: "Error al guardar orden", type: "error", open: true });
-      fetchRenders();
-    }
-  };
-
-  // Helper para añadir paso de proceso
   const handleAddProcessStep = () => {
-    const newStep: RenderProcessStep = {
-      label: `Paso ${(renderForm.process?.length || 0) + 1}`,
-      src: renderForm.img || "",
-    };
     setRenderForm((prev) => ({
       ...prev,
-      process: [...(prev.process || []), newStep],
+      process: [...(prev.process || []), { label: "", src: "" }],
     }));
   };
 
+  // Alternancia de columnas
+  const getColSpan = (i: number) => {
+    const isSecondInRow = i % 2 === 1;
+    const isOddRow = Math.floor(i / 2) % 2 === 1;
+    if (!isOddRow) {
+      return isSecondInRow ? "md:col-span-2" : "md:col-span-3";
+    } else {
+      return isSecondInRow ? "md:col-span-3" : "md:col-span-2";
+    }
+  };
+
+  // Barra de Acciones Superior (Estilo Minimalista e Intuitivo)
   const headerActions = (
-    <div className="flex items-center gap-2 flex-wrap justify-end">
+    <div className="flex items-center gap-2.5 flex-wrap justify-end">
       {/* Selector de idioma */}
       <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
         <button
           type="button"
           onClick={() => setLang("es")}
-          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             lang === "es"
               ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
               : "text-brand-cream/60 hover:text-brand-cream"
@@ -238,7 +353,7 @@ export function AdminRendersEditor() {
         <button
           type="button"
           onClick={() => setLang("en")}
-          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             lang === "en"
               ? "bg-brand-blush text-brand-ink shadow-xs font-semibold"
               : "text-brand-cream/60 hover:text-brand-cream"
@@ -246,34 +361,6 @@ export function AdminRendersEditor() {
         >
           <span>🇬🇧</span>
           <span>English</span>
-        </button>
-      </div>
-
-      {/* Selector de modo: Live Preview vs Lista */}
-      <div className="flex items-center p-1 rounded-xl bg-brand-bg border border-brand-cream/15">
-        <button
-          type="button"
-          onClick={() => setViewMode("live")}
-          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
-            viewMode === "live"
-              ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
-              : "text-brand-cream/60 hover:text-brand-cream"
-          }`}
-        >
-          <Box className="w-3.5 h-3.5" />
-          <span>Vista Live</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setViewMode("list")}
-          className={`px-3 py-1 rounded-lg text-xs font-sans font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
-            viewMode === "list"
-              ? "bg-brand-blush text-brand-ink font-semibold shadow-xs"
-              : "text-brand-cream/60 hover:text-brand-cream"
-          }`}
-        >
-          <ArrowUpDown className="w-3.5 h-3.5" />
-          <span>Reordenar</span>
         </button>
       </div>
 
@@ -285,7 +372,7 @@ export function AdminRendersEditor() {
           className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
             device === "desktop" ? "bg-brand-cream/15 text-brand-blush" : "text-brand-cream/50 hover:text-brand-cream"
           }`}
-          title="Vista Desktop"
+          title="Vista Pantalla Completa"
         >
           <Monitor className="w-4 h-4" />
         </button>
@@ -311,6 +398,31 @@ export function AdminRendersEditor() {
         </button>
       </div>
 
+      {/* Badge Informativo de Almacenamiento Cloudflare R2 (NO clickeable) */}
+      <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/40 border border-brand-cream/10 text-xs select-none">
+        <Cloud className="w-4 h-4 text-[#E55427]" />
+        <span className="text-brand-cream/70 font-sans">Cloudflare R2:</span>
+        <span className="font-mono text-white font-medium">
+          {r2Stats ? `${(r2Stats.totalSizeBytes / (1024 * 1024)).toFixed(1)} MB / 10 GB` : "Conectado"}
+        </span>
+        {r2Stats && (
+          <span className="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+            {r2Stats.usedPercentage}%
+          </span>
+        )}
+      </div>
+
+      {/* Botón Biblioteca de Renders */}
+      <button
+        type="button"
+        onClick={() => setIsR2ModalOpen(true)}
+        className="px-3.5 py-1.5 rounded-xl border border-brand-cream/15 hover:border-[#E55427]/50 hover:bg-[#E55427]/10 text-xs text-brand-cream flex items-center gap-1.5 transition-colors cursor-pointer"
+        title="Explorar modelos 3D y vídeos en la nube"
+      >
+        <Layers className="w-3.5 h-3.5 text-[#E55427]" />
+        <span>Biblioteca de Renders</span>
+      </button>
+
       {/* Botón Vista Limpia */}
       <button
         type="button"
@@ -326,6 +438,38 @@ export function AdminRendersEditor() {
         <span className="hidden sm:inline">{cleanPreview ? "Editar" : "Vista Limpia"}</span>
       </button>
 
+      {/* Botón Descartar Textos */}
+      {hasTextChanges && (
+        <button
+          type="button"
+          onClick={handleDiscardTexts}
+          className="px-3 py-1.5 rounded-xl border border-brand-cream/15 text-xs text-brand-cream/70 hover:text-brand-cream hover:bg-brand-cream/5 transition-all flex items-center gap-1.5 cursor-pointer"
+        >
+          <RotateCcw className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Descartar</span>
+        </button>
+      )}
+
+      {/* Botón Guardar Textos */}
+      <button
+        type="button"
+        onClick={handleSaveTexts}
+        disabled={isSaving || !hasTextChanges}
+        className="px-4 py-1.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isSaving ? (
+          <>
+            <div className="w-3.5 h-3.5 border-2 border-brand-ink border-t-transparent rounded-full animate-spin" />
+            <span>Guardando...</span>
+          </>
+        ) : (
+          <>
+            <Save className="w-3.5 h-3.5" />
+            <span>{hasTextChanges ? "Guardar Textos" : "Textos al día"}</span>
+          </>
+        )}
+      </button>
+
       <a
         href="/renders"
         target="_blank"
@@ -338,7 +482,7 @@ export function AdminRendersEditor() {
 
       <button
         onClick={handleOpenCreate}
-        className="px-4 py-1.5 rounded-xl bg-brand-blush hover:bg-brand-cream text-brand-ink text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-md"
+        className="px-4 py-1.5 rounded-xl bg-[#E55427] hover:bg-[#E55427]/80 text-white text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-md"
       >
         <Plus className="w-4 h-4" />
         <span>Nuevo Proyecto 3D</span>
@@ -348,186 +492,264 @@ export function AdminRendersEditor() {
 
   return (
     <AdminLayout
-      title="Renders 3D & Stands"
-      subtitle={`${renders.length} proyectos 3D · Previsualiza y edita en tiempo real`}
+      title="Renders 3D & Stands (Live)"
+      subtitle={`${renders.length} proyectos 3D · Edición en vivo del Hero y galería`}
       actions={headerActions}
     >
-      {/* Barra informativa */}
-      {!cleanPreview && (
-        <div className="w-full flex items-center justify-between px-5 py-3 mb-6 bg-brand-dark/90 border border-brand-cream/10 rounded-2xl text-xs font-sans text-brand-cream/70 shadow-sm">
-          <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-medium text-brand-cream">
-              Live Preview 3D: Pasa el ratón sobre cualquier proyecto para editar sus datos, vídeos de making-of o pasos de proceso técnico.
-            </span>
-          </div>
-          <span className="font-mono text-[11px] text-brand-blush bg-brand-blush/10 px-2 py-0.5 rounded border border-brand-blush/20">
-            Dispositivo: {device.toUpperCase()}
-          </span>
-        </div>
-      )}
-
-      {/* Viewport Responsivo */}
+      {/* Contenedor del Viewport Responsivo */}
       <div
-        className={`w-full mx-auto transition-all duration-300 ${
+        className={`w-full mx-auto transition-all duration-300 rounded-2xl overflow-hidden border border-brand-cream/10 shadow-2xl ${
           device === "mobile"
             ? "max-w-[420px]"
             : device === "tablet"
             ? "max-w-[768px]"
             : "w-full"
         }`}
+        style={{ backgroundColor: C.bg }}
       >
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="aspect-[16/9] rounded-2xl bg-brand-dark/50 border border-brand-cream/5 animate-pulse" />
-            ))}
+        {/* ── HERO LIVE SECTION (Calco de /renders) ── */}
+        <section className="relative pt-12 pb-12 px-6 md:px-10 max-w-[1200px] mx-auto border-b border-white/5">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* Columna Izquierda: Textos Editables en Vivo */}
+            <div className="w-full lg:w-[45%] flex flex-col justify-center">
+              {/* Subtítulo / Categoría */}
+              <div className="relative group/field mb-3">
+                <input
+                  type="text"
+                  value={draftTexts[lang]?.heroCategory || ""}
+                  onChange={(e) =>
+                    setDraftTexts((prev) => ({
+                      ...prev,
+                      [lang]: { ...prev[lang], heroCategory: e.target.value },
+                    }))
+                  }
+                  readOnly={cleanPreview}
+                  placeholder="3D & VISUALIZACIÓN"
+                  className={`w-full font-sans text-[10px] tracking-[0.3em] font-semibold text-brand-orange uppercase bg-transparent outline-none transition-all ${
+                    !cleanPreview
+                      ? "p-1.5 rounded-lg border border-dashed border-brand-orange/30 hover:border-brand-orange focus:bg-black/30 focus:border-solid"
+                      : "border-transparent"
+                  }`}
+                  style={{ color: C.orange }}
+                />
+              </div>
+
+              {/* Título Principal: "Del plano a la pantalla" */}
+              <div className="relative group/field mb-4">
+                <input
+                  type="text"
+                  value={draftTexts[lang]?.heroTitle || ""}
+                  onChange={(e) =>
+                    setDraftTexts((prev) => ({
+                      ...prev,
+                      [lang]: { ...prev[lang], heroTitle: e.target.value },
+                    }))
+                  }
+                  readOnly={cleanPreview}
+                  placeholder="Del plano a la pantalla"
+                  className={`w-full font-serif font-light text-brand-cream tracking-tight bg-transparent outline-none transition-all ${
+                    !cleanPreview
+                      ? "p-2 rounded-lg border border-dashed border-brand-cream/30 hover:border-brand-blush focus:bg-black/30 focus:border-solid"
+                      : "border-transparent"
+                  }`}
+                  style={{
+                    fontSize: device === "mobile" ? "28px" : "36px",
+                    lineHeight: 1.15,
+                  }}
+                />
+              </div>
+
+              {/* Descripción del Hero */}
+              <div className="relative group/field">
+                <textarea
+                  rows={3}
+                  value={draftTexts[lang]?.heroDescription || ""}
+                  onChange={(e) =>
+                    setDraftTexts((prev) => ({
+                      ...prev,
+                      [lang]: { ...prev[lang], heroDescription: e.target.value },
+                    }))
+                  }
+                  readOnly={cleanPreview}
+                  placeholder="Renders, modelado y visualización de espacios, productos y stands..."
+                  className={`w-full font-sans text-sm leading-relaxed text-brand-secondary bg-transparent outline-none resize-none transition-all ${
+                    !cleanPreview
+                      ? "p-2 rounded-lg border border-dashed border-brand-cream/30 hover:border-brand-blush focus:bg-black/30 focus:border-solid"
+                      : "border-transparent"
+                  }`}
+                  style={{ color: C.secondary }}
+                />
+              </div>
+            </div>
+
+            {/* Columna Derecha: Visor 3D en Vivo del Hero */}
+            <div className="w-full lg:w-[55%] relative group/hero3d">
+              <div className="w-full h-[320px] sm:h-[380px] rounded-2xl overflow-hidden border border-white/10 bg-black/60 relative shadow-xl">
+                <ModelViewer3D
+                  isHero={true}
+                  modelUrl={renders.find((r) => r.model3dSrc)?.model3dSrc || "/models/Matelec-optimized.glb"}
+                  className="w-full h-full"
+                />
+              </div>
+
+              {/* Badge indicativo sobre el 3D */}
+              {!cleanPreview && (
+                <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-xs px-2.5 py-1 rounded-md border border-white/10 text-[10px] font-mono text-brand-cream/70 flex items-center gap-1.5 pointer-events-none">
+                  <Box className="w-3.5 h-3.5 text-[#E55427]" />
+                  <span>3D Hero Interactivo</span>
+                </div>
+              )}
+            </div>
           </div>
-        ) : renders.length === 0 ? (
-          <div className="text-center py-20 bg-brand-dark/50 border border-dashed border-brand-cream/10 rounded-2xl p-8">
-            <p className="font-serif italic text-brand-wall text-lg mb-4">No hay proyectos 3D registrados</p>
-            <button
-              onClick={handleOpenCreate}
-              className="px-5 py-2.5 rounded-xl bg-brand-blush text-brand-ink text-xs font-semibold uppercase tracking-wider cursor-pointer"
-            >
-              Crear primer proyecto 3D
-            </button>
-          </div>
-        ) : viewMode === "live" ? (
-          /* ── MODO 1: Live Preview Grid ── */
-          <div
-            className={`grid gap-6 ${
-              device === "mobile"
-                ? "grid-cols-1"
-                : device === "tablet"
-                ? "grid-cols-1 sm:grid-cols-2"
-                : "grid-cols-1 md:grid-cols-2"
-            }`}
-          >
-            {renders.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                className="group/render relative rounded-2xl overflow-hidden bg-brand-dark border border-brand-cream/15 hover:border-brand-blush/60 shadow-xl transition-all"
-              >
-                {/* Thumbnail / Portada */}
-                <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/40">
-                  <img
-                    src={getOptimizedImageUrl(item.img, 800)}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover/render:scale-105"
-                  />
+        </section>
 
-                  {/* Badge en esquina */}
-                  <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-xs px-2.5 py-1 rounded-md border border-brand-cream/15 text-[9px] font-sans tracking-wider uppercase text-brand-blush">
-                    {item.badge || "STAND · 3D"}
-                  </div>
+        {/* ── GRID LIVE SECTION (Calco de /renders) ── */}
+        <section className="py-12 px-6 md:px-10" style={{ backgroundColor: "#0D0908" }}>
+          <div className="max-w-[1200px] mx-auto">
+            {/* Título de la Sección de Proyectos (Editable Inline) */}
+            <div className="flex items-center justify-between mb-8 pb-3 border-b border-white/5">
+              <div className="relative group/field w-full max-w-md">
+                <input
+                  type="text"
+                  value={draftTexts[lang]?.galleryTitle || ""}
+                  onChange={(e) =>
+                    setDraftTexts((prev) => ({
+                      ...prev,
+                      [lang]: { ...prev[lang], galleryTitle: e.target.value },
+                    }))
+                  }
+                  readOnly={cleanPreview}
+                  placeholder="PROYECTOS RECIENTES"
+                  className={`w-full font-sans text-[11px] tracking-[0.3em] font-semibold text-brand-orange uppercase bg-transparent outline-none transition-all ${
+                    !cleanPreview
+                      ? "p-1.5 rounded-lg border border-dashed border-brand-orange/30 hover:border-brand-orange focus:bg-black/30 focus:border-solid"
+                      : "border-transparent"
+                  }`}
+                  style={{ color: C.orange }}
+                />
+              </div>
 
-                  {/* Video indicator */}
-                  {item.makingOfVideoMp4 && (
-                    <div className="absolute top-3 right-3 bg-brand-blush text-brand-ink p-1.5 rounded-full shadow-lg pointer-events-none">
-                      <Play className="w-3 h-3 fill-brand-ink" />
-                    </div>
-                  )}
+              {!cleanPreview && (
+                <button
+                  type="button"
+                  onClick={handleOpenCreate}
+                  className="px-3 py-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Añadir Proyecto</span>
+                </button>
+              )}
+            </div>
 
-                  {/* Overlay en Hover con Acciones (Ocultable con Vista Limpia) */}
-                  {!cleanPreview && (
-                    <div className="absolute inset-0 bg-black/70 backdrop-blur-xs opacity-0 group-hover/render:opacity-100 transition-opacity flex items-center justify-center gap-3 p-4">
-                      <button
-                        type="button"
-                        onClick={() => handleOpenEdit(item)}
-                        className="px-4 py-2 rounded-xl bg-brand-blush text-brand-ink font-semibold text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-lg hover:bg-brand-cream transition-colors"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span>Editar Proyecto</span>
-                      </button>
+            {/* Listado de Tarjetas de Renders */}
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="aspect-[16/9] rounded-2xl bg-black/40 border border-white/5 animate-pulse md:col-span-2" />
+                ))}
+              </div>
+            ) : renders.length === 0 ? (
+              <div className="text-center py-16 border-2 border-dashed border-white/10 rounded-2xl p-8">
+                <p className="font-serif italic text-brand-cream/40 text-lg mb-4">No hay proyectos 3D registrados</p>
+                <button
+                  onClick={handleOpenCreate}
+                  className="px-5 py-2.5 rounded-xl bg-brand-blush text-brand-ink text-xs font-semibold uppercase tracking-wider cursor-pointer"
+                >
+                  Crear primer proyecto 3D
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                {renders.map((item, i) => {
+                  const colClass = getColSpan(i);
 
-                      <button
-                        type="button"
-                        onClick={() => setDeletingRender(item)}
-                        className="p-2 rounded-xl bg-brand-orange/80 hover:bg-brand-orange text-white cursor-pointer shadow-lg transition-colors"
-                        title="Eliminar proyecto 3D"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  return (
+                    <motion.div
+                      key={item.id}
+                      layout
+                      className={`group/card relative rounded-2xl overflow-hidden bg-brand-dark border border-white/10 hover:border-brand-blush/60 shadow-xl transition-all ${colClass}`}
+                    >
+                      {/* Portada / Render */}
+                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/40">
+                        <img
+                          src={getOptimizedImageUrl(item.img, 800)}
+                          alt={item.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                        />
 
-                {/* Info Card */}
-                <div className="p-5 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between text-[11px] font-sans text-brand-cream/50 mb-1.5">
-                      <span>{item.client || "Cliente"}</span>
-                      <span>{item.year || "2026"}</span>
-                    </div>
+                        {/* Badge de Categoría */}
+                        <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-xs px-2.5 py-1 rounded-md border border-white/10 text-[9px] font-sans tracking-wider uppercase text-brand-blush flex items-center gap-1">
+                          {item.model3dSrc && <Box className="w-3 h-3 text-[#E55427]" />}
+                          <span>{item.badge || "STAND · 3D"}</span>
+                        </div>
 
-                    <h3 className="font-serif text-xl text-brand-cream font-light mb-2">
-                      {item.title}
-                    </h3>
+                        {/* Video Icon */}
+                        {item.makingOfVideoMp4 && (
+                          <div className="absolute top-3 right-3 bg-brand-blush text-brand-ink p-1.5 rounded-full shadow-lg pointer-events-none">
+                            <Play className="w-3 h-3 fill-brand-ink" />
+                          </div>
+                        )}
 
-                    <p className="font-sans text-xs text-brand-cream/60 line-clamp-2 leading-relaxed mb-4">
-                      {item.description || "Sin descripción"}
-                    </p>
-                  </div>
+                        {/* Hover Overlay con Botones de Edición */}
+                        {!cleanPreview && (
+                          <div className="absolute inset-0 bg-black/75 backdrop-blur-xs opacity-0 group-hover/card:opacity-100 transition-opacity flex items-center justify-center gap-2.5 p-4">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEdit(item)}
+                              className="px-4 py-2 rounded-xl bg-brand-blush text-brand-ink font-semibold text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-lg hover:bg-brand-cream transition-colors"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                              <span>Editar</span>
+                            </button>
 
-                  {/* Software tags */}
-                  <div className="flex flex-wrap gap-1.5 pt-3 border-t border-brand-cream/10">
-                    {(item.software || []).map((soft, i) => (
-                      <span
-                        key={i}
-                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-brand-bg text-brand-cream/60 border border-brand-cream/10"
-                      >
-                        {soft}
-                      </span>
-                    ))}
-                    {item.process && item.process.length > 0 && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-brand-blush/15 text-brand-blush border border-brand-blush/25 ml-auto">
-                        {item.process.length} pasos técnicos
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          /* ── MODO 2: Lista Reordenar Drag and Drop ── */
-          <DragSortableList
-            items={renders}
-            enableDrag={true}
-            onReorder={handleReorder}
-            gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            renderItem={(item) => (
-              <div className="rounded-2xl bg-brand-dark border border-brand-cream/15 p-4 flex flex-col justify-between">
-                <div>
-                  <div className="aspect-[16/9] rounded-xl overflow-hidden mb-3 bg-black/40">
-                    <img src={getOptimizedImageUrl(item.img, 400)} alt="" className="w-full h-full object-cover" />
-                  </div>
-                  <h4 className="font-serif text-lg text-brand-cream mb-1">{item.title}</h4>
-                  <p className="font-sans text-xs text-brand-cream/50">{item.client} · {item.year}</p>
-                </div>
-                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-brand-cream/10">
-                  <button
-                    onClick={() => handleOpenEdit(item)}
-                    className="flex-1 py-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink text-xs font-semibold uppercase transition-colors"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => setDeletingRender(item)}
-                    className="p-1.5 rounded-lg border border-brand-orange/20 text-brand-orange hover:bg-brand-orange/10"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                            <button
+                              type="button"
+                              onClick={() => setDeletingRender(item)}
+                              className="p-2 rounded-xl bg-red-500/80 hover:bg-red-500 text-white cursor-pointer shadow-lg transition-colors"
+                              title="Eliminar proyecto"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Info de la Tarjeta */}
+                      <div className="p-4 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between text-[11px] font-sans text-brand-cream/50 mb-1">
+                            <span>{item.client || "Cliente"}</span>
+                            <span>{item.year || "2026"}</span>
+                          </div>
+                          <h4 className="font-serif text-lg text-brand-cream font-light mb-1.5">{item.title}</h4>
+                          <p className="font-sans text-xs text-brand-cream/70 line-clamp-2 leading-relaxed mb-3">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-1 pt-2.5 border-t border-white/5 text-[10px] font-mono text-brand-cream/40">
+                          {(item.software || []).map((s, idx) => (
+                            <span key={idx} className="bg-white/5 px-2 py-0.5 rounded">
+                              {s}
+                            </span>
+                          ))}
+                          {item.model3dSrc && (
+                            <span className="bg-[#E55427]/20 text-[#E55427] border border-[#E55427]/30 px-2 py-0.5 rounded font-bold ml-auto">
+                              3D
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
-          />
-        )}
+          </div>
+        </section>
       </div>
 
-      {/* Modal Slide-in Crear / Editar Proyecto 3D */}
+      {/* ── MODAL SLIDE-IN CREAR / EDITAR PROYECTO 3D ── */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-50 overflow-hidden select-none">
@@ -567,23 +789,54 @@ export function AdminRendersEditor() {
 
                   <form id="render-form" onSubmit={handleSaveRender} className="flex flex-col gap-4">
                     {/* Imagen de Portada */}
-                    <ImageUploader
-                      folder="miluarte/renders"
-                      currentImageUrl={renderForm.img}
-                      onUploadSuccess={(res) => {
-                        setRenderForm((prev) => ({
-                          ...prev,
-                          img: res.secureUrl,
-                        }));
-                      }}
-                      onFileSelect={(file) => {
-                        setPendingFile(file);
-                        const localPreview = URL.createObjectURL(file);
-                        setRenderForm((prev) => ({
-                          ...prev,
-                          img: localPreview,
-                        }));
-                      }}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
+                        Imagen de Portada (Render Principal) *
+                      </label>
+                      <ImageUploader
+                        folder="miluarte/renders"
+                        currentImageUrl={renderForm.img}
+                        onUploadSuccess={(res) => {
+                          setRenderForm((prev) => ({
+                            ...prev,
+                            img: res.secureUrl,
+                          }));
+                        }}
+                        onFileSelect={(file) => {
+                          setPendingFile(file);
+                          const localPreview = URL.createObjectURL(file);
+                          setRenderForm((prev) => ({
+                            ...prev,
+                            img: localPreview,
+                          }));
+                        }}
+                      />
+                    </div>
+
+                    {/* Modelo 3D Interactivo (Blender .glb en Cloudflare R2) */}
+                    <div className="flex flex-col gap-2 p-4 rounded-xl bg-brand-bg/80 border border-brand-cream/15">
+                      <div className="flex items-center justify-between">
+                        <label className="font-sans text-brand-cream text-xs uppercase tracking-wider font-semibold flex items-center gap-1.5">
+                          <Box className="w-4 h-4 text-[#E55427]" />
+                          <span>Modelo 3D Interactivo (Blender .glb)</span>
+                        </label>
+                        {renderForm.model3dSrc && (
+                          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded border border-emerald-400/20">
+                            3D Activo
+                          </span>
+                        )}
+                      </div>
+                      <ModelUploader
+                        value={renderForm.model3dSrc}
+                        onChange={(url) => setRenderForm((prev) => ({ ...prev, model3dSrc: url }))}
+                      />
+                    </div>
+
+                    {/* Vídeo Making-Of (Cloudflare R2) */}
+                    <VideoUploader
+                      value={renderForm.makingOfVideoMp4 || ""}
+                      onChange={(url) => setRenderForm({ ...renderForm, makingOfVideoMp4: url })}
+                      label="Vídeo Making-Of (MP4 en Cloudflare R2)"
                     />
 
                     {/* Título */}
@@ -671,20 +924,6 @@ export function AdminRendersEditor() {
                       />
                     </div>
 
-                    {/* URL de Video Making-Of */}
-                    <div className="flex flex-col gap-1.5">
-                      <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
-                        URL Vídeo Making-Of (MP4 en Cloudinary)
-                      </label>
-                      <input
-                        type="url"
-                        value={renderForm.makingOfVideoMp4 || ""}
-                        onChange={(e) => setRenderForm({ ...renderForm, makingOfVideoMp4: e.target.value })}
-                        placeholder="https://res.cloudinary.com/.../video.mp4"
-                        className="w-full bg-brand-bg border border-brand-cream/15 rounded-xl px-4 py-2.5 text-brand-cream text-xs font-mono focus:border-brand-blush outline-none"
-                      />
-                    </div>
-
                     {/* Descripción */}
                     <div className="flex flex-col gap-1.5">
                       <label className="font-sans text-brand-cream/70 text-xs uppercase tracking-wider font-medium">
@@ -728,7 +967,7 @@ export function AdminRendersEditor() {
                                     process: prev.process?.filter((_, i) => i !== idx),
                                   }));
                                 }}
-                                className="text-brand-orange hover:text-red-400 text-xs p-1"
+                                className="text-red-400 hover:text-red-300 text-xs p-1"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -753,13 +992,13 @@ export function AdminRendersEditor() {
                                   next[idx] = { ...next[idx], src: e.target.value };
                                   setRenderForm({ ...renderForm, process: next });
                                 }}
-                                placeholder="URL de la imagen del paso en Cloudinary"
-                                className="flex-1 bg-brand-dark px-3 py-1.5 rounded-lg border border-brand-cream/10 text-xs text-brand-cream/70 outline-none focus:border-brand-blush font-mono"
+                                placeholder="URL de la imagen del paso"
+                                className="flex-1 bg-brand-dark px-3 py-1.5 rounded-lg border border-brand-cream/10 text-xs text-brand-cream outline-none focus:border-brand-blush font-mono"
                               />
                               <button
                                 type="button"
                                 onClick={() => setStepMediaModalIndex(idx)}
-                                className="px-2.5 py-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-blush text-brand-cream hover:text-brand-ink text-[10.5px] font-sans font-medium shrink-0 cursor-pointer transition-colors"
+                                className="px-2.5 py-1.5 rounded-lg bg-brand-cream/10 hover:bg-brand-cream/20 text-xs text-brand-cream shrink-0 cursor-pointer"
                               >
                                 Biblioteca
                               </button>
@@ -801,18 +1040,15 @@ export function AdminRendersEditor() {
         )}
       </AnimatePresence>
 
-      {/* Confirmación Borrar */}
-      <ConfirmDialog
-        isOpen={Boolean(deletingRender)}
-        onClose={() => setDeletingRender(null)}
-        onConfirm={handleDeleteRender}
-        title="¿Eliminar este proyecto 3D?"
-        description={`¿Estás segura de que deseas eliminar permanentemente "${deletingRender?.title || "este proyecto"}" del catálogo de renders?`}
-        confirmText="Eliminar Proyecto"
-        destructive={true}
+      {/* ── MODAL GENERAL BIBLIOTECA DE RENDERS (Cloudflare R2) ── */}
+      <R2MediaLibraryModal
+        isOpen={isR2ModalOpen}
+        onClose={() => setIsR2ModalOpen(false)}
+        filterType="all"
+        title="Biblioteca de Renders"
       />
 
-      {/* Modal Biblioteca para Pasos de Proceso */}
+      {/* ── MODAL BIBLIOTECA PARA PASOS DE PROCESO ── */}
       <MediaLibraryModal
         isOpen={stepMediaModalIndex !== null}
         onClose={() => setStepMediaModalIndex(null)}
@@ -825,7 +1061,18 @@ export function AdminRendersEditor() {
           }
         }}
         uploadFolder="miluarte/renders"
-        title="Biblioteca"
+        title="Biblioteca de Medios"
+      />
+
+      {/* ── CONFIRMACIÓN BORRAR ── */}
+      <ConfirmDialog
+        isOpen={Boolean(deletingRender)}
+        onClose={() => setDeletingRender(null)}
+        onConfirm={handleDeleteRender}
+        title="¿Eliminar este proyecto 3D?"
+        description={`¿Estás segura de que deseas eliminar permanentemente "${deletingRender?.title || "este proyecto"}" del catálogo de renders?`}
+        confirmText="Eliminar Proyecto"
+        destructive={true}
       />
 
       <Toast
